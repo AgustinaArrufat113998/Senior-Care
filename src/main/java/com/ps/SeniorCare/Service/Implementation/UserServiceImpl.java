@@ -32,21 +32,25 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserRegisDto newUser(UserRegisDto user) {
-        User newUser = new User();
+        // Verifica si ya existe un usuario con ese email
 
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new RuntimeException("El email ya está registrado"); 
+        }
+
+        User newUser = new User();
         newUser.setUsername(user.getName());
         newUser.setEmail(user.getEmail());
         newUser.setPassword(user.getPassword());
         newUser.setRole(user.getRole());
 
         User savedUser = userRepository.save(newUser);
-        
+
         return new UserRegisDto(
             savedUser.getUsername(),
             savedUser.getEmail(),
             savedUser.getPassword(),
             savedUser.getRole()
         );
-    }
-    
+    }        
 }

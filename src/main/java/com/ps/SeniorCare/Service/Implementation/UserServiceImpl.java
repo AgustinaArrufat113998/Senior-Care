@@ -1,9 +1,11 @@
 package com.ps.SeniorCare.Service.Implementation;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.ps.SeniorCare.Dto.UserDto.LoginDto;
 import com.ps.SeniorCare.Dto.UserDto.UserRegisDto;
 import com.ps.SeniorCare.Dto.UserDto.UserResponseDto;
 import com.ps.SeniorCare.Models.User;
@@ -52,5 +54,29 @@ public class UserServiceImpl implements IUserService {
             savedUser.getPassword(),
             savedUser.getRole()
         );
+    }
+
+    @Override
+    public Optional<UserResponseDto> findAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(user -> new UserResponseDto(
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getRole()
+                ))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<LoginDto> login(String email, String password) {
+        List<User> users = userRepository.findAll();
+
+        for (User user : users) {
+            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
+                return Optional.of(new LoginDto(user.getEmail(), user.getPassword()));
+            }
+        }
+        return Optional.empty();
     }        
 }

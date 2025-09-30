@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>SeniorCare - Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-box {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    input, button {
+      width: 100%;
+      padding: 0.7rem;
+      margin: 0.5rem 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #007BFF;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .error {
+      color: red;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>INICIAR SESIÓN</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Correo electrónico" required>
+      <input type="password" id="password" placeholder="Contraseña" required>
+      <button type="submit">INGRESAR</button>
+    </form>
+    <p id="msg" class="error"></p>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const response = await fetch("http://localhost:8080/api/user/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById("msg").style.color = "green";
+          document.getElementById("msg").innerText = "✅ Bienvenido " + data.email;
+          // Ejemplo: redirigir al home
+          setTimeout(() => {
+            window.location.href = "Home.html";
+          }, 1000);
+        } else if (response.status === 404) {
+          document.getElementById("msg").innerText = "❌ Usuario o contraseña incorrectos";
+        } else {
+          document.getElementById("msg").innerText = "⚠️ Error en el servidor";
+        }
+      } catch (err) {
+        console.log(err);
+        document.getElementById("msg").innerText = "⚠️ No se pudo conectar con la API";
+      }
+    });
+  </script>
+</body>
+</html>

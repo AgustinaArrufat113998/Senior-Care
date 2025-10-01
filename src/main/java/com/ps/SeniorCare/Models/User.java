@@ -1,5 +1,7 @@
 package com.ps.SeniorCare.Models;
 
+import java.util.Date;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
@@ -21,6 +23,18 @@ public class User {
     @Email
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false, unique = true)
+    private String dni;
+
+    @Column(nullable = false)
+    private String phone;
+
+    @Column(nullable = false)
+    private Date birthDate;
+
+    @Column(nullable = false)
+    private String gender;
 
     @Column(nullable = false)
     private String role; 

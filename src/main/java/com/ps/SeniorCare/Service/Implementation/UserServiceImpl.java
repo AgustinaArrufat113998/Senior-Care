@@ -44,7 +44,11 @@ public class UserServiceImpl implements IUserService {
         newUser.setUsername(user.getName());
         newUser.setEmail(user.getEmail());
         newUser.setPassword(user.getPassword());
-        newUser.setRole(user.getRole());
+        newUser.setDni(user.getDni());
+        newUser.setPhone(user.getPhone());  
+        newUser.setBirthDate(user.getBirthDate());
+        newUser.setGender(user.getGender());
+        newUser.setRole("USER");
 
         User savedUser = userRepository.save(newUser);
 
@@ -52,7 +56,10 @@ public class UserServiceImpl implements IUserService {
             savedUser.getUsername(),
             savedUser.getEmail(),
             savedUser.getPassword(),
-            savedUser.getRole()
+            savedUser.getDni(),
+            savedUser.getPhone(),
+            savedUser.getBirthDate(),
+            savedUser.getGender()
         );
     }
 

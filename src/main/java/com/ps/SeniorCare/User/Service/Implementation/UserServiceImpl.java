@@ -34,8 +34,17 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserRegisDto newUser(UserRegisDto user) {
-        // Verifica si ya existe un usuario con ese email
+        // formato email
+        if (!EMAIL_PATTERN.matcher(user.getEmail()).matches()) {
+            throw new IllegalArgumentException("Formato de email invalido");
+        }
 
+        // contraseña (minimo 8 caracteres)
+        if (user.getPassword() == null || user.getPassword().length() < 8) {
+            throw new IllegalArgumentException("La contraseña debe tener al menos 8 caracteres");
+        }
+        
+        // Verifica si ya existe un usuario con ese email
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new RuntimeException("El email ya está registrado"); 
         }

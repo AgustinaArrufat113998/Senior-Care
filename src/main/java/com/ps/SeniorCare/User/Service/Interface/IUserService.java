@@ -1,10 +1,10 @@
-package com.ps.SeniorCare.Service.Interface;
+package com.ps.SeniorCare.User.Service.Interface;
 
 import java.util.Optional;
 
-import com.ps.SeniorCare.Dto.UserDto.LoginDto;
-import com.ps.SeniorCare.Dto.UserDto.UserRegisDto;
-import com.ps.SeniorCare.Dto.UserDto.UserResponseDto;
+import com.ps.SeniorCare.User.Dto.UserDto.LoginDto;
+import com.ps.SeniorCare.User.Dto.UserDto.UserRegisDto;
+import com.ps.SeniorCare.User.Dto.UserDto.UserResponseDto;
 
 public interface IUserService {
     Optional<UserResponseDto> findByEmail(String email);

@@ -1,16 +1,16 @@
-package com.ps.SeniorCare.Service.Implementation;
+package com.ps.SeniorCare.User.Service.Implementation;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.ps.SeniorCare.Dto.UserDto.LoginDto;
-import com.ps.SeniorCare.Dto.UserDto.UserRegisDto;
-import com.ps.SeniorCare.Dto.UserDto.UserResponseDto;
-import com.ps.SeniorCare.Models.User;
-import com.ps.SeniorCare.Repository.UserRepository;
-import com.ps.SeniorCare.Service.Interface.IUserService;
+import com.ps.SeniorCare.User.Dto.UserDto.LoginDto;
+import com.ps.SeniorCare.User.Dto.UserDto.UserRegisDto;
+import com.ps.SeniorCare.User.Dto.UserDto.UserResponseDto;
+import com.ps.SeniorCare.User.Models.User;
+import com.ps.SeniorCare.User.Repository.UserRepository;
+import com.ps.SeniorCare.User.Service.Interface.IUserService;
 
 @Service
 public class UserServiceImpl implements IUserService {

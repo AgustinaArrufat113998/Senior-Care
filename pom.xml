@@ -108,8 +108,8 @@
 		</dependency>
 
 		<!-- Lombok: reduces boilerplate (getters, setters, constructors).
-		     Remember to enable annotation processing in your IDE -->
-		<dependency>
+			 Remember to enable annotation processing in your IDE -->
+		<dependency> 
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>

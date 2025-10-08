@@ -1,4 +1,4 @@
-package com.ps.SeniorCare.Models;
+package com.ps.SeniorCare.User.Models;
 
 import java.util.Date;
 

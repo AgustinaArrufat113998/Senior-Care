@@ -1,4 +1,4 @@
-package com.ps.SeniorCare.Dto.UserDto;
+package com.ps.SeniorCare.User.Dto.UserDto;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package com.ps.SeniorCare.Controller;
+package com.ps.SeniorCare.User.Controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ps.SeniorCare.Dto.UserDto.LoginDto;
-import com.ps.SeniorCare.Dto.UserDto.UserRegisDto;
-import com.ps.SeniorCare.Dto.UserDto.UserResponseDto;
-import com.ps.SeniorCare.Service.Interface.IUserService;
+import com.ps.SeniorCare.User.Dto.UserDto.*;
+import com.ps.SeniorCare.User.Service.Interface.IUserService;
 
 @CrossOrigin(origins = "*")
 @RestController

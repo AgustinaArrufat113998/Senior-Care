@@ -1,4 +1,4 @@
-package com.ps.SeniorCare.Models.Enum;
+package com.ps.SeniorCare.User.Models.Enum;
 
 public enum Role {
     USER,

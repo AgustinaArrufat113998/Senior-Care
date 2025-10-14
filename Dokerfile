@@ -1,26 +1,43 @@
-# -------- Stage 1: Build --------
-FROM maven:3.9-eclipse-temurin-17 AS builder
+# ================================
+# Etapa 1: Build de la aplicación
+# ================================
+FROM maven:3.9-openjdk-23 AS builder
+
+# Directorio de trabajo dentro del contenedor
 WORKDIR /app
-COPY pom.xml .
-# Descarga dependencias en cache
+
+# Copiamos los archivos de Maven primero (para aprovechar caché de dependencias)
+COPY pom.xml /
 RUN mvn -q -e -B dependency:go-offline
-# Copia el código
+
+# Copiamos el código fuente
 COPY src ./src
-# Compila y empaqueta (salida: target/app.jar)
-RUN mvn -q -e -B clean package -DskipTests && \
-    cp target/*-SNAPSHOT.jar /app/app.jar || cp target/*.jar /app/app.jar
 
-# -------- Stage 2: Runtime --------
-FROM eclipse-temurin:17-jre
+# Compilamos y empaquetamos la aplicación (sin tests)
+RUN mvn -q -e -B clean package -DskipTests
+
+
+# ================================
+# Etapa 2: Imagen final (runtime)
+# ================================
+RUN ls -la /app/target
+
+FROM openjdk:23-jdk-alpine
+
+# Directorio de trabajo dentro del contenedor
 WORKDIR /app
-# Usuario no root por seguridad
+
+# Por seguridad, crear un usuario no root
 RUN useradd -r -u 10001 appuser
-COPY --from=builder /app/app.jar /app/app.jar
+
+# Copiar el .jar generado desde la etapa anterior
+COPY --from=builder /app/target/*.jar /app/app.jar
+
+# Exponer el puerto que usa Spring Boot
 EXPOSE 8080
+
+# Cambiar al usuario seguro
 USER appuser
-# HEALTHCHECK opcional si usas actuator: /actuator/health
-# HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD wget -qO- http://localhost:8080/actuator/health || exit 1
+
+# Comando de inicio de la app
 ENTRYPOINT ["java","-jar","/app/app.jar"]
-
-
-#URL: jdbc:mysql://host.docker.internal:3306/SeniorCareDB?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true

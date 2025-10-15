@@ -1,0 +1,82 @@
+DOCKER FILE:
+# ================================
+# Etapa 1: Build de la aplicación
+# ================================
+FROM maven:3.9-eclipse-temurin-23 AS builder
+
+# Directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copiamos los archivos de Maven primero (para aprovechar caché de dependencias)
+COPY pom.xml ./
+RUN mvn -q -e -B dependency:go-offline
+
+# Copiamos el código fuente
+COPY src ./src
+
+# Compilamos y empaquetamos la aplicación (sin tests)
+RUN mvn -q -e -B clean package -DskipTests
+
+
+# ================================
+# Etapa 2: Imagen final (runtime)
+# ================================
+RUN ls -la /app/target
+
+FROM eclipse-temurin:23-jre
+
+# Directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Por seguridad, crear un usuario no root
+# RUN useradd -r -u 10001 appuser
+
+# Copiar el .jar generado desde la etapa anterior
+COPY --from=builder /app/target/*.jar /app/app.jar
+
+# Exponer el puerto que usa Spring Boot
+EXPOSE 8080
+
+# Cambiar al usuario seguro
+# USER appuser
+
+# Comando de inicio de la app
+ENTRYPOINT ["java","-jar","/app/app.jar"]
+
+------------------------------------------------------------------------------------------------
+
+DOCKER COMPOSE
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/SeniorCareDb
+      - SPRING_DATASOURCE_USERNAME=userRoot
+      - SPRING_DATASOURCE_PASSWORD=psswRoot
+    container_name: seniorCare
+    restart: unless-stopped
+    volumes:
+      - .:/app
+    env_file: .env
+
+  mysql:
+    image: mysql:8.3
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: psswRoot    
+      MYSQL_DATABASE: SeniorCareDb
+      MYSQL_USER: userRoot
+      MYSQL_PASSWORD: psswRoot
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    container_name: seniorcare-db
+    restart: unless-stopped
+    env_file: .env
+
+

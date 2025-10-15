@@ -1,6 +1,4 @@
-package com.ps.SeniorCare.User.Dto.UserDto;
-
-import java.util.Date;
+package com.ps.SeniorCare.Carer.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,8 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRegisDto {
-
+public class CarerRegisDto {
     private String name;
     private String surname;
     private String username;
@@ -21,7 +18,5 @@ public class UserRegisDto {
     private String dni;
     private String address;
     private String phone;
-    private Date birthDate;
     private String gender;
-    //private String role;
 }

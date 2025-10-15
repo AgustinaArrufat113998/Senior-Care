@@ -76,32 +76,48 @@
   <div class="register-box">
     <h2>Registro de Usuario</h2>
     <form id="registerForm" class="row g-3">
-      <div class="col-12">
-        <input type="text" id="nombre" class="form-control" placeholder="Nombre y apellido" required>
+      <div class="col-md-6">
+        <label for="nombre" class="form-label">Nombre *</label>
+        <input type="text" id="nombre" class="form-control" placeholder="Nombre" required>
+      </div>
+      <div class="col-md-6">
+        <label for="apellido" class="form-label">Apellido *</label>
+        <input type="text" id="apellido" class="form-control" placeholder="Apellido" required>
+      </div>
+      <div class="col-md-6">
+        <label for="username" class="form-label">Nombre de usuario *</label>
+        <input type="text" id="username" class="form-control" placeholder="Ej: Juan123" required>
       </div>
       <div class="col-12">
+        <label for="email" class="form-label">Correo electrónico *</label>
         <input type="email" id="email" class="form-control" placeholder="Correo electrónico" required>
       </div>
       <div class="col-md-6">
+        <label for="password" class="form-label">Contraseña *</label>
         <input type="password" id="password" class="form-control" placeholder="Contraseña" required>
       </div>
       <div class="col-md-6">
+        <label for="confirmPassword" class="form-label">Repetir contraseña *</label>
         <input type="password" id="confirmPassword" class="form-control" placeholder="Repetir contraseña" required>
       </div>
       <div class="col-md-6">
+        <label for="dni" class="form-label">DNI *</label>
         <input type="text" id="dni" class="form-control" placeholder="DNI" required>
       </div>
       <div class="col-md-6">
+        <label for="telefono" class="form-label">Teléfono *</label>
         <input type="text" id="telefono" class="form-control" placeholder="Teléfono" required>
       </div>
       <div class="col-md-6">
+        <label for="fechaNacimiento" class="form-label">Fecha de nacimiento *</label>
         <input type="date" id="fechaNacimiento" class="form-control" required>
       </div>
       <div class="col-md-6">
-        <select id="sexo" class="form-select" required>
-          <option value="" disabled selected>Seleccione sexo</option>
-          <option value="M">Masc</option>
-          <option value="F">Fem</option>
+        <label for="genero" class="form-label">genero *</label>
+        <select id="genero" class="form-select" required>
+          <option value="" disabled selected>Seleccione genero</option>
+          <option value="M">Masculino</option>
+          <option value="F">Femenino</option>
           <option value="O">Otro</option>
         </select>
       </div>
@@ -120,13 +136,15 @@
       e.preventDefault();
 
       const nombre = document.getElementById("nombre").value;
+      const apellido = document.getElementById("apellido").value;
+      const username = document.getElementById("username").value;
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       const confirmPassword = document.getElementById("confirmPassword").value;
       const dni = document.getElementById("dni").value;
       const telefono = document.getElementById("telefono").value;
       const fechaNacimiento = document.getElementById("fechaNacimiento").value;
-      const sexo = document.getElementById("sexo").value;
+      const sexo = document.getElementById("genero").value;
 
       if (password !== confirmPassword) {
         document.getElementById("msg").innerText = "⚠️ Las contraseñas no coinciden";
@@ -139,6 +157,8 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: nombre,
+            lastname: apellido,
+            username: username,
             email: email,
             password: password,
             dni: dni,
@@ -149,14 +169,14 @@
         });
 
         if (response.ok) {
-          alert("✅ Usuario registrado con éxito. Ahora puede iniciar sesión.");
+          alert("Usuario registrado con éxito. Ahora puede iniciar sesión.");
           window.location.href = "login.html";
         } else {
-          document.getElementById("msg").innerText = "⚠️ Error al registrar usuario";
+          document.getElementById("msg").innerText = "Error al registrar usuario";
         }
       } catch (err) {
         console.log(err);
-        document.getElementById("msg").innerText = "⚠️ No se pudo conectar con la API";
+        document.getElementById("msg").innerText = "No se pudo conectar con la API";
       }
     });
   </script>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SeniorCare - Solicitud de nuevo cuidado</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #1796F0, #414CF0, #1B5BF0, #5B90F0);
+      font-family: 'Poppins', sans-serif;
+      padding: 1rem;
+    }
+    .form-box {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      width: 100%;
+      max-width: 800px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #1B5BF0;
+      font-weight: 600;
+    }
+    .form-control, .form-select {
+      padding: 0.9rem;
+      font-size: 1rem;
+      border-radius: 8px;
+    }
+    .btn-cancel {
+      background-color: #c90a00;
+      border: none;
+      color: white;
+      padding: 0.8rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .btn-save {
+      background-color: #00bb41;
+      border: none;
+      color: white;
+      padding: 0.8rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .error {
+      color: red;
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="form-box">
+    <h2>Solicitud de nuevo cuidado</h2>
+    <form id="careRequestForm" class="row g-3">
+      <div class="col-md-6">
+        <label for="fechaInicio" class="form-label">Fecha de inicio <span class="text-danger">*</span></label>
+        <input type="date" id="fechaInicio" class="form-control" required>
+      </div>
+      <div class="col-md-6">
+        <label for="fechaFin" class="form-label">Fecha de finalización <span class="text-danger">*</span></label>
+        <input type="date" id="fechaFin" class="form-control" required>
+      </div>
+      <div class="col-md-6">
+        <label for="horaInicio" class="form-label">Hora de inicio <span class="text-danger">*</span></label>
+        <input type="time" id="horaInicio" class="form-control" required>
+      </div>
+      <div class="col-md-6">
+        <label for="horaFin" class="form-label">Hora de finalización <span class="text-danger">*</span></label>
+        <input type="time" id="horaFin" class="form-control" required>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Tipo de atención preferida <span class="text-danger">*</span></label>
+        <div class="row ps-3">
+          <div class="col-md-4 form-check">
+            <input class="form-check-input" type="checkbox" id="cuidadorEstudios" name="tipoAtencion" value="Cuidador con estudios">
+            <label class="form-check-label" for="cuidadorEstudios">Cuidador con estudios</label>
+          </div>
+          <div class="col-md-4 form-check">
+            <input class="form-check-input" type="checkbox" id="estudiante" name="tipoAtencion" value="Estudiante">
+            <label class="form-check-label" for="estudiante">Estudiante</label>
+          </div>
+          <div class="col-md-4 form-check">
+            <input class="form-check-input" type="checkbox" id="sinEstudios" name="tipoAtencion" value="Cuidador sin estudios">
+            <label class="form-check-label" for="sinEstudios">Cuidador sin estudios</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carreras (solo visible si marca con estudios o estudiante) -->
+      <div id="carrerasContainer" class="mt-3 hidden">
+        <label class="form-label">Carreras *</label>
+        <div class="row ps-3">
+          <div class="col-md-4 form-check">
+            <input class="form-check-input" type="checkbox" id="enfermeriaCarrera" value="Enfermería">
+            <label class="form-check-label" for="enfermeriaCarrera">Enfermería</label>
+          </div>
+          <div class="col-md-4 form-check">
+            <input class="form-check-input" type="checkbox" id="psicologiaCarrera" value="Psicología">
+            <label class="form-check-label" for="psicologiaCarrera">Psicología</label>
+          </div>
+          <div class="col-md-4 form-check">
+            <input class="form-check-input" type="checkbox" id="trabajoSocialCarrera" value="Trabajo Social">
+            <label class="form-check-label" for="trabajoSocialCarrera">Trabajo Social</label>
+          </div>
+          <div class="col-md-6 form-check">
+            <input class="form-check-input" type="checkbox" id="acompananteCarrera" value="Acompañante Terapéutico">
+            <label class="form-check-label" for="acompananteCarrera">Acompañante Terapéutico</label>
+          </div>
+        </div>
+      </div>
+
+
+      <div id="cuidadosSimplesContainer" class="mt-3 hidden">
+        <small class="text-muted">✔ Cuidado básico (higiene, alimentación, acompañamiento)</small>
+      </div>
+
+      <div class="col-md-12">
+        <label for="diseases" class="form-label">Enfermedades <span class="text-danger">*</span></label>
+        <input type="text" id="diseases" class="form-control" placeholder="Ej: Diabetes, Hipertensión" required>
+      </div>
+      <div class="col-md-12">
+        <label for="medications" class="form-label">Medicaciones <span class="text-danger">*</span></label>
+        <input type="text" id="medications" class="form-control" placeholder="Ej: Insulina, Ibuprofeno" required>
+      </div>
+      <div class="col-md-12">
+        <label for="allergies" class="form-label">Alergias</label>
+        <input type="text" id="allergies" class="form-control" placeholder="Ej: Penicilina, Polen">
+      </div>
+
+      <div class="col-md-12">
+        <label class="form-label">Condiciones del paciente:</label>
+        <div class="row ps-3">
+          <div class="col-md-4 form-check">
+            <input class="form-check-input" type="checkbox" id="usesDiapers">
+            <label class="form-check-label" for="usesDiapers">Usa pañales</label>
+          </div>
+          <div class="col-md-4 form-check">
+            <input class="form-check-input" type="checkbox" id="reducedMobility">
+            <label class="form-check-label" for="reducedMobility">Movilidad reducida</label>
+          </div>
+          <div class="col-md-4 form-check">
+            <input class="form-check-input" type="checkbox" id="specialDiet">
+            <label class="form-check-label" for="specialDiet">Requiere dieta especial</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <label for="careSuggestions" class="form-label">Cuidados o sugerencias especiales</label>
+        <textarea id="careSuggestions" class="form-control" rows="3" placeholder="Ej: Prefiere compañía durante las comidas, necesita ayuda para caminar."></textarea>
+      </div>
+
+      <div class="col-12 d-flex justify-content-center gap-2 mt-4">
+        <button type="button" class="btn-cancel" onclick="window.location.href='home.html'">Cancelar</button>
+        <button type="submit" class="btn-save">Enviar solicitud</button>
+      </div>
+    </form>
+
+    <p id="msg" class="error"></p>
+  </div>
+
+  <script>
+    const form = document.getElementById("careRequestForm");
+    const msg = document.getElementById("msg");
+    const carrerasContainer = document.getElementById("carrerasContainer");
+    const cuidadosSimplesContainer = document.getElementById("cuidadosSimplesContainer");
+
+
+    document.querySelectorAll('input[name="tipoAtencion"]').forEach(chk => {
+      chk.addEventListener("change", () => {
+        const conEstudios = document.getElementById("cuidadorEstudios").checked;
+        const estudiante = document.getElementById("estudiante").checked;
+        const sinEstudios = document.getElementById("sinEstudios").checked;
+
+        // Mostrar carreras si hay estudios o estudiante
+        carrerasContainer.classList.toggle("hidden", !(conEstudios || estudiante));
+        // Mostrar cuidados simples si marca sin estudios
+        cuidadosSimplesContainer.classList.toggle("hidden", !sinEstudios);
+      });
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      msg.innerText = "";
+
+      const fechaInicio = document.getElementById("fechaInicio").value;
+      const fechaFin = document.getElementById("fechaFin").value;
+      const horaInicio = document.getElementById("horaInicio").value;
+      const horaFin = document.getElementById("horaFin").value;
+      const diseases = document.getElementById("diseases").value.trim();
+      const medications = document.getElementById("medications").value.trim();
+
+      const tiposSeleccionados = Array.from(document.querySelectorAll('input[name="tipoAtencion"]:checked')).map(chk => chk.value);
+
+      if (!fechaInicio || !fechaFin || !horaInicio || !horaFin || !diseases || !medications) {
+        msg.innerText = "Por favor, complete todos los campos obligatorios.";
+        return;
+      }
+
+      if (new Date(fechaFin) < new Date(fechaInicio)) {
+        msg.innerText = "La fecha de finalización no puede ser anterior a la fecha de inicio.";
+        return;
+      }
+
+      if (tiposSeleccionados.length === 0) {
+        msg.innerText = "Seleccione al menos un tipo de atención preferida.";
+        return;
+      }
+
+      alert("Solicitud enviada con éxito.\nTipos seleccionados: " + tiposSeleccionados.join(", "));
+      form.reset();
+      carrerasContainer.classList.add("hidden");
+      cuidadosSimplesContainer.classList.add("hidden");
+    });
+  </script>
+</body>
+</html>

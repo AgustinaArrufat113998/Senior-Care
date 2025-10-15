@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserResponseDto {
-    private String name;
+    private String username;
     private String email;
     private String role; // e.g., "USER", "ADMIN", "CARETAKER
 }

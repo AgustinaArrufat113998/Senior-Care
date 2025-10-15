@@ -34,11 +34,6 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserRegisDto newUser(UserRegisDto user) {
-        // formato email
-        if (!EMAIL_PATTERN.matcher(user.getEmail()).matches()) {
-            throw new IllegalArgumentException("Formato de email invalido");
-        }
-
         // contraseña (minimo 8 caracteres)
         if (user.getPassword() == null || user.getPassword().length() < 8) {
             throw new IllegalArgumentException("La contraseña debe tener al menos 8 caracteres");
@@ -50,10 +45,13 @@ public class UserServiceImpl implements IUserService {
         }
 
         User newUser = new User();
-        newUser.setUsername(user.getName());
+        newUser.setName(user.getName());
+        newUser.setSurname(user.getSurname());
+        newUser.setUsername(user.getUsername());
         newUser.setEmail(user.getEmail());
         newUser.setPassword(user.getPassword());
         newUser.setDni(user.getDni());
+        newUser.setAddress(user.getAddress());
         newUser.setPhone(user.getPhone());  
         newUser.setBirthDate(user.getBirthDate());
         newUser.setGender(user.getGender());
@@ -62,10 +60,13 @@ public class UserServiceImpl implements IUserService {
         User savedUser = userRepository.save(newUser);
 
         return new UserRegisDto(
+            savedUser.getName(),
+            savedUser.getSurname(),
             savedUser.getUsername(),
             savedUser.getEmail(),
             savedUser.getPassword(),
             savedUser.getDni(),
+            savedUser.getAddress(),
             savedUser.getPhone(),
             savedUser.getBirthDate(),
             savedUser.getGender()

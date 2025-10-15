@@ -92,13 +92,11 @@
 		</dependency>
 
 		<!-- MySQL connector: uncomment it when connecting to the real database -->
-		<!--
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-		-->
+		</dependency> -->
 
 		<!-- In-memory H2 database: useful for quick tests without depending on MySQL -->
 		<dependency>
@@ -106,6 +104,7 @@
 			<artifactId>h2</artifactId>
 			<version>2.3.232</version>
 		</dependency>
+
 
 		<!-- Lombok: reduces boilerplate (getters, setters, constructors).
 			 Remember to enable annotation processing in your IDE -->
@@ -135,5 +134,25 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- JWT -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.11.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.11.5</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.11.5</version>
+			<scope>runtime</scope>
+		</dependency>
+
 	</dependencies>
 </project>

@@ -12,7 +12,13 @@ import lombok.Data;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String surname;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -26,6 +32,9 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String dni;
+
+    @Column(nullable = false)
+    private String address;
 
     @Column(nullable = false)
     private String phone;

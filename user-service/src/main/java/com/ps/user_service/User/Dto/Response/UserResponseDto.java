@@ -1,4 +1,4 @@
-package com.ps.user_service.User.Dto;
+package com.ps.user_service.User.Dto.Response;
 
 import com.ps.user_service.User.Models.Enum.Role;
 

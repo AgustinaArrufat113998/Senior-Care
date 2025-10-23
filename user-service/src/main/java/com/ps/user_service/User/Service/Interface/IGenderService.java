@@ -1,14 +1,12 @@
 package com.ps.user_service.User.Service.Interface;
 
-import com.ps.user_service.User.Models.Gender;
+import com.ps.user_service.User.Dto.GenderDto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface IGenderService {
-    List<Gender> findAll();
-    Optional<Gender> findById(Long id);
-    Gender save(Gender gender);
-    Gender update(Long id, Gender gender);
+    List<GenderDto> findAll();
+    GenderDto save(GenderDto genderDto);
+    GenderDto update(Long id, GenderDto gender);
     void delete(Long id);
 }

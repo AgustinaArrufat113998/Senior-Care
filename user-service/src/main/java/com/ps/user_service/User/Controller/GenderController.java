@@ -1,13 +1,17 @@
 package com.ps.user_service.User.Controller;
 
-import com.ps.user_service.User.Models.Gender;
+import com.ps.user_service.User.Dto.GenderDto;
 import com.ps.user_service.User.Service.Interface.IGenderService;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/genders")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class GenderController {
 
     private final IGenderService genderService;
@@ -17,28 +21,27 @@ public class GenderController {
     }
 
     @GetMapping
-    public List<Gender> getAll() {
-        return genderService.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public Gender getById(@PathVariable Long id) {
-        return genderService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Género no encontrado"));
+    public ResponseEntity<List<GenderDto>> getAll() {
+        return ResponseEntity.ok(genderService.findAll());
     }
 
     @PostMapping
-    public Gender create(@RequestBody Gender gender) {
-        return genderService.save(gender);
+    public ResponseEntity<GenderDto> create(@RequestBody GenderDto gender) {
+        return ResponseEntity.ok(genderService.save(gender));
     }
 
     @PutMapping("/{id}")
-    public Gender update(@PathVariable Long id, @RequestBody Gender gender) {
-        return genderService.update(id, gender);
+    public ResponseEntity<GenderDto> update(@RequestParam Long id, @RequestBody GenderDto gender) {
+        return ResponseEntity.ok(genderService.update(id, gender));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        genderService.delete(id);
+    public ResponseEntity<Void> delete(@RequestParam Long id) {
+        try {
+            genderService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.ps.user_service.User.Controller;
 
-import com.ps.user_service.User.Dto.UserRegisDto;
-import com.ps.user_service.User.Dto.UserResponseDto;
+import com.ps.user_service.User.Dto.Request.UserRegisDto;
+import com.ps.user_service.User.Dto.Response.UserResponseDto;
 import com.ps.user_service.User.Service.Interface.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
 
     private final IUserService userService;

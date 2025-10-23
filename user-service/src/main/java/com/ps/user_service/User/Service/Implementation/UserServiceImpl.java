@@ -1,7 +1,7 @@
 package com.ps.user_service.User.Service.Implementation;
 
-import com.ps.user_service.User.Dto.UserRegisDto;
-import com.ps.user_service.User.Dto.UserResponseDto;
+import com.ps.user_service.User.Dto.Request.UserRegisDto;
+import com.ps.user_service.User.Dto.Response.UserResponseDto;
 import com.ps.user_service.User.Models.*;
 import com.ps.user_service.User.Models.Enum.Role;
 import com.ps.user_service.User.Repository.AddressRepository;
@@ -50,14 +50,11 @@ public class UserServiceImpl implements IUserService {
             throw new RuntimeException("El email ya está registrado");
         }
 
-        Gender gender = genderRepository.findByDescription(user.getGender())
+        Gender gender = genderRepository.findById(user.getGenderId())
                 .orElseThrow(() -> new RuntimeException("Género no encontrado"));
 
-        Address address = new Address();
-        address.setStreet(user.getStreet());
-        address.setNumber(user.getNumber());
-        address.setCity(user.getCity());
-        addressRepository.save(address);
+        Address address = addressRepository.findById(user.getAddressId())
+                .orElseThrow(() -> new RuntimeException("Dirección no encontrada"));
 
         User newUser = new User();
         newUser.setName(user.getName());
@@ -81,10 +78,10 @@ public class UserServiceImpl implements IUserService {
         dto.setEmail(savedUser.getEmail());
         dto.setPassword(savedUser.getPassword());
         dto.setDni(savedUser.getDni());
-        dto.setStreet(savedUser.getAddress().getStreet());
         dto.setPhone(savedUser.getPhone());
         dto.setBirthDate(savedUser.getBirthDate());
-        dto.setGender(savedUser.getGender().getDescription());
+        dto.setGenderId(savedUser.getGender().getId());
+        dto.setAddressId(savedUser.getAddress().getId());
 
         return dto;
     }

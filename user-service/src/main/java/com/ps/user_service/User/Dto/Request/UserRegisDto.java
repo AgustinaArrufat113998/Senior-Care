@@ -1,4 +1,4 @@
-package com.ps.user_service.User.Dto;
+package com.ps.user_service.User.Dto.Request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,8 +18,6 @@ public class UserRegisDto {
     private String dni;
     private String phone;
     private Date birthDate;
-    private String gender; 
-    private String street;
-    private String number;
-    private String city;
+    private Long genderId;
+    private Long AddressId;
 }

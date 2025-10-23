@@ -15,9 +15,6 @@ public class Street {
     @Column(nullable = false)
     private String name;
 
-    @Column
-    private String number;
-
     @ManyToOne
     @JoinColumn(name = "city_id", nullable = false)
     private City city;

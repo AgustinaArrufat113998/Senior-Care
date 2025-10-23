@@ -6,6 +6,5 @@ import lombok.Data;
 public class StreetResponseDto {
     private Long id;
     private String name;
-    private String number;
     private CityResponseDto city;
 }

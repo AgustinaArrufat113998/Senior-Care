@@ -1,12 +1,11 @@
-const paisSelect = document.getElementById("pais");
-const provinciaSelect = document.getElementById("provincia");
 const msg = document.getElementById("msg");
 
-import { registerUser, getCountries, getProvincesByCountry } from "../Api/userApi.js";
+import { registerUser, getCountries, getProvincesByCountry, getGender } from "../Api/userApi.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const paisSelect = document.getElementById("pais");
   const provinciaSelect = document.getElementById("provincia");
+  const sexoSelect = document.getElementById("sexo");
 
   // 🔹 Cargar países
   const countries = await getCountries();
@@ -32,6 +31,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       provinciaSelect.appendChild(option);
     });
     provinciaSelect.disabled = false;
+  });
+
+  // 🔹 Cargar géneros
+  const gender = await getGender();
+  sexoSelect.innerHTML = '<option value="">Seleccione sexo</option>';
+  gender.forEach(g => {
+    const option = document.createElement("option");
+    option.value = g.id;
+    option.textContent = g.description;
+    sexoSelect.appendChild(option);
   });
 });
 

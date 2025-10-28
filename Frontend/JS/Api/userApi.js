@@ -110,7 +110,6 @@ export async function getCountries() {
     });
 
     if (!response.ok) throw new Error("Error al obtener países");
-    console.log("Respuesta de países:", response);
     return await response.json();
   } catch (error) {
     console.error("Error al obtener países:", error);
@@ -129,6 +128,22 @@ export async function getProvincesByCountry(countryId) {
     return await response.json();
   } catch (error) {
     console.error("Error al obtener provincias:", error);
+    return [];
+  }
+}
+
+export async function getGender() {
+  try {
+    const response = await fetch(`${API_USER_URL}/genders`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify()
+    });
+    console.log("Respuesta de géneros:", response);
+    if (!response.ok) throw new Error("Error al obtener géneros");
+    return await response.json();
+  } catch (error) {
+    console.error("Error al obtener géneros:", error);
     return [];
   }
 }

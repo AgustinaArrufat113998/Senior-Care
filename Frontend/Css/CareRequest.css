@@ -9,13 +9,13 @@ body {
   padding: 1rem;
 }
 
-.register-box {
+.form-box {
   background: white;
   padding: 2rem;
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   width: 100%;
-  max-width: 720px;
+  max-width: 800px;
 }
 
 h2 {
@@ -25,19 +25,10 @@ h2 {
   font-weight: 600;
 }
 
-h5 {
-  font-weight: 600;
-  color: #1B5BF0;
-}
-
 .form-control, .form-select {
   padding: 0.9rem;
   font-size: 1rem;
   border-radius: 8px;
-}
-
-.small-input {
-  width: 50%;
 }
 
 .btn-cancel {
@@ -48,9 +39,6 @@ h5 {
   border-radius: 8px;
   font-weight: 600;
 }
-.btn-cancel:hover {
-  background-color: #a30700;
-}
 
 .btn-save {
   background-color: #00bb41;
@@ -60,12 +48,13 @@ h5 {
   border-radius: 8px;
   font-weight: 600;
 }
-.btn-save:hover {
-  background-color: #009c36;
-}
 
 .error {
   color: red;
   margin-top: 1rem;
   text-align: center;
+}
+
+.hidden {
+  display: none;
 }

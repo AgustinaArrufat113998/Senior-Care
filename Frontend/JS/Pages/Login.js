@@ -4,7 +4,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
-  await login(email, password); // 👈 importante
+  await login(email, password); 
 });
 
 function logout() {
@@ -13,3 +13,4 @@ function logout() {
   alert("Sesión cerrada");
   window.location.href = "LandingPage.html";
 }
+

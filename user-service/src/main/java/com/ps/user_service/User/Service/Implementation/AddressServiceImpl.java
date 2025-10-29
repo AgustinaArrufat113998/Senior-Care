@@ -135,6 +135,39 @@ public class AddressServiceImpl implements IAddressService {
         return streetResponseDto;
     }
 
+    @Override
+    public List<CountryResponseDto> getAllCountries() {
+        List<Country> countries = countryRepository.findAll();
+        return countries.stream().map(country -> {
+            CountryResponseDto dto = new CountryResponseDto();
+            dto.setId(country.getId());
+            dto.setName(country.getName());
+            return dto;
+        }).toList();
+    }
+
+    @Override
+    public List<CityResponseDto> getAllCitiesByCountry(Long countryId) {
+        Country country = countryRepository.findById(countryId)
+                .orElseThrow(() -> new RuntimeException("Country not found"));
+
+        CountryResponseDto countryDto = new CountryResponseDto();
+        countryDto.setId(country.getId());
+        countryDto.setName(country.getName());
+
+        List<City> cities = cityRepository.findByCountryId(countryId);
+
+        return cities.stream()
+                .map(city -> {
+                    CityResponseDto dto = new CityResponseDto();
+                    dto.setId(city.getId());
+                    dto.setName(city.getName());
+                    dto.setCountry(countryDto);
+                    return dto;
+                })
+                .toList();
+    }
+
     // ================== MAPPER ==================
 
     public AddressResponseDto mapToResponse(Address address) {
@@ -165,4 +198,5 @@ public class AddressServiceImpl implements IAddressService {
 
         return addressDto;
     }
+
 }

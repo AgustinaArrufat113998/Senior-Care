@@ -5,7 +5,7 @@ const API_GATEWAY_URL = "http://localhost:8080/api";
 
 // Función para registrar un nuevo usuario
 export async function registerUser(userData) {
-  const response = await fetch(`${API_USER_URL}/user/register`, {
+  const response = await fetch(`${API_USER_URL}/users`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(userData),
@@ -17,7 +17,36 @@ export async function registerUser(userData) {
   return await response.json(); // opcional
 }
 
-export async function login(email, password) {
+// === Create Address ===
+export async function createStreet(name, cityId) {
+  const response = await fetch(`${API_USER_URL}/addresses/streets`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      name: name,
+      cityId: Number(cityId)
+    })
+  });
+  if (!response.ok) throw new Error("Error al crear la calle");
+  return await response.json();
+}
+
+export async function createAddress(number, floor, apartment, streetId) {
+  const response = await fetch(`${API_USER_URL}/addresses`, { 
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      number: number,
+      floor: floor,
+      apartment: apartment,
+      streetId: Number(streetId)
+    }),
+  });
+  if (!response.ok) throw new Error("Error al crear la dirección");
+  return await response.json();
+}
+
+  export async function login(email, password) {
   const msg = document.getElementById("msg");
   msg.innerText = "🔄 Verificando...";
   msg.style.color = "black";
@@ -100,7 +129,7 @@ async function getUsers() {
   console.log(users);
 }
 
-// === COUNTRIES & PROVINCES ===
+// === Getters for DropDownTable ===
 export async function getCountries() {
   try {
     const response = await fetch(`${API_USER_URL}/addresses/countries`, {
@@ -140,6 +169,7 @@ export async function getGender() {
     body: JSON.stringify()
     });
     console.log("Respuesta de géneros:", response);
+
     if (!response.ok) throw new Error("Error al obtener géneros");
     return await response.json();
   } catch (error) {

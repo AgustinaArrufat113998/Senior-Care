@@ -1,6 +1,6 @@
-const msg = document.getElementById("msg");
 
-import { registerUser, getCountries, getProvincesByCountry, getGender } from "../Api/userApi.js";
+import { registerUser, createStreet, createAddress } from "../Api/userApi.js";
+import {getCountries, getProvincesByCountry, getGender} from "../Api/userApi.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const paisSelect = document.getElementById("pais");
@@ -42,12 +42,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     option.textContent = g.description;
     sexoSelect.appendChild(option);
   });
-});
 
-// paisSelect.addEventListener("change", e => {
-//   const idPais = e.target.value;
-//   if (idPais) cargarProvincias(idPais);
-// });
+  console.log("Géneros cargados:", gender);
+});
 
 // Envío del formulario
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
@@ -63,30 +60,81 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
     return;
   }
 
-  const userData = {
-    name: document.getElementById("nombre").value,
-    lastName: document.getElementById("apellido").value,
-    username: document.getElementById("username").value,
-    email: document.getElementById("email").value,
-    password: document.getElementById("password").value,
-    dni: document.getElementById("dni").value,
-    phone: document.getElementById("telefono").value,
-    birthDate: document.getElementById("fechaNacimiento").value,
-    gender: document.getElementById("sexo").value,
-    address: {
-      street: document.getElementById("calle").value,
-      houseNumber: document.getElementById("nroCasa").value,
-      floor: document.getElementById("piso").value || null,
-      apartment: document.getElementById("depto").value || null,
-      provinceId: document.getElementById("provincia").value,
-      countryId: document.getElementById("pais").value
-    }};
+  try {
+  // === 1️⃣ Create Street ===
+    const streetName = document.getElementById("calle").value;
+    const cityId = document.getElementById("provincia").value;
+    const street = await createStreet(streetName, cityId);
 
-  const response = await registerUser(userData);
-  if (response.ok) {
-    alert("✅ Usuario registrado con éxito");
-    window.location.href = "login.html";
-  } else {
-    alert("⚠️ Error al registrar usuario");
+    // === 2️⃣ Create Address ===
+    const address = await createAddress(
+      document.getElementById("nroCasa").value,
+      document.getElementById("piso").value || null,
+      document.getElementById("depto").value || null,
+      street.id
+    );
+
+    // === 3️⃣ Create User ===
+
+    // Fecha de nacimiento en formato ISO
+    const birthDateInput = document.getElementById("fechaNacimiento").value;
+    const birthDate = new Date(birthDateInput).toISOString();
+
+    const userData = {
+      name: document.getElementById("nombre").value,
+      surname: document.getElementById("apellido").value,
+      username: document.getElementById("username").value,
+      email: document.getElementById("email").value,
+      password: document.getElementById("password").value,
+      dni: document.getElementById("dni").value,
+      phone: document.getElementById("telefono").value,
+      birthDate: birthDate,
+      genderId: Number(document.getElementById("sexo").value),
+      addressId: address.id 
+    };
+    
+    console.log("Datos del usuario a registrar:", userData);
+
+    // Convertir y validar IDs
+    userData.genderId = Number(userData.genderId);
+    userData.addressId = Number(userData.addressId);
+
+    if (!userData.genderId || isNaN(userData.genderId)) {
+      showToast("⚠️ Debe seleccionar un sexo válido", true);
+      return;
+    }
+    if (!userData.addressId || isNaN(userData.addressId)) {
+      showToast("⚠️ Error al obtener dirección del usuario", true);
+      return;
+    }
+
+    const response = await registerUser(userData);
+    
+    if (response && response.ok) {
+      showToast("✅ Usuario registrado con éxito");
+      setTimeout(() => {
+        window.location.href = "../../Html/login.html";
+      }, 3000); 
+    } else {
+      showToast("⚠️ Error al registrar usuario");
+    }
+  } 
+  catch (error) {
+    console.error("Error durante el registro:", error);
+    showToast("❌ " + (error.message || "error inesperado"), true);
   }
+
 });
+
+console.log("SexoId: ", document.getElementById("sexo").value);
+
+function showToast(message, isError = false) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  toast.classList.toggle("error", isError);
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2000); // se oculta a los 5 segundos
+}

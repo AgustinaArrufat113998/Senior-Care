@@ -25,6 +25,8 @@ public interface IAddressService {
     CountryResponseDto createCountry(CountryRequestDto countryDto);
     CityResponseDto createCity(CityRequestDto cityDto);
     StreetResponseDto createStreet(StreetRequestDto streetDto);
+    List<CountryResponseDto> getAllCountries();
+    List<CityResponseDto> getAllCitiesByCountry(Long countryId);
 
     // ================== MAPPER ==================
     AddressResponseDto mapToResponse(Address address);

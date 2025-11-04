@@ -5,8 +5,22 @@ body {
   justify-content: flex-end;
   align-items: center;
   background: linear-gradient(135deg, #1796F0, #414CF0, #1B5BF0, #5B90F0);
-  padding-right: 7%; /* un poco más de espacio lateral */
+  padding-right: 7%;
   font-family: 'Poppins', sans-serif;
+}
+
+.side-photo {
+  position: absolute;
+  left: 7%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 70%;
+  max-width: 850px;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  z-index: 0;
 }
 
 .login-box {
@@ -40,18 +54,18 @@ h2 {
 
 .btn-login {
   background-color: #1B5BF0;
-  border: none;
   color: white;
 }
+
 .btn-login:hover {
   background-color: #5B90F0;
 }
 
 .btn-signup {
   background-color: #5B90F0;
-  border: none;
   color: white;
 }
+
 .btn-signup:hover {
   background-color: #1796F0;
 }

@@ -25,19 +25,10 @@ h2 {
   font-weight: 600;
 }
 
-h5 {
-  font-weight: 600;
-  color: #1B5BF0;
-}
-
-.form-control, .form-select {
+.form-control {
   padding: 0.9rem;
   font-size: 1rem;
   border-radius: 8px;
-}
-
-.small-input {
-  width: 50%;
 }
 
 .btn-cancel {
@@ -48,9 +39,6 @@ h5 {
   border-radius: 8px;
   font-weight: 600;
 }
-.btn-cancel:hover {
-  background-color: #a30700;
-}
 
 .btn-save {
   background-color: #00bb41;
@@ -60,38 +48,9 @@ h5 {
   border-radius: 8px;
   font-weight: 600;
 }
-.btn-save:hover {
-  background-color: #009c36;
-}
 
 .error {
   color: red;
-  margin-top: 1rem;
-  text-align: center;
-}
-
-/* --- Toast (alerta flotante) --- */
-.toast {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #00bb41;
-  color: white;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  font-weight: 600;
-  opacity: 0;
-  z-index: 9999;
-  transition: opacity 0.4s ease, top 0.4s ease;
-}
-
-.toast.show {
-  opacity: 1;
-  top: 40px;
-}
-
-.toast.error {
-  background-color: #d93025; /* rojo */
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
 }

@@ -35,6 +35,7 @@ public class GenderServiceImpl implements IGenderService {
 
         return genders.stream().map(g -> {
             GenderDto dto = new GenderDto();
+            dto.setId(g.getId());
             dto.setDescription(g.getDescription());
             return dto;
         }).toList();

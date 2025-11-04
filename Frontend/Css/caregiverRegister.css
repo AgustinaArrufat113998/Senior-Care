@@ -49,6 +49,33 @@ h2 {
   font-weight: 600;
 }
 
+/* === Habilidades === */
+.skills-container {
+  margin-top: 1rem;
+}
+
+.skill-btn {
+  border: 1.5px solid #ccc;
+  border-radius: 25px;
+  background-color: white;
+  color: #333;
+  padding: 0.4rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.skill-btn:hover {
+  background-color: #f1f1f1;
+  border-color: #1796F0;
+}
+
+.skill-btn.active {
+  background-color: #1796F0;
+  color: white;
+  border-color: #1796F0;
+}
+
 .error {
   color: red;
   font-size: 0.9rem;

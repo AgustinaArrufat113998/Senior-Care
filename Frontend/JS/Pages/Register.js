@@ -42,8 +42,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     option.textContent = g.description;
     sexoSelect.appendChild(option);
   });
-
-  console.log("Géneros cargados:", gender);
 });
 
 // Envío del formulario

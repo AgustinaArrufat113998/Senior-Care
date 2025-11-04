@@ -12,6 +12,7 @@
   <div class="register-box">
     <h2>Registro de Cuidador</h2>
     <form id="caregiverForm" class="row g-3">
+
       <div class="col-md-6">
         <label for="estudios" class="form-label">Especialidad / Estudios realizados *</label>
         <input type="text" id="estudios" class="form-control" placeholder="Ej. Enfermería, Psicología" required>
@@ -37,6 +38,20 @@
         <input type="text" id="contactoSecundario" class="form-control" placeholder="Teléfono alternativo (opcional)">
       </div>
 
+      <!-- Sección de habilidades -->
+      <div class="col-12">
+        <label class="form-label">Habilidades *</label>
+        <div class="d-flex flex-wrap gap-2 skills-container">
+          <button type="button" class="skill-btn" data-skill="Cuidado de adultos mayores">Cuidado de adultos mayores</button>
+          <button type="button" class="skill-btn" data-skill="Acompañamiento terapéutico">Acompañamiento terapéutico</button>
+          <button type="button" class="skill-btn" data-skill="Administración de medicamentos">Administración de medicamentos</button>
+          <button type="button" class="skill-btn" data-skill="Primeros auxilios">Primeros auxilios</button>
+          <button type="button" class="skill-btn" data-skill="Movilización y traslado">Movilización y traslado</button>
+          <button type="button" class="skill-btn" data-skill="Apoyo emocional">Apoyo emocional</button>
+        </div>
+        <input type="hidden" id="habilidadesSeleccionadas" name="habilidadesSeleccionadas">
+      </div>
+
       <div class="col-12">
         <label for="tituloFile" class="form-label">Título o certificado (opcional)</label>
         <input type="file" id="tituloFile" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
@@ -48,9 +63,10 @@
         <button type="submit" class="btn-save">Guardar</button>
       </div>
     </form>
+
     <p id="msg" class="error text-center mt-3"></p>
   </div>
 
-  <script src="../js/caregiverRegister.js"></script>
+  <script src="../jS/Pages/caregiverRegister.js"></script>
 </body>
 </html>

@@ -1,40 +1,68 @@
-document.getElementById("caregiverForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
 
-  const form = document.getElementById("caregiverForm");
+  // === Selección de habilidades ===
+  const skillButtons = document.querySelectorAll('.skill-btn');
+  const hiddenInput = document.getElementById('habilidadesSeleccionadas');
+  const msg = document.getElementById("msg");
 
-  // Validación básica
-  if (!form.checkValidity()) {
-    document.getElementById("msg").innerText = "Por favor complete todos los campos obligatorios";
-    form.reportValidity();
-    return;
-  }
-
-  const data = {
-    studies: document.getElementById("estudios").value.trim(),
-    experience: document.getElementById("experiencia").value.trim(),
-    availability: document.getElementById("disponibilidad").value.trim(),
-    rate: parseFloat(document.getElementById("tarifa").value) || 0,
-    secondary_contact: document.getElementById("contactoSecundario").value.trim()
-  };
-
-  try {
-    // ⚠️ CORREGIR URL con la dirección real del backend
-    const response = await fetch("http://localhost:8081/api/caregivers/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+  skillButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('active');
+      const selected = [...document.querySelectorAll('.skill-btn.active')].map(b => b.dataset.skill);
+      hiddenInput.value = selected.join(', ');
     });
+  });
 
-    if (response.ok) {
-      alert("✅ Cuidador registrado con éxito!");
-      window.location.href = "login.html";
-    } else {
-      const errorMsg = await response.text();
-      document.getElementById("msg").innerText = "⚠️ Error al registrar cuidador: " + errorMsg;
+  // === Manejo del formulario ===
+  document.getElementById("caregiverForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const estudios = document.getElementById("estudios").value.trim();
+    const experiencia = document.getElementById("experiencia").value.trim();
+    const disponibilidad = document.getElementById("disponibilidad").value.trim();
+    const tarifa = document.getElementById("tarifa").value.trim();
+    const contactoSecundario = document.getElementById("contactoSecundario").value.trim();
+    const habilidades = hiddenInput.value.trim();
+    const tituloFile = document.getElementById("tituloFile").files[0];
+
+    if (!habilidades) {
+      msg.style.color = "red";
+      msg.textContent = "Seleccioná al menos una habilidad.";
+      return;
     }
-  } catch (err) {
-    console.error("Error al conectar con el backend:", err);
-    document.getElementById("msg").innerText = "❌ No se pudo conectar con el sistema";
-  }
+
+    try {
+      const formData = new FormData();
+      formData.append("estudios", estudios);
+      formData.append("experiencia", experiencia);
+      formData.append("disponibilidad", disponibilidad);
+      formData.append("tarifa", tarifa);
+      formData.append("contactoSecundario", contactoSecundario);
+      formData.append("habilidades", habilidades);
+      if (tituloFile) formData.append("tituloFile", tituloFile);
+
+      const response = await fetch("http://localhost:8081/api/caregivers", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        msg.style.color = "green";
+        msg.textContent = "Registro exitoso 🎉";
+        setTimeout(() => (msg.textContent = ""), 5000);
+        document.getElementById("caregiverForm").reset();
+        skillButtons.forEach(b => b.classList.remove("active"));
+        hiddenInput.value = "";
+      } else {
+        msg.style.color = "red";
+        msg.textContent = "Error al registrar. Intentalo nuevamente.";
+        setTimeout(() => (msg.textContent = ""), 5000);
+      }
+    } catch (error) {
+      msg.style.color = "red";
+      msg.textContent = "Error de conexión con el servidor.";
+      setTimeout(() => (msg.textContent = ""), 5000);
+    }
+  });
+
 });

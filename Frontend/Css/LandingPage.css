@@ -66,3 +66,21 @@ footer {
   color: #fff;
   backdrop-filter: blur(10px);
 }
+
+.carousel {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+}
+
+.carousel img {
+  height: 300px;
+  object-fit: cover;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: invert(1); /* hace las flechas blancas */
+}

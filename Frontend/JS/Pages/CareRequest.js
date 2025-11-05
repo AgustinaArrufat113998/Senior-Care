@@ -14,6 +14,19 @@ document.querySelectorAll('input[name="tipoAtencion"]').forEach(chk => {
   });
 });
 
+document.querySelectorAll(".carrera-option").forEach(opt => {
+  opt.addEventListener("change", () => {
+    const seleccionadas = Array.from(document.querySelectorAll(".carrera-option:checked")).map(el => el.value);
+    if (seleccionadas.length === 0) {
+      carreraDropdown.innerText = "Seleccionar carreras";
+    } else if (seleccionadas.length === 1) {
+      carreraDropdown.innerText = seleccionadas[0];
+    } else {
+      carreraDropdown.innerText = `${seleccionadas.length} carreras seleccionadas`;
+    }
+  });
+});
+
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   msg.innerText = "";
@@ -23,8 +36,9 @@ form.addEventListener("submit", (e) => {
   const horaInicio = document.getElementById("horaInicio").value;
   const horaFin = document.getElementById("horaFin").value;
   const diseases = document.getElementById("diseases").value.trim();
-  const medications = document.getElementById("medications").value.trim();
+  const medications = document.getElementById("medications").value.trim(); const telefonoEmergencia = document.getElementById("telefonoEmergencia").value.trim(); 
   const tiposSeleccionados = Array.from(document.querySelectorAll('input[name="tipoAtencion"]:checked')).map(chk => chk.value);
+  const carrerasSeleccionadas = Array.from(document.querySelectorAll(".carrera-option:checked")).map(opt => opt.value); 
 
   if (!fechaInicio || !fechaFin || !horaInicio || !horaFin || !diseases || !medications) {
     msg.innerText = "Por favor, complete todos los campos obligatorios.";
@@ -38,6 +52,36 @@ form.addEventListener("submit", (e) => {
 
   if (tiposSeleccionados.length === 0) {
     msg.innerText = "Seleccione al menos un tipo de atención preferida.";
+    return;
+  }
+
+    if (!fechaInicio || !fechaFin || !diseases || !medications || !telefonoEmergencia) {
+    msg.innerText = "⚠️ Complete todos los campos obligatorios.";
+    return;
+  }
+
+  if (fechaInicio < hoy) { 
+    msg.innerText = "⚠️ La fecha de inicio no puede ser anterior a la fecha actual.";
+    return;
+  }
+
+  if (fechaFin < fechaInicio) {
+    msg.innerText = "⚠️ La fecha de finalización no puede ser anterior a la fecha de inicio.";
+    return;
+  }
+
+  if (tiposSeleccionados.length === 0) {
+    msg.innerText = "⚠️ Seleccione al menos un tipo de atención preferida.";
+    return;
+  }
+
+  if ((document.getElementById("cuidadorEstudios").checked || document.getElementById("estudiante").checked) && carrerasSeleccionadas.length === 0) { // 🆕
+    msg.innerText = "⚠️ Seleccione al menos una carrera o especialidad.";
+    return;
+  }
+
+  if (!/^\d{10,15}$/.test(telefonoEmergencia)) { // 🆕
+    msg.innerText = "⚠️ Ingrese un teléfono de emergencia válido (solo números, sin espacios ni guiones).";
     return;
   }
 

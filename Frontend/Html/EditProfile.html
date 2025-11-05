@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SeniorCare - Editar Perfil de Usuario</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../Css/EditProfile.css" />
+</head>
+<body>
+  <div class="container py-5">
+    <div class="profile-card mx-auto p-4 shadow">
+      <h2 class="text-center text-primary mb-4 fw-bold">Editar Perfil de Usuario</h2>
+
+      <form id="editProfileForm" class="row g-3">
+        <!-- Nombre y Apellido -->
+        <div class="col-md-6">
+          <label for="nombre" class="form-label text-primary fw-semibold">Nombre</label>
+          <input type="text" id="nombre" class="form-control" value="Agustina" required />
+        </div>
+        <div class="col-md-6">
+          <label for="apellido" class="form-label text-primary fw-semibold">Apellido</label>
+          <input type="text" id="apellido" class="form-control" value="Arrufat" required />
+        </div>
+
+        <!-- Username -->
+        <div class="col-12">
+          <label for="username" class="form-label text-primary fw-semibold">Nombre de usuario</label>
+          <input type="text" id="username" class="form-control" value="agusA" required />
+        </div>
+
+        <!-- Email -->
+        <div class="col-12">
+          <label for="email" class="form-label text-primary fw-semibold">Correo electrónico</label>
+          <input type="email" id="email" class="form-control" value="agustina@email.com" required />
+        </div>
+
+        <!-- DNI y Teléfono -->
+        <div class="col-md-6">
+          <label for="dni" class="form-label text-primary fw-semibold">DNI</label>
+          <input type="text" id="dni" class="form-control" value="41234567" required />
+        </div>
+        <div class="col-md-6">
+          <label for="telefono" class="form-label text-primary fw-semibold">Teléfono</label>
+          <input type="text" id="telefono" class="form-control" value="3512345678" required />
+        </div>
+
+        <!-- Fecha y Sexo -->
+        <div class="col-md-6">
+          <label for="fechaNacimiento" class="form-label text-primary fw-semibold">Fecha de nacimiento</label>
+          <input type="date" id="fechaNacimiento" class="form-control" value="2000-05-20" required />
+        </div>
+        <div class="col-md-6">
+          <label for="sexo" class="form-label text-primary fw-semibold">Sexo</label>
+          <select id="sexo" class="form-select" required>
+            <option value="">Seleccione</option>
+            <option selected value="Femenino">Femenino</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+
+        <!-- Obra Social -->
+        <div class="col-md-6">
+          <label for="obraSocial" class="form-label text-primary fw-semibold">Obra social</label>
+          <select id="obraSocial" class="form-select" required>
+            <option value="">Seleccione</option>
+            <option selected value="PAMI">PAMI</option>
+            <option value="OSDE">OSDE</option>
+            <option value="Swiss Medical">Swiss Medical</option>
+            <option value="Medifé">Medifé</option>
+            <option value="Galeno">Galeno</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="plan" class="form-label text-primary fw-semibold">Plan / N° Afiliado</label>
+          <input type="text" id="plan" class="form-control" value="310" />
+        </div>
+
+        <!-- Dirección -->
+        <h5 class="mt-4 text-primary fw-bold">Dirección</h5>
+        <div class="col-md-12">
+          <label for="calle" class="form-label text-primary fw-semibold">Calle / Barrio</label>
+          <input type="text" id="calle" class="form-control" value="B° San Vicente" required />
+        </div>
+        <div class="col-md-6">
+          <label for="nroCasa" class="form-label text-primary fw-semibold">N° de casa</label>
+          <input type="text" id="nroCasa" class="form-control" value="345" required />
+        </div>
+        <div class="col-md-6 d-flex gap-2">
+          <div class="w-50">
+            <label for="piso" class="form-label text-primary fw-semibold">Piso (opcional)</label>
+            <input type="text" id="piso" class="form-control" />
+          </div>
+          <div class="w-50">
+            <label for="depto" class="form-label text-primary fw-semibold">Depto (opcional)</label>
+            <input type="text" id="depto" class="form-control" />
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label for="pais" class="form-label text-primary fw-semibold">País</label>
+          <select id="pais" class="form-select" required>
+            <option selected value="Argentina">Argentina</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="provincia" class="form-label text-primary fw-semibold">Provincia</label>
+          <select id="provincia" class="form-select" required>
+            <option selected value="Córdoba">Córdoba</option>
+            <option value="Buenos Aires">Buenos Aires</option>
+            <option value="Santa Fe">Santa Fe</option>
+          </select>
+        </div>
+
+        <!-- Botones -->
+        <div class="col-12 d-flex justify-content-center gap-3 mt-4">
+          <button type="button" class="btn-cancel" onclick="window.location.href='Home.html'">Cancelar</button>
+          <button type="submit" class="btn-save">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../Js/Pages/EditProfile.js"></script>
+</body>
+</html>

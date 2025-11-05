@@ -58,6 +58,26 @@
         </select>
       </div>
 
+      <!-- Edad -->
+      <div class="col-md-6">
+        <input type="number" id="edad" class="form-control" placeholder="Edad" min="18" max="130" required>
+      </div>
+
+      <!-- Obra Social -->
+      <div class="col-md-6">
+        <select id="obraSocial" class="form-select" required>
+          <option value="" disabled selected>Seleccione su obra social</option>
+          <option value="PAMI">PAMI</option>
+          <option value="OSDE">OSDE</option>
+          <option value="Swiss Medical">Swiss Medical</option>
+          <option value="Medifé">Medife</option>
+          <option value="Galeno">Galeno</option>
+          <option value="Sancor Salud">SancorSalud</option>
+          <option value="OSECAC">Daspu</option>
+          <option value="Otra">Otra</option>
+        </select>
+      </div>
+
       <!-- Dirección -->
       <h5 class="mt-4 text-primary">Dirección</h5>
       <div class="col-md-12">
@@ -96,8 +116,9 @@
     </form>
     <p id="msg" class="error"></p>
   </div>
-
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../Js/Validation/validation.js"></script>
   <script type="module" src="../js/Pages/Register.js" defer></script>
 </body>
 </html>

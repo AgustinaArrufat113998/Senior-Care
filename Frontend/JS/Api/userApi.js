@@ -177,3 +177,5 @@ export async function getGender() {
     return [];
   }
 }
+
+export async function getCaregiverSkills() {}

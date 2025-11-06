@@ -39,7 +39,8 @@ public class SkillServiceImpl implements ISkillService {
 
     @Override
     public SkillResponseDto createSkill(SkillRequestDto request) {
-        Skill skill = mapper.map(request, Skill.class);
+        Skill skill = new Skill();
+        skill.setName(request.getName());
         Skill saved = skillRepository.save(skill);
         return mapper.map(saved, SkillResponseDto.class);
     }

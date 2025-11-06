@@ -7,20 +7,17 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.Set;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
-public class CarerRequestDto {
+public class CarerRequestDto{
+    private Long userId;
 
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-    private String phone;
     private String experience;
     private String availability;
     private BigDecimal hourlyRate;
 
-    private Long specialtyId;          // ID of selected specialty
-    private Set<Long> skillIds;        // IDs of selected skills
+    private Long specialtyId;         
+    private Set<Long> skillIds;       
 }

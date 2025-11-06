@@ -34,7 +34,7 @@ public class SkillController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<SkillResponseDto> getSkillById(@RequestParam Long id) {
+    public ResponseEntity<SkillResponseDto> getSkillById(@RequestParam(name = "id") Long id) {
         return ResponseEntity.ok(skillService.getSkillById(id));
     }
 
@@ -44,12 +44,12 @@ public class SkillController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<SkillResponseDto> updateSkill(@RequestParam Long id, @RequestBody SkillRequestDto request) {
+    public ResponseEntity<SkillResponseDto> updateSkill(@RequestParam(name = "id") Long id, @RequestBody SkillRequestDto request) {
         return ResponseEntity.ok(skillService.updateSkill(id, request));
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteSkill(@RequestParam Long id) {
+    public ResponseEntity<Void> deleteSkill(@RequestParam(name = "id") Long id) {
         skillService.deleteSkill(id);
         return ResponseEntity.noContent().build();
     }

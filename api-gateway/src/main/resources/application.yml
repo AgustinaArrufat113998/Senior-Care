@@ -1,24 +1,43 @@
-spring.application.name=API Gateway
-
 server:
   port: 8080
 
 spring:
   application:
     name: api-gateway
-
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"  # o tu front
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
       routes:
-        - id: user-service
-          uri: http://localhost:8081
-          predicates:
-            - Path=/api/users/**
-
         - id: auth-service
           uri: http://localhost:8082
           predicates:
             - Path=/api/auth/**
+          filters:
+            - StripPrefix=0
 
-      default-filters:
-        - AddResponseHeader=X-Gateway, SeniorCare-Gateway
+        - id: user-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - StripPrefix=0
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+
+
+jwt:
+  secret: claveSuperSeguraParaSeniorCare123!
+  expiration: 3600000

@@ -1,38 +1,52 @@
 package com.ps.auth_service.Controller;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
+import com.ps.auth_service.Model.LoginDto;
+import com.ps.auth_service.Model.RemoteUserDto;
+import com.ps.auth_service.Security.JwtTokenUtil;
+import com.ps.auth_service.Service.Interface.IUserClientService;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import com.ps.auth_service.Security.JwtTokenUtil;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
+    private final IUserClientService userClientService;
     private final JwtTokenUtil jwtTokenUtil;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil) {
-        this.authenticationManager = authenticationManager;
+    public AuthController(IUserClientService userClientService,
+                          JwtTokenUtil jwtTokenUtil,
+                          PasswordEncoder passwordEncoder) {
+        this.userClientService = userClientService;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String email, @RequestParam String password) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(email, password)
-            );
-            if (authentication != null) {
-                return jwtTokenUtil.generateToken(email);
-            }
-            return null;
-        } catch (AuthenticationException e) {
-            throw new RuntimeException("Credenciales inválidas");
+    public Map<String, String> login(@RequestBody LoginDto loginDto) {
+        RemoteUserDto user = userClientService.getByEmail(loginDto.getEmail());
+
+        if (user == null) {
+            throw new RuntimeException("Usuario no encontrado con email: " + loginDto.getEmail());
         }
+
+        // ✅ comparar password en texto plano vs hash bcrypt
+        boolean passwordOk = passwordEncoder.matches(loginDto.getPassword(), user.getPassword());
+        if (!passwordOk) {
+            throw new RuntimeException("Contraseña incorrecta");
+        }
+
+        // ✅ generar JWT (podés incluir el rol si querés)
+        String token = jwtTokenUtil.generateToken(user.getEmail(), user.getRole());
+
+        return Map.of(
+                "token", token,
+                "email", user.getEmail(),
+                "role", user.getRole()
+        );
     }
 }
-

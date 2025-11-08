@@ -53,6 +53,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
   const confirmPassword = document.getElementById("confirmPassword").value;
   
 
+  // 🔹 Validar contraseñas
   if (password !== confirmPassword) {
     msg.innerText = "⚠️ Las contraseñas no coinciden";
     return;

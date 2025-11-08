@@ -125,8 +125,6 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
 
 });
 
-console.log("SexoId: ", document.getElementById("sexo").value);
-
 function showToast(message, isError = false) {
   const toast = document.getElementById("toast");
   toast.textContent = message;

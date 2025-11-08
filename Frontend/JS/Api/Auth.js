@@ -29,7 +29,7 @@ export async function login(email, password) {
 
     // Redirigir a página protegida
     setTimeout(() => {
-      window.location.href = "Dashboard.html"; // ajustá a tu página principal
+      window.location.href = "Home.html"; // ajustá a tu página principal
     }, 1500);
   } catch (error) {
     console.error("Error de login:", error);

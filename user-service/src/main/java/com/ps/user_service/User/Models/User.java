@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users")
 @Data
 public class User {
@@ -41,7 +42,7 @@ public class User {
     @Column(nullable = false)
     private String phone;
 
-    // Rol del usuario
+    // Rol del usuario (JWT)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Role role;

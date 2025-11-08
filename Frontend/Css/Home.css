@@ -1,31 +1,50 @@
 body {
-  height: 100vh;
   margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-family: Arial, sans-serif;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
   background: linear-gradient(135deg, #1796F0, #414CF0, #1B5BF0, #5B90F0);
-  color: white;
+  color: #fff;
+  min-height: 100vh;
 }
 
-.coming-soon-box {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 3rem;
+/* NAVBAR */
+.navbar {
+  background: rgba(255, 255, 255, 0.1); /* semitransparente */
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.navbar .logo {
+  width: 50px;
+  height: auto;
+}
+
+.home-content {
+  margin-top: 6rem;
+  padding: 2rem;
+}
+
+.cuidador-card {
+  background-color: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 15px;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.cuidador-card .card-body {
+  backdrop-filter: blur(5px);
+}
+
+.descripcion {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
 }
 
-h1 {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-h2 {
-  font-size: 2rem;
-  font-weight: bold;
-  color: black;
+.footer {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
 }

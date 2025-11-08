@@ -67,10 +67,22 @@ public class AddressController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @GetMapping("/countries")
+    public ResponseEntity<List<CountryResponseDto>> getAllCountries() {
+        List<CountryResponseDto> countries = addressService.getAllCountries();
+        return ResponseEntity.ok(countries);
+    }
+
     @PostMapping("/cities")
     public ResponseEntity<CityResponseDto> createCity(@RequestBody CityRequestDto cityDto) {
         CityResponseDto created = addressService.createCity(cityDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @GetMapping("/countriesId/cities")
+    public ResponseEntity<List<CityResponseDto>> getAllCitiesByCountry(@RequestParam(name = "countryId") Long countryId) {
+        List<CityResponseDto> cities = addressService.getAllCitiesByCountry(countryId);
+        return ResponseEntity.ok(cities);
     }
 
     @PostMapping("/streets")

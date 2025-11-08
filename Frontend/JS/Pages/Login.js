@@ -16,3 +16,4 @@ export function logout() {
   alert("Sesión cerrada");
   window.location.href = "LandingPage.html";
 }
+

@@ -1,4 +1,55 @@
-// 📌 js/api/user.js
+//Urls de la API
+const API_USER_URL = "http://localhost:8081/api";
+const API_AUTH_URL = "http://localhost:8082/api/auth";
+const API_GATEWAY_URL = "http://localhost:8080/api";
+
+// Función para registrar un nuevo usuario
+export async function registerUser(userData) {
+  const response = await fetch(`${API_USER_URL}/users`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(userData),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Error en el registro");
+  }
+  return await response.json(); // opcional
+}
+
+// === Create Address ===
+export async function createStreet(name, cityId) {
+  const response = await fetch(`${API_USER_URL}/addresses/streets`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      name: name,
+      cityId: Number(cityId)
+    })
+  });
+  if (!response.ok) throw new Error("Error al crear la calle");
+  return await response.json();
+}
+
+export async function createAddress(number, floor, apartment, streetId) {
+  const response = await fetch(`${API_USER_URL}/addresses`, { 
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      number: number,
+      floor: floor,
+      apartment: apartment,
+      streetId: Number(streetId)
+    }),
+  });
+  if (!response.ok) throw new Error("Error al crear la dirección");
+  return await response.json();
+}
+
+  export async function login(email, password) {
+  const msg = document.getElementById("msg");
+  msg.innerText = "🔄 Verificando...";
+  msg.style.color = "black";
 
 const USER_API_URL = "http://localhost:8081/api/users"; // 🔥 luego pasa a gateway (8080)
 
@@ -80,33 +131,57 @@ export async function registerUser(userData) {
 //     body: JSON.stringify(carerData)
 //   });
 
-//   if (!response.ok) {
-//     const errorData = await response.json();
-//     throw new Error(errorData.message || "Error en el registro");
-//   }
+  const users = await response.json();
+  console.log(users);
+}
 
-//   return await response.json(); // opcional
-// }
+// === Getters for DropDownTable ===
+export async function getCountries() {
+  try {
+    const response = await fetch(`${API_USER_URL}/addresses/countries`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify()
+    });
 
-// async function getUsers() {
-//   const token = localStorage.getItem("jwtToken");
-//   if (!token) {
-//     alert("Debes iniciar sesión primero.");
-//     return;
-//   }
+    if (!response.ok) throw new Error("Error al obtener países");
+    return await response.json();
+  } catch (error) {
+    console.error("Error al obtener países:", error);
+    return [];
+  }
+}
 
-//   const response = await fetch("http://localhost:8080/api/users", {
-//     headers: {
-//       "Authorization": `Bearer ${token}`,
-//     },
-//   });
+export async function getProvincesByCountry(countryId) {
+  try {
+    const response = await fetch(`${API_USER_URL}/addresses/countriesId/cities?countryId=${countryId}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify()
+    });
+    if (!response.ok) throw new Error("Error al obtener provincias");
+    return await response.json();
+  } catch (error) {
+    console.error("Error al obtener provincias:", error);
+    return [];
+  }
+}
 
-//   if (response.status === 401) {
-//     alert("Token inválido o sesión expirada. Inicia sesión nuevamente.");
-//     localStorage.removeItem("jwtToken");
-//     return;
-//   }
+export async function getGender() {
+  try {
+    const response = await fetch(`${API_USER_URL}/genders`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify()
+    });
+    console.log("Respuesta de géneros:", response);
 
-//   const users = await response.json();
-//   console.log(users);
-// }
+    if (!response.ok) throw new Error("Error al obtener géneros");
+    return await response.json();
+  } catch (error) {
+    console.error("Error al obtener géneros:", error);
+    return [];
+  }
+}
+
+export async function getCaregiverSkills() {}

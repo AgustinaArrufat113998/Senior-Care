@@ -1,0 +1,93 @@
+/* --- NAVBAR --- */
+.Gnavbar {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.Gnavbar .Glogo {
+  width: 50px;
+  height: auto;
+}
+
+/* --- FORMULARIOS --- */
+.Ginput-error {
+  border: 2px solid #ff4d4d !important;
+  box-shadow: 0 0 6px rgba(255, 0, 0, 0.3);
+  background-color: #ffeaea;
+  transition: all 0.2s ease;
+}
+
+
+.form-label.required::after {
+  content: " *";
+  color: #ff4d4d;
+  font-weight: bold;
+}
+
+/* --- FOOTER --- */
+.footer {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1rem 0;
+  
+  /* 🔹 Lo fija al fondo y ocupa todo el ancho */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* --- CONTENIDO DEL FOOTER --- */
+.footer .contact-info {
+  text-align: left;
+  flex: 1;
+  padding-left: 2rem;
+}
+
+.footer .text-end {
+  flex: 1;
+  text-align: right;
+  padding-right: 2rem;
+}
+
+/* 🔹 NUEVO: centra el texto de derechos */
+.footer .rights {
+  flex: 1;
+  text-align: center;
+}
+
+/* Ajuste de distribución en el footer */
+.footer .footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Enlaces */
+.footer a {
+  color: #dbe8ff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: #1796F0;
+}
+
+
+/* --- UTILIDADES --- */
+.text-center { text-align: center; }
+.mt-5 { margin-top: 3rem !important; }
+.pt-navbar { padding-top: 80px; } /* espacio por navbar fija */
+body {
+  font-family: "Poppins", sans-serif;
+}

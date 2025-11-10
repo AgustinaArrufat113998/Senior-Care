@@ -112,7 +112,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
     if (response && response.ok) {
       showToast("✅ Usuario registrado con éxito");
       setTimeout(() => {
-        window.location.href = "../../Html/login.html";
+        window.location.href = "../../Html/Login.html";
       }, 3000); 
     } else {
       showToast("⚠️ Error al registrar usuario");
@@ -133,5 +133,5 @@ function showToast(message, isError = false) {
 
   setTimeout(() => {
     toast.classList.remove("show");
-  }, 2000); // se oculta a los 5 segundos
+  }, 3000); // se oculta a los 3 segundos
 }

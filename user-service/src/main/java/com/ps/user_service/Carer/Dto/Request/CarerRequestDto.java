@@ -17,6 +17,7 @@ public class CarerRequestDto{
     private String experience;
     private String availability;
     private BigDecimal hourlyRate;
+    private String newSkills;
 
     private Long specialtyId;         
     private Set<Long> skillIds;       

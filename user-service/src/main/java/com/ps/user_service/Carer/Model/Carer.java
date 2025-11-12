@@ -38,6 +38,9 @@ public class Carer{
     @Column(name = "hourly_rate")
     private BigDecimal hourlyRate;
 
+    @Column(name = "new_skills", length = 1000)
+    private String newSkills;
+
     // === Relationships ===
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)

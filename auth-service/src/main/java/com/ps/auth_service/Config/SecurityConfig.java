@@ -34,11 +34,12 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 🔥 sin sesión
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                    "/api/auth/**",
                     "/v3/api-docs/**",
                     "/swagger-ui/**",
                     "/swagger-ui.html"
                 ).permitAll() // permitir Swagger sin login
-                .anyRequest().permitAll() // temporalmente permitir todo
+                .anyRequest().authenticated() // temporalmente permitir todo
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -76,6 +76,7 @@ public class CarerServiceImpl implements ICarerService {
         carer.setExperience(request.getExperience());
         carer.setAvailability(request.getAvailability());
         carer.setHourlyRate(request.getHourlyRate());
+        carer.setNewSkills(request.getNewSkills());
 
         if (request.getSpecialtyId() != null) {
             Specialty specialty = specialtyRepository.findById(request.getSpecialtyId())

@@ -41,7 +41,8 @@ public class AuthController {
         }
 
         // ✅ generar JWT (podés incluir el rol si querés)
-        String token = jwtTokenUtil.generateToken(user.getEmail(), user.getRole());
+        String token = jwtTokenUtil.generateToken(user.getId(), user.getEmail(), user.getRole());
+
 
         return Map.of(
                 "token", token,

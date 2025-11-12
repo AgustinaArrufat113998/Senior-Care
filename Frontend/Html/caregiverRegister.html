@@ -7,29 +7,58 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/caregiverRegister.css">
+  <link rel="stylesheet" href="../css/Global.css">
 </head>
 <body>
+  <!-- NAVBAR -->
+  <nav class="navbar Gnavbar navbar-expand-lg">
+    <div class="container align-items-center">
+      <a class="navbar-brand d-flex align-items-center text-white fw-bold" href="#">
+        <img src="../Assets/Logo1_SinFondo.png" alt="Logo" class="Glogo me-2">
+        <span class="brand-name">SeniorCare</span>
+      </a>
+
+      <div class="collapse navbar-collapse justify-content-left">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link active text-white fw-semibold" href="#">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#">Cuidadores</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#">Sobre Nosotros</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
   <div class="register-box">
     <h2>Registro de Cuidador</h2>
     <form id="caregiverForm" class="row g-3">
 
+      <!-- === Dropdowns vacíos === -->
       <div class="col-md-6">
-        <label for="estudios" class="form-label">Especialidad / Estudios realizados *</label>
-        <input type="text" id="estudios" class="form-control" placeholder="Ej. Enfermería, Psicología" required>
+        <label for="estudios" class="form-label required">Especialidad / Estudios realizados</label>
+        <select id="estudios" class="form-select" required>
+          <option value="" disabled selected>Seleccione una opción</option>
+          <!-- Opciones se cargarán dinámicamente -->
+        </select>
       </div>
 
       <div class="col-md-6">
-        <label for="experiencia" class="form-label">Experiencia *</label>
-        <input type="text" id="experiencia" class="form-control" placeholder="Ej. 3 años en geriatría" required>
+        <label for="experiencia" class="form-label required">Experiencia</label>
+        <select id="experiencia" class="form-select" required>
+          <option value="" disabled selected>Seleccione una opción</option>
+          <!-- Opciones se cargarán dinámicamente -->
+        </select>
       </div>
 
       <div class="col-md-6">
-        <label for="disponibilidad" class="form-label">Disponibilidad *</label>
-        <input type="text" id="disponibilidad" class="form-control" placeholder="Ej. Lunes a viernes 8 a 16 hs" required>
+        <label for="disponibilidad" class="form-label required">Disponibilidad</label>
+        <select id="disponibilidad" class="form-select" required>
+          <option value="" disabled selected>Seleccione una opción</option>
+          <!-- Opciones se cargarán dinámicamente -->
+        </select>
       </div>
 
       <div class="col-md-6">
-        <label for="tarifa" class="form-label">Tarifa por hora ($) *</label>
+        <label for="tarifa" class="form-label required">Tarifa por hora ($)</label>
         <input type="number" id="tarifa" class="form-control" placeholder="Ej. 5000" min="1000" required>
       </div>
 
@@ -40,38 +69,60 @@
 
       <!-- Sección de habilidades -->
       <div class="col-12">
-        <label class="form-label">Habilidades *</label>
-        <div class="d-flex flex-wrap gap-2 skills-container">
-          <button type="button" class="skill-btn" data-skill="Cuidado de adultos mayores">Cuidado de adultos mayores</button>
-          <button type="button" class="skill-btn" data-skill="Acompañamiento terapéutico">Acompañamiento terapéutico</button>
-          <button type="button" class="skill-btn" data-skill="Administración de medicamentos">Administración de medicamentos</button>
-          <button type="button" class="skill-btn" data-skill="Primeros auxilios">Primeros auxilios</button>
-          <button type="button" class="skill-btn" data-skill="Movilización y traslado">Movilización y traslado</button>
-          <button type="button" class="skill-btn" data-skill="Apoyo emocional">Apoyo emocional</button>
+        <label class="form-label required">Habilidades</label>
+        <div class="d-flex flex-wrap gap-2 skills-container"></div>
+
+        <div id="otraSkillInputContainer" class="mt-3" style="display: none;">
+          <label for="otraSkillInput" class="form-label">Agregar nueva habilidad</label>
+          <input type="text" id="otraSkillInput" class="form-control" placeholder="Escribí una nueva habilidad">
         </div>
+
         <input type="hidden" id="habilidadesSeleccionadas" name="habilidadesSeleccionadas">
       </div>
+
+
 
       <div class="col-12">
         <label for="tituloFile" class="form-label">Título o certificado (opcional)</label>
         <input type="file" id="tituloFile" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
-        <small class="text-muted">Podes adjuntar tu título universitario o certificado de materias aprobadas.</small>
+        <small class="text-muted">Podés adjuntar tu título universitario o certificado de materias aprobadas.</small>
       </div>
 
       <div class="col-12 d-flex justify-content-center gap-2 mt-4">
-        <button type="button" class="btn-cancel" onclick="window.location.href='login.html'">Cancelar</button>
+        <button type="button" class="btn-cancel" onclick="window.location.href='Home.html'">Cancelar</button>
         <button type="submit" class="btn-save">Guardar</button>
       </div>
     </form>
 
     <p id="msg" class="error text-center mt-3"></p>
+
+    <!-- Footer global -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="contact-info">
+          <p class="mb-1 fw-semibold">CONTACTOS:</p>
+          <p class="mb-0">
+            <a href="#">Instagram</a> | 
+            <a href="#">Facebook</a> | 
+            <a href="#">Mail</a>
+          </p>
+        </div>
+
+        <div class="rights">
+          <p class="mb-0">&copy; 2025 SeniorCare. Todos los derechos reservados 💙</p>
+        </div>
+
+        <div class="text-end">
+          <a href="#" class="text-white small">Términos y privacidad</a>
+        </div>
+      </div>
+    </footer>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
   <script src="../JS/Validation/validation.js"></script>
   <script src="../JS/Pages/caregiverRegister.js"></script>
-
-
+  <script type="module" src="../Js/Pages/caregiverRegister.js"></script>
 </body>
 </html>

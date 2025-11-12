@@ -1,3 +1,23 @@
+main, 
+.register-box, 
+.form-box, 
+.container-fluid,
+.container {
+  margin-top: 5px; /* 🔹 ajusta según el alto real de tu navbar */
+}
+
+:root {
+  --navbar-height: 70px;
+  --footer-height: 70px;
+}
+
+/* Evita solapamientos */
+body {
+  font-family: "Poppins", sans-serif;
+  padding-top: var(--navbar-height);
+  padding-bottom: var(--footer-height);
+}
+
 /* --- NAVBAR --- */
 .Gnavbar {
   background: rgba(255, 255, 255, 0.1);

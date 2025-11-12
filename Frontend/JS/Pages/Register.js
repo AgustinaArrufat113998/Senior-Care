@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   paisSelect.addEventListener("change", async () => {
     provinciaSelect.disabled = true;
     provinciaSelect.innerHTML = '<option>Cargando...</option>';
-    console.log("País seleccionado:", paisSelect.value);
     const provinces = await getProvincesByCountry(paisSelect.value);
     provinciaSelect.innerHTML = '<option value="">Seleccione provincia</option>';
     provinces.forEach(p => {
@@ -126,10 +125,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
     const response = await registerUser(userData);
     
     if (response && response.ok) {
-      showToast("✅ Usuario registrado con éxito");
-      setTimeout(() => {
-        window.location.href = "../../Html/Login.html";
-      }, 3000); 
+      window.location.href = "../../Html/Login.html";
     } else {
       showToast("⚠️ Error al registrar usuario");
     }

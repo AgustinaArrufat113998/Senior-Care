@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -24,15 +25,17 @@ public class JwtTokenUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String email, String role) {
-    return Jwts.builder()
-            .setSubject(email)
-            .claim("role", role)
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
-            .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-            .compact();
-}
+    public String generateToken(Long id, String email, String role) {
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("id", id)
+                .claim("role", role)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
 
 
     public String extractUsername(String token) {
@@ -52,7 +55,9 @@ public class JwtTokenUtil {
         return claimsResolver.apply(claims);
     }
 
-    public boolean isTokenValid(String token, String username) {
-        return (username.equals(extractUsername(token)) && !extractExpiration(token).before(new Date()));
-    }
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+    final String username = extractUsername(token);
+    return (username.equals(userDetails.getUsername()) && !extractExpiration(token).before(new Date()));
+}
+
 }

@@ -70,6 +70,14 @@ h2 {
   background-color: #1796F0;
 }
 
+label.error {
+  font-size: 0.9rem;
+  color: #e74c3c;
+  margin-top: 4px;
+  display: block;
+}
+
+
 .error {
   color: red;
   margin-top: 1rem;

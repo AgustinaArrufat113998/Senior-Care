@@ -1,0 +1,60 @@
+body {
+  background: linear-gradient(135deg, #1796F0, #414CF0, #1B5BF0, #5B90F0);
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  min-height: 100vh;
+}
+
+.rating-card {
+  max-width: 600px;
+  border-radius: 20px;
+  background: #ffffff;
+}
+
+.cuidador-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 3px solid #3498db;
+  object-fit: cover;
+}
+
+/* Estrellas */
+.stars {
+  font-size: 2rem;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.stars .star:hover,
+.stars .star.active {
+  color: #f1c40f;
+}
+
+textarea {
+  resize: none;
+}
+
+/* Botón flotante */
+.action-buttons {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+}
+
+.btn-green {
+  background-color: #2ecc71;
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 50px;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+.btn-green:hover {
+  background-color: #27ae60;
+  transform: scale(1.05);
+}

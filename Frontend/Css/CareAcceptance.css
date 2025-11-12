@@ -1,0 +1,55 @@
+body {
+  background: linear-gradient(135deg, #2b6fff, #558bff);
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+}
+
+.card {
+  border-radius: 20px;
+  background-color: #fff;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+h3, h5 {
+  color: #2b6fff;
+}
+
+.btn-green {
+  background-color: #2ecc71;
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 50px;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+.btn-green:hover {
+  background-color: #27ae60;
+  transform: scale(1.05);
+}
+
+.btn-blue {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 50px;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+.btn-blue:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+#msg {
+  font-size: 1rem;
+}

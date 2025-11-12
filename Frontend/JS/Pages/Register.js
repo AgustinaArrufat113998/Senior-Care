@@ -51,11 +51,25 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
   // Validar contraseñas
   const password = document.getElementById("password").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
+  const edad = Number(document.getElementById("edad").value);        
+  const obraSocial = document.getElementById("obraSocial").value;     
+  const msg = document.getElementById("msg");    
   
 
   // 🔹 Validar contraseñas
   if (password !== confirmPassword) {
     msg.innerText = "⚠️ Las contraseñas no coinciden";
+    return;
+  }
+
+  // Validar edad
+  if (edad < 18 || edad > 130 || isNaN(edad)) {
+  showToast("⚠️ La edad debe ser entre 18 y 130 años", true);
+  return;
+  }
+  // Validar obra social
+  if (!obraSocial) {
+    showToast("⚠️ Seleccione una obra social", true);
     return;
   }
 
@@ -89,6 +103,8 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
       phone: document.getElementById("telefono").value,
       birthDate: birthDate,
       genderId: Number(document.getElementById("sexo").value),
+      edad: Number(document.getElementById("edad").value),
+      obraSocial: document.getElementById("obraSocial").value,
       addressId: address.id 
     };
     

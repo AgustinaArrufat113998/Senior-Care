@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.*;
 
@@ -23,7 +24,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Carer extends User{
+public class Carer{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,6 +39,10 @@ public class Carer extends User{
     private BigDecimal hourlyRate;
 
     // === Relationships ===
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
+
     @ManyToOne
     @JoinColumn(name = "specialty_id")
     private Specialty specialty;

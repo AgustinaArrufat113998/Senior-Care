@@ -38,7 +38,7 @@ public class CarerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CarerResponseDto> getCarerById(@RequestParam Long id) {
+    public ResponseEntity<CarerResponseDto> getCarerById(@RequestParam(name = "id") Long id) {
         CarerResponseDto carer = carerService.getCarerById(id);
         if (carer == null) {
             return ResponseEntity.notFound().build();
@@ -53,7 +53,7 @@ public class CarerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CarerResponseDto> updateCarer(@RequestParam Long id, @RequestBody CarerRequestDto request) {
+    public ResponseEntity<CarerResponseDto> updateCarer(@RequestParam(name = "id") Long id, @RequestBody CarerRequestDto request) {
         CarerResponseDto updated = carerService.updateCarer(id, request);
         if (updated == null) {
             return ResponseEntity.notFound().build();
@@ -62,7 +62,7 @@ public class CarerController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCarer(@RequestParam Long id) {
+    public ResponseEntity<Void> deleteCarer(@RequestParam(name = "id") Long id) {
         carerService.deleteCarer(id);
         return ResponseEntity.noContent().build();
     }

@@ -39,17 +39,17 @@ public class SpecialtyController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SpecialtyResponseDto> getSpecialtyById(@RequestParam Long id) {
+    public ResponseEntity<SpecialtyResponseDto> getSpecialtyById(@RequestParam(name = "id") Long id) {
         return ResponseEntity.ok(specialtyService.getSpeciltyById(id));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<SpecialtyResponseDto> updateSpecialty(@RequestParam Long id, @RequestBody SpecialtyRequestDto request) {
+    public ResponseEntity<SpecialtyResponseDto> updateSpecialty(@RequestParam(name = "id") Long id, @RequestBody SpecialtyRequestDto request) {
         return ResponseEntity.ok(specialtyService.updateSpecialty(id, request));
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteSpecialty(@RequestParam Long id) {
+    public ResponseEntity<Void> deleteSpecialty(@RequestParam(name = "id") Long id) {
         specialtyService.deleteSpecialty(id);
         return ResponseEntity.noContent().build();
     }

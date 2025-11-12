@@ -124,6 +124,26 @@
         </select>
       </div>
 
+      <div>
+        <input type="checkbox" id="aceptoTerminos" required> Acepto los <a href="#" id="linkTerminos">Términos y Condiciones</a>
+      </div>
+
+      <!-- Modal de Términos y Privacidad -->
+      <div class="modal fade" id="modalTerminos" tabindex="-1" aria-labelledby="modalTerminosLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalTerminosLabel">Términos y Condiciones de Uso – SeniorCare</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body" id="terminosContent" style="color: #000;"></div>
+              <!-- Contenido dinámico cargado desde JS -->
+            </div>
+          </div>
+      </div>
+
       <!-- Botones -->
       <div class="col-12 d-flex justify-content-center gap-2 mt-3">
         <button type="button" class="btn-cancel" onclick="window.location.href='login.html'">Cancelar</button>
@@ -139,6 +159,7 @@
 
   <!-- <script type="module" src="../Validation/validation.js"></script> -->
   <script type="module" src="../JS/Pages/Register.js" defer></script>
+  <script src="../JS/Pages/TyC.js"></script>
 
 </body>
 </html>

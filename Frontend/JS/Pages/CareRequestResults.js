@@ -47,7 +47,7 @@ $(document).ready(function() {
     renderResultados(filtrados);
   });
 
-  // Función para renderizar resultados
+  // 🔹 Función para renderizar resultados
   function renderResultados(lista) {
     $resultados.empty();
 
@@ -58,17 +58,30 @@ $(document).ready(function() {
 
     lista.forEach(r => {
       const card = `
-        <div class="result-card">
+        <div class="result-card shadow-sm p-3 mb-3 bg-light rounded">
           <h5 class="fw-bold text-primary">${r.nombre}</h5>
           <p class="mb-1"><strong>Tipo:</strong> ${r.tipoAtencion}</p>
           <p class="mb-1"><strong>Experiencia:</strong> ${r.experiencia}</p>
           <p class="mb-1"><strong>Fecha inicio:</strong> ${r.fechaInicio}</p>
           <p class="mb-1"><strong>Género:</strong> ${r.genero}</p>
-          <p class="mb-1"><strong>Tarifa:</strong> $${r.tarifa}</p>
-          <button class="btn btn-outline-primary btn-sm mt-2">Ver detalle</button>
+          <p class="mb-3"><strong>Tarifa:</strong> $${r.tarifa}</p>
+
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-outline-primary btn-sm ver-detalle-btn">Ver detalle</button>
+            <button class="btn btn-success btn-sm seleccionar-btn">Seleccionar</button>
+          </div>
         </div>
       `;
       $resultados.append(card);
+    });
+
+    // Eventos dinámicos (delegados)
+    $(".seleccionar-btn").click(function() {
+      window.location.href = "WaitingRoom.html";
+    });
+
+    $(".ver-detalle-btn").click(function() {
+      alert("📋 En desarrollo: ver detalle del cuidador.");
     });
   }
 });

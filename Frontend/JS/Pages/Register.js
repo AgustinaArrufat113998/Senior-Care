@@ -1,6 +1,5 @@
-
 import { registerUser, createStreet, createAddress } from "../Api/userApi.js";
-import {getCountries, getProvincesByCountry, getGender} from "../Api/userApi.js";
+import { getCountries, getProvincesByCountry, getGender } from "../Api/userApi.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const paisSelect = document.getElementById("pais");
@@ -43,52 +42,37 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-// Envío del formulario
+// === Envío del formulario ===
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  // Validar contraseñas
   const password = document.getElementById("password").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
-  const edad = Number(document.getElementById("edad").value);        
-  const obraSocial = document.getElementById("obraSocial").value;     
-  const msg = document.getElementById("msg");    
-  
 
-  // 🔹 Validar contraseñas
   if (password !== confirmPassword) {
-    msg.innerText = "⚠️ Las contraseñas no coinciden";
-    return;
-  }
-
-  // Validar edad
-  if (edad < 18 || edad > 130 || isNaN(edad)) {
-  showToast("⚠️ La edad debe ser entre 18 y 130 años", true);
-  return;
-  }
-  // Validar obra social
-  if (!obraSocial) {
-    showToast("⚠️ Seleccione una obra social", true);
+    await Swal.fire({
+      icon: "warning",
+      title: "Las contraseñas no coinciden",
+      timer: 2500,
+      showConfirmButton: false
+    });
     return;
   }
 
   try {
-  // === 1️⃣ Create Street ===
+    // === 1️⃣ Crear calle ===
     const streetName = document.getElementById("calle").value;
     const cityId = document.getElementById("provincia").value;
     const street = await createStreet(streetName, cityId);
 
-    // === 2️⃣ Create Address ===
-    const address = await createAddress(
-      document.getElementById("nroCasa").value,
-      document.getElementById("piso").value || null,
-      document.getElementById("depto").value || null,
-      street.id
-    );
+    // === 2️⃣ Crear dirección ===
+    const number = document.getElementById("nroCasa").value;
+    const floor = document.getElementById("piso").value;
+    const apartment = document.getElementById("depto").value;
+    const streetId = street.id;
+    const address = await createAddress(number, floor, apartment, streetId);
 
-    // === 3️⃣ Create User ===
-
-    // Fecha de nacimiento en formato ISO
+    // === 3️⃣ Crear usuario ===
     const birthDateInput = document.getElementById("fechaNacimiento").value;
     const birthDate = new Date(birthDateInput).toISOString();
 
@@ -102,48 +86,59 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
       phone: document.getElementById("telefono").value,
       birthDate: birthDate,
       genderId: Number(document.getElementById("sexo").value),
-      edad: Number(document.getElementById("edad").value),
-      obraSocial: document.getElementById("obraSocial").value,
       addressId: address.id 
     };
-    
-    console.log("Datos del usuario a registrar:", userData);
 
-    // Convertir y validar IDs
-    userData.genderId = Number(userData.genderId);
-    userData.addressId = Number(userData.addressId);
-
+    // Validaciones básicas
     if (!userData.genderId || isNaN(userData.genderId)) {
-      showToast("⚠️ Debe seleccionar un sexo válido", true);
+      await Swal.fire({
+        icon: "error",
+        title: "Debe seleccionar un sexo válido",
+        timer: 2500,
+        showConfirmButton: false
+      });
       return;
     }
+
     if (!userData.addressId || isNaN(userData.addressId)) {
-      showToast("⚠️ Error al obtener dirección del usuario", true);
+      await Swal.fire({
+        icon: "error",
+        title: "Error al obtener dirección del usuario",
+        timer: 2500,
+        showConfirmButton: false
+      });
       return;
     }
 
     const response = await registerUser(userData);
-    
-    if (response && response.ok) {
-      window.location.href = "../../Html/Login.html";
-    } else {
-      showToast("⚠️ Error al registrar usuario");
+    if (!response) {
+      throw new Error("No se recibió respuesta del servidor al registrar el usuario");
     }
-  } 
-  catch (error) {
+
+    // 🚀 Éxito: esperar antes de redirigir
+    await Swal.fire({
+      icon: "success",
+      title: "Usuario registrado con éxito 🎉",
+      text: "Serás redirigido al inicio de sesión...",
+      timer: 2000,
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    window.location.href = "../../Html/Login.html";
+
+  } catch (error) {
     console.error("Error durante el registro:", error);
-    showToast("❌ " + (error.message || "error inesperado"), true);
+    await Swal.fire({
+      icon: "error",
+      title: "❌ " + (error.message || "Error inesperado"),
+      text: "No se pudo completar el registro. Intenta nuevamente.",
+      timer: 3000,
+      showConfirmButton: true
+    });
   }
-
 });
-
-function showToast(message, isError = false) {
-  const toast = document.getElementById("toast");
-  toast.textContent = message;
-  toast.classList.add("show");
-  toast.classList.toggle("error", isError);
-
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 3000); // se oculta a los 3 segundos
-}

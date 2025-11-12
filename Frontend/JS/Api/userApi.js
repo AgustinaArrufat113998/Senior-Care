@@ -1,6 +1,5 @@
 // 🌐 URLs de las APIs
 const API_USER_URL = "http://localhost:8081/api";
-const API_AUTH_URL = "http://localhost:8082/api/auth";
 const API_GATEWAY_URL = "http://localhost:8080/api"; // 🔥 se usará más adelante
 
 // ======================================================
@@ -18,13 +17,16 @@ export async function registerUser(userData) {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      alert("Error al registrar usuario: " + (errorData.message || response.statusText));
       throw new Error(errorData.message || "Error al registrar usuario");
     }
 
     const data = await response.json();
+    alert("Usuario registrado con éxito");
     console.log("✅ Usuario registrado:", data);
     return data;
   } catch (error) {
+    alert("Error en el registro del usuario.");
     console.error("❌ Error en registro:", error);
     throw error;
   }

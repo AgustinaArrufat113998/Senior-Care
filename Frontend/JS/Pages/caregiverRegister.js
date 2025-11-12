@@ -26,7 +26,6 @@ function resolveUserId() {
   const token = localStorage.getItem("jwtToken");
   if (token) {
     const payload = decodeJwtPayload(token);
-    // Ajustá estas claves a tu JwtTokenUtil si usás otro claim
     const idFromJwt = payload?.id || payload?.userId;
     if (idFromJwt) return Number(idFromJwt);
   }
@@ -60,7 +59,7 @@ async function loadSkills() {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "skill-btn";
-    btn.dataset.id = skill.id;       // <- ID numérico para el POST
+    btn.dataset.id = skill.id;
     btn.textContent = skill.name;
     skillsContainer.appendChild(btn);
   });
@@ -129,14 +128,13 @@ function setupSkillSelection() {
 caregiverForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  // Debe estar logueado
   const userId = resolveUserId();
   if (!userId) {
-    window.Swal ? Swal.fire({
+    Swal.fire({
       icon: "warning",
       title: "Inicio de sesión requerido",
       text: "Debes iniciar sesión para registrarte como cuidador."
-    }) : alert("Debes iniciar sesión para registrarte como cuidador.");
+    });
     return;
   }
 
@@ -146,44 +144,75 @@ caregiverForm.addEventListener("submit", async (e) => {
   const hourlyRate = Number(document.getElementById("tarifa").value);
   const otraSkillTexto = otraSkillInput.value.trim();
 
-  // NOTA: el backend espera IDs en skillIds.
-  // Mantengo 'otra' visible pero NO la mando en skillIds (no hay endpoint para crear skill).
-  // Cuando tengas POST /api/skill, acá podrías crearla y luego pushear el ID retornado.
+  // Validaciones básicas
+  if (!specialtyId || isNaN(specialtyId)) {
+    Swal.fire({
+      icon: "warning",
+      title: "Selecciona una especialidad válida"
+    });
+    return;
+  }
 
+  if (!hourlyRate || hourlyRate <= 0) {
+    Swal.fire({
+      icon: "warning",
+      title: "Tarifa inválida",
+      text: "Por favor ingresa una tarifa por hora válida."
+    });
+    return;
+  }
+
+  if (selectedSkillIds.length === 0 && !otraSkillTexto) {
+    Swal.fire({
+      icon: "warning",
+      title: "Selecciona al menos una habilidad"
+    });
+    return;
+  }
+
+  // Armado del objeto final
   const carerData = {
-    userId,                 // ✅ requerido por tu DTO
-    experience,             // ✅ string
-    availability,           // ✅ string
-    hourlyRate,             // ✅ number
-    specialtyId,            // ✅ number (id)
-    skillIds: selectedSkillIds, // ✅ array de ids numéricos
-    newSkills: otraSkillTexto || null 
+    userId,
+    experience,
+    availability,
+    hourlyRate,
+    specialtyId,
+    skillIds: selectedSkillIds,
+    newSkills: otraSkillTexto || null  // ✅ se envía directo al backend
   };
 
   try {
-    await createCarer(carerData);
-    if (window.Swal) {
+    const response = await createCarer(carerData);
+    const data = await response.json().catch(() => null);
+
+    if (response.ok) {
       Swal.fire({
         icon: "success",
-        title: "Registro exitoso",
-        text: ("Tu perfil de cuidador ha sido creado correctamente."),
-        timer: 3500,
+        title: "Registro exitoso 🎉",
+        text: "Tu perfil de cuidador ha sido creado correctamente.",
+        timer: 3000,
         showConfirmButton: false
       });
-    }
-    caregiverForm.reset();
-    selectedSkillIds = [];
-    // Ocultar campo "otra"
-    document.getElementById("otraSkillBtn")?.classList.remove("active");
-    otraSkillInputContainer.style.display = "none";
-  } catch (err) {
-    console.error(err);
-    if (window.Swal) {
+
+      caregiverForm.reset();
+      selectedSkillIds = [];
+      document.querySelectorAll(".skill-btn.active").forEach(b => b.classList.remove("active"));
+      otraSkillInputContainer.style.display = "none";
+    } else {
+      console.error("Error del backend:", data);
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: "Hubo un problema al guardar los datos. Revisá los campos e intentá nuevamente."
+        title: "Error al registrar cuidador",
+        text: data?.message || "Ocurrió un problema al guardar los datos."
       });
     }
+
+  } catch (err) {
+    console.error("Error en registro:", err);
+    Swal.fire({
+      icon: "error",
+      title: "Error inesperado",
+      text: err.message || "No se pudo completar la operación."
+    });
   }
 });

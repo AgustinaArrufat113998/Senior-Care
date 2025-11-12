@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
   // Planes por obra social
   const planes = {
     PAMI: ["Plan Básico", "Plan Plus", "Plan Premium"],
@@ -8,7 +8,7 @@ $(document).ready(function() {
     Galeno: ["220", "330", "440", "550"]
   };
 
-  // Cargar los años próximos en el desplegable
+  // Cargar los años 
   const currentYear = new Date().getFullYear();
   const $anioVencimiento = $("#anioVencimiento");
 
@@ -18,11 +18,13 @@ $(document).ready(function() {
     $anioVencimiento.append(`<option value="${year}">${year}</option>`);
   }
 
-  // Actualizar los planes según la obra social
-  $("#obraSocialSelect").change(function() {
+  // planes de la obra social seleccionada
+  $("#obraSocialSelect").change(function () {
     const obra = $(this).val();
     const planSelect = $("#planSelect");
+
     planSelect.empty().append('<option value="" disabled selected>Seleccione un plan</option>');
+
     if (planes[obra]) {
       planes[obra].forEach(plan => {
         planSelect.append(`<option value="${plan}">${plan}</option>`);
@@ -31,11 +33,44 @@ $(document).ready(function() {
   });
 
   // Mostrar u ocultar los campos de tarjeta
-  $("#debito, #credito").change(function() {
-    if ($("#debito").is(":checked") || $("#credito").is(":checked")) {
+  $("input[name='metodoPago']").change(function () {
+    const metodoSeleccionado = $("input[name='metodoPago']:checked").val();
+
+    if (metodoSeleccionado === "debito" || metodoSeleccionado === "credito") {
       $("#tarjetaInfo").removeClass("hidden");
     } else {
       $("#tarjetaInfo").addClass("hidden");
     }
+  });
+
+  // Validacion simple antes de enviar
+  $(".btn-green").click(function (e) {
+    e.preventDefault();
+
+    const obra = $("#obraSocialSelect").val();
+    const plan = $("#planSelect").val();
+    const metodo = $("input[name='metodoPago']:checked").val();
+
+    if (!obra) {
+      alert("Por favor, seleccione una obra social.");
+      return;
+    }
+
+    if (!plan) {
+      alert("Por favor, seleccione un plan.");
+      return;
+    }
+
+    if (!metodo) {
+      alert("Por favor, seleccione un método de pago.");
+      return;
+    }
+
+    if ((metodo === "debito" || metodo === "credito") && !$("#numeroTarjeta").val()) {
+      alert("Debe ingresar los datos de la tarjeta.");
+      return;
+    }
+
+    alert("✅ Solicitud enviada correctamente.");
   });
 });

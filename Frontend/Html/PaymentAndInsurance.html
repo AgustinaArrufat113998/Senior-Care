@@ -9,14 +9,13 @@
 </head>
 <body>
   <div class="container py-5">
-    <div class="row justify-content-center g-4">
+    <div class="row justify-content-center">
+      <div class="col-md-8 card p-4 shadow-sm">
+        <h3 class="mb-4 text-primary fw-bold">Información de Obra Social y Pago</h3>
 
-      <!-- Sección Obra Social -->
-      <div class="col-md-6 card p-4 shadow-sm">
-        <h3 class="mb-3 text-primary">Obra Social</h3>
-
-        <div class="mb-3">
-          <label for="obraSocialSelect" class="form-label fw-bold">Seleccione su obra social</label>
+        <!-- Sección Obra Social -->
+        <div class="mb-4">
+          <label for="obraSocialSelect" class="form-label">Seleccione su obra social</label>
           <select id="obraSocialSelect" class="form-select" required>
             <option value="" disabled selected>Seleccione una opción</option>
             <option value="PAMI">PAMI</option>
@@ -27,38 +26,34 @@
           </select>
         </div>
 
-        <div class="mb-3">
-          <label for="planSelect" class="form-label fw-bold">Seleccione su plan</label>
+        <div class="mb-4">
+          <label for="planSelect" class="form-label">Seleccione su plan</label>
           <select id="planSelect" class="form-select" required>
             <option value="" disabled selected>Seleccione un plan</option>
           </select>
         </div>
-      </div>
 
-      <!-- Sección Métodos de Pago -->
-      <div class="col-md-6 card p-4 shadow-sm">
-        <h3 class="mb-3 text-success">Métodos de Pago</h3>
-
-        <div class="mb-3">
-          <label class="form-label fw-bold">Seleccione método de pago</label>
+        <!-- Sección Métodos de Pago -->
+        <div class="mt-5">
+          <h4 class="text-success fw-bold mb-3">Método de Pago</h4>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="debito">
+            <input class="form-check-input" type="radio" name="metodoPago" id="debito" value="debito">
             <label class="form-check-label" for="debito">Tarjeta de Débito</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="credito">
+            <input class="form-check-input" type="radio" name="metodoPago" id="credito" value="credito">
             <label class="form-check-label" for="credito">Tarjeta de Crédito</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="efectivo">
+            <input class="form-check-input" type="radio" name="metodoPago" id="efectivo" value="efectivo">
             <label class="form-check-label" for="efectivo">Efectivo en el momento</label>
           </div>
         </div>
 
         <!-- Campos para tarjeta -->
-        <div id="tarjetaInfo" class="card p-3 mt-3 hidden">
+        <div id="tarjetaInfo" class="card p-3 mt-4 hidden">
           <label class="form-label fw-bold">Nombre completo (como figura en la tarjeta)</label>
-          <input type="text" id="nombreTarjeta" class="form-control mb-2" placeholder="Ej. Agustina Arrufat">
+          <input type="text" id="nombreTarjeta" class="form-control mb-2" placeholder="Nombre completo (como figura en la tarjeta)">
 
           <label class="form-label fw-bold">DNI del titular</label>
           <input type="text" id="dniTarjeta" class="form-control mb-2" placeholder="Ej. 41234567">

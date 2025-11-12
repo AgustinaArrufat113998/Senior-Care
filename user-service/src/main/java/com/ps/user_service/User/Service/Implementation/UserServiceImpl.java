@@ -8,6 +8,8 @@ import com.ps.user_service.User.Repository.AddressRepository;
 import com.ps.user_service.User.Repository.GenderRepository;
 import com.ps.user_service.User.Repository.UserRepository;
 import com.ps.user_service.User.Service.Interface.IUserService;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,21 +22,24 @@ public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
     private final GenderRepository genderRepository;
     private final AddressRepository addressRepository;
+    private final PasswordEncoder passwordEncoder; 
 
     public UserServiceImpl(UserRepository userRepository,
                            GenderRepository genderRepository,
-                           AddressRepository addressRepository) {
+                           AddressRepository addressRepository,
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.genderRepository = genderRepository;
         this.addressRepository = addressRepository;
-    }
+        this.passwordEncoder = passwordEncoder; 
+}
 
     @Override
     public Optional<UserResponseDto> findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(user -> new UserResponseDto(
-                        user.getUsername(),
                         user.getEmail(),
+                        user.getPassword(),
                         user.getRole()
                 ));
     }
@@ -56,12 +61,15 @@ public class UserServiceImpl implements IUserService {
         Address address = addressRepository.findById(user.getAddressId())
                 .orElseThrow(() -> new RuntimeException("Dirección no encontrada"));
 
+        // 🔑 Encriptar contraseña antes de guardar
+        String encodedPassword = passwordEncoder.encode(user.getPassword());    
+
         User newUser = new User();
         newUser.setName(user.getName());
         newUser.setSurname(user.getSurname());
         newUser.setUsername(user.getUsername());
         newUser.setEmail(user.getEmail());
-        newUser.setPassword(user.getPassword());
+        newUser.setPassword(encodedPassword);
         newUser.setDni(user.getDni());
         newUser.setPhone(user.getPhone());
         newUser.setBirthDate(user.getBirthDate());
@@ -76,7 +84,7 @@ public class UserServiceImpl implements IUserService {
         dto.setSurname(savedUser.getSurname());
         dto.setUsername(savedUser.getUsername());
         dto.setEmail(savedUser.getEmail());
-        dto.setPassword(savedUser.getPassword());
+        dto.setPassword(null);
         dto.setDni(savedUser.getDni());
         dto.setPhone(savedUser.getPhone());
         dto.setBirthDate(savedUser.getBirthDate());

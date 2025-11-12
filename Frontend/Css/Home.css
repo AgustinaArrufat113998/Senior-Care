@@ -1,172 +1,121 @@
 body {
   margin: 0;
-  padding: 0;
   font-family: "Poppins", sans-serif;
   background: linear-gradient(135deg, #1796F0, #414CF0, #1B5BF0, #5B90F0);
   color: #fff;
   min-height: 100vh;
-  overflow-x: hidden;
-}
 
-/* NAVBAR */
-.navbar:hover { 
-  background: rgba(255, 255, 255, 0.2);
-}
-.navbar {
-  background: rgba(255, 255, 255, 0.1); /* semitransparente */
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  /*transition: background 0.3s ease;*/
-}
-
-.navbar .logo {
-  width: 50px;
-  height: auto;
-}
-
-.home-content {
-  margin-top: 6rem;
-  padding: 2rem;
+  /* Para dejar espacio al footer fijo */
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 2rem; 
+  flex-direction: column;
 }
 
-.cuidador-card {
-  background: #ffffff; 
+/* --- CONTENIDO PRINCIPAL --- */
+.home-content {
+  flex: 1; /* permite que el contenido ocupe todo el espacio restante */
+  padding: 4rem 2rem 6rem; /* más espacio arriba y margen para el footer */
+  margin-top: 5.5rem; /* 🔹 más separación respecto al navbar */
+}
+
+/* --- BOTÓN PRINCIPAL --- */
+.action-btn {
   border: none;
-  border-radius: 20px;
-  color: #333;
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 15px;
+  padding: 1.2rem;
+  font-weight: 600;
+  background-color: #00bb41;
+  color: #000000;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+  font-size: 1.05rem;
+  width: 250px;
+  max-width: 300px; /* ancho fijo para uniformidad */
+}
+
+.action-btn:hover {
+  background-color: #009041;
+  transform: translateY(-3px);
+}
+
+/* --- TARJETAS DE CUIDADOR --- */
+.cuidador-card {
+  border: none;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1B5BF0;
+  font-weight: 500;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+  height: 240px; /* 🔹 todas del mismo tamaño, un poco más grandes */
+  display: flex;
+}
+
+.cuidador-card .card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 🔹 separa el contenido y el botón */
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding: 1.5rem;
 }
 
 .cuidador-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  background-color: rgba(255, 255, 255, 1);
 }
 
-.cuidador-card h5 {
-  color: #1b1b1b;
-  font-weight: 600;
+.cuidador-card .card-body h5 {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1B5BF0;
 }
 
-.cuidador-card p {
-  color: #333;
+.cuidador-card .card-body p {
+  color: #1B5BF0;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
 }
 
+.cuidador-card .btn {
+  margin-top: auto; /* 🔹 empuja el botón hacia abajo */
+  color: #1B5BF0;
+  border-color: #1B5BF0;
+  transition: all 0.2s ease;
+}
 
-.cuidador-card button {
-  background-color: #007bff; 
+.cuidador-card .btn:hover {
+  background-color: #1B5BF0;
   color: white;
-  border: none;
-  font-weight: 600;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  padding: 6px 14px;
 }
 
-.cuidador-card button:hover {
-  background-color: #0056b3; 
-  transform: scale(1.05);
+
+.cuidador-card:hover {
+  transform: translateY(-5px);
+  background-color: rgba(255, 255, 255, 1);
 }
 
+/* --- PANEL DE BIENVENIDA --- */
 .descripcion {
-  background-color: #ffffff;;
-  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  line-height: 1.7; 
-  max-width: 500px;
-  transition: transform 0.3s ease; 
-}
-.descripcion h2, 
-.descripcion p {
-  color: #333; 
-}
-
-.btn-primary-custom { 
-  background-color: #2ecc71;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
-  font-weight: 600;
-  color: #fff;
+  padding: 2rem;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+  color: #1B5BF0;
+  font-weight: 500;
+  line-height: 1.6;
+  backdrop-filter: blur(5px);
   transition: all 0.3s ease;
 }
 
-.btn-secondary-custom { 
-  background-color: #3498db;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
-  font-weight: 600;
-  color: #fff;
-  transition: all 0.3s ease;
-}
-
-.descripcion:hover { 
-  transform: scale(1.02);
-}
-
-.footer {
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(255, 255, 255, 0.2); 
-  padding: 1rem 0; 
-  text-align: center; 
-  color: #e0e0e0; 
-  font-size: 0.9rem; 
+.descripcion h3 {
+  color: #1B5BF0;
+  font-weight: 700;
+  margin-bottom: 1rem;
 }
 
 .descripcion:hover {
-  transform: scale(1.02);
-}
-
-.action-buttons {
-  position: fixed;
-  bottom: 30px;
-  right: 40px;
-  display: flex;
-  gap: 1rem;
-  z-index: 2000; /* para estar sobre las cards */
-}
-
-/* Botón verde */
-.action-buttons .btn-green {
-  background-color: #27ae60;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 12px 20px;
-  font-weight: 600;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.action-buttons .btn-green:hover {
-  background-color: #219150;
-  transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(39, 174, 96, 0.4);
-}
-
-/* Botón azul */
-.action-buttons .btn-blue {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 12px 20px;
-  font-weight: 600;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.action-buttons .btn-blue:hover {
-  background-color: #0056b3;
-  transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(0, 123, 255, 0.4);
+  transform: translateY(-5px);
+  background-color: rgba(255, 255, 255, 1);
 }
 

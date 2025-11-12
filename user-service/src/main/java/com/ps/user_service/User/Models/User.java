@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users")
 @Data
 public class User {

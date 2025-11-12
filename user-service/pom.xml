@@ -46,6 +46,7 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+    
     <!-- Swagger / OpenAPI -->
     <dependency>
       <groupId>org.springdoc</groupId>
@@ -60,6 +61,11 @@
     </dependency>
 
 
+    <!-- Spring Security for Password Encoding -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

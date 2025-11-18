@@ -7,6 +7,6 @@ import lombok.Data;
 public class RemoteUserDto {
     private Long id;
     private String email;
-    private String password; // DEBE venir encriptada (BCrypt)
-    private String role;     // opcional, si querés meter roles al JWT
+    private String password;
+    private String role;
 }

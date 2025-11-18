@@ -28,13 +28,16 @@ body {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease;
   font-size: 1.05rem;
-  width: 250px;
-  max-width: 300px; /* ancho fijo para uniformidad */
+  width: 100%;
 }
 
 .action-btn:hover {
   background-color: #009041;
   transform: translateY(-3px);
+}
+
+.action-btn-row .action-btn {
+  width: 100%;
 }
 
 /* --- TARJETAS DE CUIDADOR --- */

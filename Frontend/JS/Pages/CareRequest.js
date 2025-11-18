@@ -90,3 +90,25 @@ form.addEventListener("submit", (e) => {
   carrerasContainer.classList.add("hidden");
   cuidadosSimplesContainer.classList.add("hidden");
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  cargarOpciones("enfermedades", "/api/enfermedades");
+  cargarOpciones("medicaciones", "/api/medicaciones");
+  cargarOpciones("alergias", "/api/alergias");
+  cargarOpciones("condiciones", "/api/condiciones");
+});
+
+function cargarOpciones(idSelect, endpoint) {
+  fetch(endpoint)
+    .then((res) => res.json())
+    .then((data) => {
+      const select = document.getElementById(idSelect);
+      data.forEach((item) => {
+        const option = document.createElement("option");
+        option.value = item.id;
+        option.textContent = item.nombre;
+        select.appendChild(option);
+      });
+    })
+    .catch((err) => console.error(`Error cargando ${idSelect}:`, err));
+}

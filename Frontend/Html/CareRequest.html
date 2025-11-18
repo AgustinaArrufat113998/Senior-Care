@@ -37,16 +37,16 @@
             <label class="form-label">Tipo de atencion preferida <span class="text-danger">*</span></label>
             <div class="row ps-3">
               <div class="col-md-4 form-check">
-                <input class="form-check-input" type="checkbox" id="cuidadorEstudios" name="tipoAtencion" value="Cuidador con estudios">
+                <input class="form-check-input" type="radio" id="cuidadorEstudios" name="tipoAtencion" value="Cuidador con estudios">
                 <label class="form-check-label" for="cuidadorEstudios">Cuidador con estudios</label>
               </div>
               <div class="col-md-4 form-check">
-                <input class="form-check-input" type="checkbox" id="estudiante" name="tipoAtencion" value="Estudiante">
+                <input class="form-check-input" type="radio" id="estudiante" name="tipoAtencion" value="Estudiante">
                 <label class="form-check-label" for="estudiante">Estudiante</label>
               </div>
               <div class="col-md-4 form-check">
-                <input class="form-check-input" type="checkbox" id="sinEstudios" name="tipoAtencion" value="Cuidador sin estudios">
-                <label class="form-check-label" for="sinEstudios">Cuidador sin estudios</label>
+                <input class="form-check-input" type="radio" id="sinEstudios" name="tipoAtencion" value="Cuidador sin estudios">
+                <label class="form-check-label" for="sinEstudios">Sin preferencia</label>
               </div>
             </div>
           </div>
@@ -83,6 +83,7 @@
               <option value="">Sin preferencia</option>
               <option value="Masculino">Hombre</option>
               <option value="Femenino">Mujer</option>
+              <option value="Otro">Otro</option>
             </select>
           </div>
 
@@ -90,36 +91,18 @@
             <label for="telefonoEmergencia" class="form-label">Telefono de emergencia <span class="text-danger">*</span></label>
             <input type="tel" id="telefonoEmergencia" class="form-control" placeholder="Ej: 3512345678" required>
           </div>
+          <div>
+            <label for="enfermedades" class="form-label">Enfermedades</label>
+            <select id="enfermedades" class="form-select" multiple></select>
 
-          <div class="col-md-12">
-            <label for="diseases" class="form-label">Enfermedades <span class="text-danger">*</span></label>
-            <input type="text" id="diseases" class="form-control" required>
-          </div>
-          <div class="col-md-12">
-            <label for="medications" class="form-label">Medicaciones <span class="text-danger">*</span></label>
-            <input type="text" id="medications" class="form-control" required>
-          </div>
-          <div class="col-md-12">
-            <label for="allergies" class="form-label">Alergias</label>
-            <input type="text" id="allergies" class="form-control">
-          </div>
+            <label for="medicaciones" class="form-label mt-3">Medicaciones</label>
+            <select id="medicaciones" class="form-select" multiple></select>
 
-          <div class="col-md-12">
-            <label class="form-label">Condiciones del paciente:</label>
-            <div class="row ps-3">
-              <div class="col-md-4 form-check">
-                <input class="form-check-input" type="checkbox" id="usesDiapers">
-                <label class="form-check-label" for="usesDiapers">Usa panales</label>
-              </div>
-              <div class="col-md-4 form-check">
-                <input class="form-check-input" type="checkbox" id="reducedMobility">
-                <label class="form-check-label" for="reducedMobility">Movilidad reducida</label>
-              </div>
-              <div class="col-md-4 form-check">
-                <input class="form-check-input" type="checkbox" id="specialDiet">
-                <label class="form-check-label" for="specialDiet">Requiere dieta especial</label>
-              </div>
-            </div>
+            <label for="alergias" class="form-label mt-3">Alergias</label>
+            <select id="alergias" class="form-select" multiple></select>
+
+            <label for="condiciones" class="form-label mt-3">Condiciones</label>
+            <select id="condiciones" class="form-select" multiple></select>
           </div>
 
           <div class="col-12">

@@ -35,6 +35,28 @@ body {
   height: auto;
 }
 
+.nav-icons button {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.nav-icons button:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.nav-icons .nav-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.no-caret::after {
+  display: none !important;
+}
+
+
 /* --- FORMULARIOS --- */
 .Ginput-error {
   border: 2px solid #ff4d4d !important;

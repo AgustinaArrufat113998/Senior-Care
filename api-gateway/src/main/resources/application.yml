@@ -11,22 +11,29 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: "*"  # o tu front
+            allowedOrigins: "*" 
             allowedMethods: "*"
             allowedHeaders: "*"
             allowCredentials: true
       routes:
+        - id: user-service
+          uri: http://user-service:8081
+          predicates:
+            - Path=/api/users/**, Path=/api/gender/**, Path=/api/address/**, Path=/api/carer/**, Path=/api/specialty/**, Path=/api/skill/**
+          filters:
+            - StripPrefix=0
+        
         - id: auth-service
-          uri: http://localhost:8082
+          uri: http://auth-service:8082
           predicates:
             - Path=/api/auth/**
           filters:
             - StripPrefix=0
-
-        - id: user-service
-          uri: http://localhost:8081
+        
+        - id: care-service
+          uri: http://carerequest-service:8083
           predicates:
-            - Path=/api/users/**
+            - Path=/api/care/**
           filters:
             - StripPrefix=0
 

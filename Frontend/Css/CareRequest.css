@@ -1,12 +1,20 @@
 body {
   margin: 0;
   min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #1796F0, #414CF0, #1B5BF0, #5B90F0);
+  padding-top: var(--navbar-height, 70px);
+  padding-bottom: var(--footer-height, 70px);
+  display: flex;
+  flex-direction: column;
+}
+
+.care-request-wrapper {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #1796F0, #414CF0, #1B5BF0, #5B90F0);
-  font-family: 'Poppins', sans-serif;
-  padding: 1rem;
+  padding: 2rem 1rem 4rem;
 }
 
 .form-box {

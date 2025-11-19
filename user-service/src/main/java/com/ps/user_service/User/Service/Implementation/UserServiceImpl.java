@@ -38,6 +38,7 @@ public class UserServiceImpl implements IUserService {
     public Optional<UserResponseDto> findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(user -> new UserResponseDto(
+                        user.getId(),
                         user.getEmail(),
                         user.getPassword(),
                         user.getRole()
@@ -99,8 +100,9 @@ public class UserServiceImpl implements IUserService {
         return userRepository.findAll()
                 .stream()
                 .map(user -> new UserResponseDto(
-                        user.getUsername(),
+                        user.getId(),
                         user.getEmail(),
+                        user.getPassword(),
                         user.getRole()
                 ))
                 .collect(Collectors.toList());

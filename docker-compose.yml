@@ -21,6 +21,66 @@ services:
       interval: 5s
       retries: 5
 
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    container_name: user-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/seniorcare_db?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: senior
+      SPRING_DATASOURCE_PASSWORD: senior123
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysql-db
+    networks:
+      - seniorcare-net
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    container_name: auth-service
+    environment:
+      USER_SERVICE_URL: http://user-service:8081/api/users
+    ports:
+      - "8082:8082"
+    depends_on:
+      - user-service
+    networks:
+      - seniorcare-net
+
+  carerequest-service:
+    build:
+      context: .
+      dockerfile: careRequest-service/Dockerfile
+    container_name: care-request-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/seniorcare_db?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: senior
+      SPRING_DATASOURCE_PASSWORD: senior123
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mysql-db
+    networks:
+      - seniorcare-net
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - auth-service
+      - user-service
+      - carerequest-service
+    networks:
+      - seniorcare-net
+
 networks:
   seniorcare-net:
     driver: bridge

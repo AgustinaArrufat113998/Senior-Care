@@ -6,9 +6,10 @@ spring:
     name: care-request-service
 
   datasource:
-    url: jdbc:mysql://localhost:3306/care_request_db?useSSL=false&serverTimezone=UTC
-    username: root
-    password: tu_password
+    # Use mysql-db:3306 when running inside Docker network
+    url: jdbc:mysql://localhost:3307/seniorcare_db?useSSL=false&serverTimezone=UTC
+    username: senior
+    password: senior123
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -18,3 +19,22 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+
+external:
+  user-service:
+    url: http://localhost:8081/api/users
+    get-by-id: /{id}
+  carer-service:
+    url: http://localhost:8082/api/carer
+    get-by-id: /{id}
+  specialty-service:
+    url: http://localhost:8084/api/specialty
+    get-all: /all

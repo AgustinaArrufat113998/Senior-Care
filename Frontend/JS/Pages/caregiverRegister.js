@@ -25,8 +25,11 @@ function decodeJwtPayload(token) {
 function resolveUserId() {
   const token = localStorage.getItem("jwtToken");
   if (token) {
+    console.log("Token JWT encontrado en localStorage.");
     const payload = decodeJwtPayload(token);
+    console.log("Payload decodificado:", payload);
     const idFromJwt = payload?.id || payload?.userId;
+    console.log("ID extraído del JWT:", idFromJwt);
     if (idFromJwt) return Number(idFromJwt);
   }
   const user = JSON.parse(localStorage.getItem("userData") || "null");

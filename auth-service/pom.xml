@@ -15,6 +15,10 @@
   <name>Auth Service</name>
   <packaging>jar</packaging>
 
+  <properties>
+    <lombok.version>1.18.34</lombok.version>
+  </properties>
+
   <dependencies>
     <!-- Web -->
     <dependency>
@@ -51,6 +55,7 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
       <optional>true</optional>
     </dependency>
 
@@ -87,12 +92,27 @@
         <version>3.11.0</version>
         <configuration>
           <release>23</release>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
 
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring.boot.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

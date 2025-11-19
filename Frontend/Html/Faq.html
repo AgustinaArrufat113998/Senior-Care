@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SeniorCare - Preguntas Frecuentes</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../Css/Global.css" />
+    <link rel="stylesheet" href="../Css/Faq.css" />
+
+    <script src="../JS/Components/layout.js" defer></script>
+  </head>
+
+  <body data-nav="default">
+    <main class="faq-main container">
+      <section class="faq-hero text-center text-lg-start mb-5">
+        <span class="badge rounded-pill px-3 py-2 mb-3">Centro de ayuda SeniorCare</span>
+        <div class="row align-items-center gy-4">
+          <div class="col-lg-8">
+            <h1 class="fw-bold mb-3">
+              Preguntas frecuentes para cuidar a quienes más queremos
+            </h1>
+            <p class="mb-4">
+              Preparamos esta guía para resolver tus dudas más habituales sobre los servicios,
+              la seguridad y el funcionamiento de SeniorCare. Todo en un mismo lugar y con el
+              acompañamiento de nuestro equipo.
+            </p>
+            <p class="faq-tagline mb-0">
+              ¿Necesitás algo más específico?
+              <a href="mailto:soporte@seniorcare.com.ar" class="text-white fw-semibold">Escribinos</a>
+              o chateá con nosotros desde la app.
+            </p>
+          </div>
+          <div class="col-lg-4">
+            <div class="d-flex flex-column flex-sm-row faq-stats">
+              <div class="faq-stat-card">
+                <strong>+3k</strong>
+                <p class="mb-0">Familias asistidas al mes</p>
+              </div>
+              <div class="faq-stat-card">
+                <strong>24/7</strong>
+                <p class="mb-0">Soporte con personas reales</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq-content row g-4">
+        <div class="col-lg-7">
+          <div class="faq-card p-4 mb-4">
+            <div class="faq-search position-relative mb-3">
+              <span class="search-icon">🔍</span>
+              <input
+                id="faqSearch"
+                type="search"
+                class="form-control"
+                placeholder="Buscar por palabras clave, ej: pagos, cobertura..."
+                autocomplete="off"
+                spellcheck="false"
+              />
+            </div>
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+              <div id="faqResults" class="faq-results-count">12 respuestas disponibles</div>
+              <button type="button" id="faqToggleAll" class="btn faq-toggle-btn">
+                Expandir todas
+              </button>
+            </div>
+            <div class="d-flex flex-wrap faq-chip-group mt-3" id="faqChipGroup">
+              <span class="faq-chip active" data-faq-chip="all">General</span>
+              <span class="faq-chip" data-faq-chip="servicios">Servicios</span>
+              <span class="faq-chip" data-faq-chip="pagos">Pagos</span>
+              <span class="faq-chip" data-faq-chip="seguridad">Seguridad</span>
+              <span class="faq-chip" data-faq-chip="cuidados">Cuidados</span>
+            </div>
+          </div>
+
+          <div class="accordion faq-accordion" id="faqAccordion">
+            <div
+              class="accordion-item"
+              data-faq-item
+              data-categories="general servicios"
+              data-question="Qué es SeniorCare y cómo funciona"
+            >
+              <h2 class="accordion-header" id="faqHeadingOne">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqCollapseOne"
+                  aria-expanded="true"
+                  aria-controls="faqCollapseOne"
+                >
+                  ¿Qué es SeniorCare y cómo funciona?
+                </button>
+              </h2>
+              <div
+                id="faqCollapseOne"
+                class="accordion-collapse collapse show"
+                aria-labelledby="faqHeadingOne"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  SeniorCare es una plataforma que conecta familias con cuidadores calificados.
+                  Creamos solicitudes según las necesidades de la persona mayor, sugerimos
+                  perfiles con experiencia verificada y ofrecemos herramientas para coordinar
+                  horarios, pagos y seguimientos en un entorno seguro.
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="accordion-item"
+              data-faq-item
+              data-categories="servicios cuidados"
+              data-question="Qué tipo de cuidados puedo solicitar"
+            >
+              <h2 class="accordion-header" id="faqHeadingTwo">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqCollapseTwo"
+                  aria-expanded="false"
+                  aria-controls="faqCollapseTwo"
+                >
+                  ¿Qué tipo de cuidados puedo solicitar?
+                </button>
+              </h2>
+              <div
+                id="faqCollapseTwo"
+                class="accordion-collapse collapse"
+                aria-labelledby="faqHeadingTwo"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Ofrecemos asistencia en actividades básicas (acompañamiento, higiene,
+                  alimentación), cuidados especializados (movilidad reducida, Alzheimer,
+                  rehabilitación) y soporte médico ligero como control de signos vitales. Cada
+                  cuidador detalla sus habilidades para que puedas elegir con mayor seguridad.
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="accordion-item"
+              data-faq-item
+              data-categories="seguridad general"
+              data-question="Cómo seleccionan y validan a los cuidadores"
+            >
+              <h2 class="accordion-header" id="faqHeadingThree">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqCollapseThree"
+                  aria-expanded="false"
+                  aria-controls="faqCollapseThree"
+                >
+                  ¿Cómo seleccionan y validan a los cuidadores?
+                </button>
+              </h2>
+              <div
+                id="faqCollapseThree"
+                class="accordion-collapse collapse"
+                aria-labelledby="faqHeadingThree"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Aplicamos un proceso en tres etapas: validación documental (DNI, antecedentes,
+                  títulos), entrevista con profesionales de salud y verificación de referencias
+                  laborales. Además, los cuidadores reciben reseñas verificadas de otras familias
+                  en la plataforma.
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="accordion-item"
+              data-faq-item
+              data-categories="pagos seguridad"
+              data-question="Cómo se gestionan los pagos y qué métodos aceptan"
+            >
+              <h2 class="accordion-header" id="faqHeadingFour">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqCollapseFour"
+                  aria-expanded="false"
+                  aria-controls="faqCollapseFour"
+                >
+                  ¿Cómo se gestionan los pagos?
+                </button>
+              </h2>
+              <div
+                id="faqCollapseFour"
+                class="accordion-collapse collapse"
+                aria-labelledby="faqHeadingFour"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Los pagos se realizan dentro de SeniorCare mediante tarjeta de crédito, débito
+                  o transferencia inmediata. Liberamos el pago al cuidador una vez confirmada la
+                  asistencia, evitando transacciones en efectivo y protegiendo a ambas partes
+                  frente a contratiempos.
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="accordion-item"
+              data-faq-item
+              data-categories="servicios general"
+              data-question="Puedo hacer seguimiento de la asistencia en tiempo real"
+            >
+              <h2 class="accordion-header" id="faqHeadingFive">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqCollapseFive"
+                  aria-expanded="false"
+                  aria-controls="faqCollapseFive"
+                >
+                  ¿Puedo hacer seguimiento en tiempo real?
+                </button>
+              </h2>
+              <div
+                id="faqCollapseFive"
+                class="accordion-collapse collapse"
+                aria-labelledby="faqHeadingFive"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Sí. Desde la app móvil podés ver el estado de cada visita, recibir notificaciones
+                  cuando el cuidador inicia o finaliza la asistencia y acceder a los reportes diarios
+                  con observaciones y signos vitales registrados.
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="accordion-item"
+              data-faq-item
+              data-categories="pagos general"
+              data-question="Existen planes o coberturas con obra social"
+            >
+              <h2 class="accordion-header" id="faqHeadingSix">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqCollapseSix"
+                  aria-expanded="false"
+                  aria-controls="faqCollapseSix"
+                >
+                  ¿Existen planes o coberturas con obra social?
+                </button>
+              </h2>
+              <div
+                id="faqCollapseSix"
+                class="accordion-collapse collapse"
+                aria-labelledby="faqHeadingSix"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Tenemos convenios con obras sociales y prepagas seleccionadas. Podés cargar tu
+                  cobertura durante la solicitud y el sistema validará si aplica reintegro o financiación
+                  parcial. Nuestro equipo te guía para subir los comprobantes necesarios.
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="accordion-item"
+              data-faq-item
+              data-categories="seguridad cuidados"
+              data-question="Qué sucede si necesito reemplazar a un cuidador"
+            >
+              <h2 class="accordion-header" id="faqHeadingSeven">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqCollapseSeven"
+                  aria-expanded="false"
+                  aria-controls="faqCollapseSeven"
+                >
+                  ¿Qué sucede si necesito reemplazar a un cuidador?
+                </button>
+              </h2>
+              <div
+                id="faqCollapseSeven"
+                class="accordion-collapse collapse"
+                aria-labelledby="faqHeadingSeven"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Podés solicitar un reemplazo desde tu panel sin costo adicional si el servicio no se ajusta
+                  a tus expectativas. Nuestro equipo prioriza tu solicitud y te presenta nuevas opciones
+                  compatibles en menos de 24 horas.
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="accordion-item"
+              data-faq-item
+              data-categories="general servicios"
+              data-question="Cómo cancelo una visita programada"
+            >
+              <h2 class="accordion-header" id="faqHeadingEight">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faqCollapseEight"
+                  aria-expanded="false"
+                  aria-controls="faqCollapseEight"
+                >
+                  ¿Cómo cancelo una visita programada?
+                </button>
+              </h2>
+              <div
+                id="faqCollapseEight"
+                class="accordion-collapse collapse"
+                aria-labelledby="faqHeadingEight"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Podés cancelar desde la app o comunicándote con soporte. Si avisás con más de 12 horas de
+                  anticipación, el crédito se devuelve automáticamente. En casos de urgencia, analizamos cada
+                  situación para brindarte alternativas.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="faq-contact-card h-100">
+            <p class="text-uppercase small fw-semibold text-white-50 mb-2">
+              Atención personalizada
+            </p>
+            <h4 class="fw-bold mb-3">No estás solo, estamos para ayudarte</h4>
+            <p class="text-white-50 mb-4">
+              Nuestro equipo responde en menos de 5 minutos en los canales oficiales.
+            </p>
+
+            <div class="faq-support-option">
+              <span>💬</span>
+              <div>
+                <p class="fw-semibold mb-1">Chat en vivo</p>
+                <p class="mb-0 text-white-50">Disponible lunes a domingo, 08 a 23 h.</p>
+              </div>
+            </div>
+
+            <div class="faq-support-option">
+              <span>📞</span>
+              <div>
+                <p class="fw-semibold mb-1">Línea SeniorCare</p>
+                <p class="mb-0 text-white-50">0800-333-CARE (2273)</p>
+              </div>
+            </div>
+
+            <div class="faq-support-option">
+              <span>📧</span>
+              <div>
+                <p class="fw-semibold mb-1">Correo prioritario</p>
+                <p class="mb-0">
+                  <a href="mailto:soporte@seniorcare.com.ar" class="text-white">soporte@seniorcare.com.ar</a>
+                </p>
+              </div>
+            </div>
+
+            <div class="faq-cta mt-4">
+              <p class="mb-1 fw-semibold">¿Buscás los términos completos?</p>
+              <p class="mb-3 text-white-50">
+                Accedé a nuestra política actualizada y conocé cómo protegemos tus datos.
+              </p>
+              <a
+                href="#"
+                class="btn btn-light text-primary fw-semibold"
+                data-terms-trigger="true"
+                data-bs-toggle="modal"
+                data-bs-target="#modalTerminos"
+              >
+                Leer términos y privacidad
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../JS/Pages/faq.js" defer></script>
+  </body>
+</html>

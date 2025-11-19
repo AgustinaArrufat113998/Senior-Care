@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ps.careRequest_service.Dto.Request.CareRequestRequestDto;
+import com.ps.careRequest_service.Dto.Request.CareRequestDto;
 import com.ps.careRequest_service.Dto.Response.CareRequestResponseDto;
 import com.ps.careRequest_service.Service.Interface.ICareRequestService;
 
@@ -28,7 +28,7 @@ public class CareRequestController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CareRequestResponseDto> createCareRequest(@RequestBody CareRequestRequestDto requestDto) {
+    public ResponseEntity<CareRequestResponseDto> createCareRequest(@RequestBody CareRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(careRequestService.createCareRequest(requestDto));
     }
 
@@ -44,7 +44,7 @@ public class CareRequestController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CareRequestResponseDto> updateCareRequest(@PathVariable Long id,
-            @RequestBody CareRequestRequestDto requestDto) {
+            @RequestBody CareRequestDto requestDto) {
         return ResponseEntity.ok(careRequestService.updateCareRequest(id, requestDto));
     }
 

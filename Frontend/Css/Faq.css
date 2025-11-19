@@ -1,0 +1,231 @@
+body {
+  font-family: "Poppins", sans-serif;
+  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.15), transparent 55%),
+    linear-gradient(135deg, #1796f0, #414cf0 50%, #1b5bf0, #5b90f0);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.faq-main {
+  flex: 1;
+  padding-top: 4rem;
+  padding-bottom: 6rem;
+}
+
+.faq-hero {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  padding: 3rem;
+  box-shadow: 0 25px 60px rgba(23, 150, 240, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(18px);
+}
+
+.faq-hero .badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-weight: 600;
+}
+
+.faq-hero h1 {
+  font-size: clamp(2.2rem, 4vw, 3.1rem);
+  line-height: 1.2;
+}
+
+.faq-hero p {
+  color: #e9eefc;
+  max-width: 720px;
+}
+
+.faq-tagline {
+  color: #afd6ff;
+  font-size: 0.95rem;
+}
+
+.faq-stats {
+  gap: 1rem;
+}
+
+.faq-stat-card {
+  flex: 1 1 150px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 1.5rem;
+  min-width: 160px;
+}
+
+.faq-stat-card strong {
+  font-size: 1.75rem;
+  color: #f7fbff;
+}
+
+.faq-content {
+  margin-top: 3rem;
+}
+
+.faq-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 50px rgba(6, 33, 107, 0.2);
+  backdrop-filter: blur(12px);
+}
+
+.faq-search input {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  color: #fff;
+  padding: 0.85rem 1.2rem 0.85rem 3rem;
+}
+
+.faq-search input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.faq-search .search-icon {
+  position: absolute;
+  top: 50%;
+  left: 1.1rem;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.faq-chip-group {
+  gap: 0.65rem;
+}
+
+.faq-chip {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.35rem 0.95rem;
+  font-size: 0.85rem;
+  color: #e4ecff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.faq-chip.active,
+.faq-chip:hover {
+  border-color: rgba(255, 255, 255, 0.7);
+  color: #fff;
+}
+
+.faq-accordion .accordion-item {
+  background: rgba(12, 30, 83, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
+.faq-accordion .accordion-item + .accordion-item {
+  margin-top: 1rem;
+}
+
+.faq-accordion .accordion-button {
+  background: transparent;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.faq-accordion .accordion-button:not(.collapsed) {
+  background: rgba(19, 48, 117, 0.9);
+  color: #fff;
+}
+
+.faq-accordion .accordion-body {
+  color: #e8f0ff;
+  line-height: 1.6;
+}
+
+.faq-results-count {
+  color: #b2c7ff;
+  font-size: 0.9rem;
+}
+
+.faq-contact-card {
+  padding: 2rem;
+  background: rgba(21, 25, 87, 0.7);
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.faq-contact-card h4 {
+  color: #fff;
+}
+
+.faq-support-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.faq-support-option:last-child {
+  border-bottom: none;
+}
+
+.faq-support-option span {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.faq-cta {
+  margin-top: 2rem;
+  padding: 1.5rem 2rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.faq-toggle-btn {
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  padding: 0.65rem 1.5rem;
+}
+
+.faq-toggle-btn:hover {
+  border-color: #fff;
+  color: #fff;
+}
+
+.faq-highlight {
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.05));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 991px) {
+  .faq-hero {
+    padding: 2rem;
+  }
+
+  .faq-contact-card {
+    padding: 1.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .faq-main {
+    padding-top: 2rem;
+  }
+
+  .faq-chip-group {
+    flex-wrap: wrap;
+  }
+}

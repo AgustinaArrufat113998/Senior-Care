@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Table(name = "care_requests")
@@ -37,16 +38,22 @@ public class CareRequest {
     private StatusRequest status; 
 
     // Preferencias
-    private String genderPreference; 
+    private String genderPreference;
+
+    private String carerType;
+    
+    @ElementCollection
+    @CollectionTable(
+            name = "specialties",
+            joinColumns = @JoinColumn(name = "care_request_id"))
+    @Column(name = "specialty_id")
+    private List<Long> specialtyIds;
+
     
     // Relaciones
     @Column(name = "requester_id")
     private Long requesterId;
     private Long carerId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "care_type_id")
-    private CareType careType;
     
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "patient_info_id")

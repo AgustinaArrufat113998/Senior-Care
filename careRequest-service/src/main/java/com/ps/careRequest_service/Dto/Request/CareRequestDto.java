@@ -1,5 +1,6 @@
 package com.ps.careRequest_service.Dto.Request;
 
+import com.ps.careRequest_service.Dto.CarerSpecialtiesDto;
 import com.ps.careRequest_service.Model.Enum.StatusRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CareRequestRequestDto {
+public class CareRequestDto {
 
     private LocalDate startDate;
     private LocalDate endDate;
@@ -19,7 +20,7 @@ public class CareRequestRequestDto {
     private LocalTime startTime;
     private LocalTime endTime;
 
-    private CareTypeRequestDto careType;
+    private CarerSpecialtiesDto carerSpecialties;
     private String genderPreference;
     private String emergencyPhone;
 

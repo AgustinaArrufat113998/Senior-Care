@@ -1,5 +1,7 @@
 package com.ps.careRequest_service.Dto.Request;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,5 +12,5 @@ import lombok.Setter;
 public class CareTypeRequestDto {
     private Long id;
     private String type;
-    private String specialty;
+    private List<String> specialties;
 }

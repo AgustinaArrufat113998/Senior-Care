@@ -26,3 +26,15 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+
+external:
+  user-service:
+    url: http://localhost:8081/api/users
+    get-by-id: /{id}
+  carer-service:
+    url: http://localhost:8082/api/carer
+    get-by-id: /{id}
+  specialty-service:
+    url: http://localhost:8084/api/specialty
+    get-all: /all

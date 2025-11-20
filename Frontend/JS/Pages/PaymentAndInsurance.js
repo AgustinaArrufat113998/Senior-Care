@@ -42,9 +42,7 @@ $(document).ready(function () {
       $("#tarjetaInfo").addClass("hidden");
     }
   });
-
-  // Validacion simple antes de enviar
-  $(".btn-green").click(function (e) {
+$(".btn-green").click(async function (e) {
     e.preventDefault();
 
     const obra = $("#obraSocialSelect").val();
@@ -52,25 +50,60 @@ $(document).ready(function () {
     const metodo = $("input[name='metodoPago']:checked").val();
 
     if (!obra) {
-      alert("Por favor, seleccione una obra social.");
-      return;
+        alert("Por favor, seleccione una obra social.");
+        return;
     }
 
     if (!plan) {
-      alert("Por favor, seleccione un plan.");
-      return;
+        alert("Por favor, seleccione un plan.");
+        return;
     }
 
     if (!metodo) {
-      alert("Por favor, seleccione un método de pago.");
-      return;
+        alert("Por favor, seleccione un método de pago.");
+        return;
     }
 
+    // Si paga con tarjeta, validar
     if ((metodo === "debito" || metodo === "credito") && !$("#numeroTarjeta").val()) {
-      alert("Debe ingresar los datos de la tarjeta.");
-      return;
+        alert("Debe ingresar los datos de la tarjeta.");
+        return;
     }
 
-    alert("✅ Solicitud enviada correctamente.");
-  });
+    //  crear el cuerpo de la preferencia
+    const preferenceBody = {
+        title: "Servicio SeniorCare",
+        description: "Pago por contratación de cuidado",
+        quantity: 1,
+        price: 1,
+        externalReference: "SC-001"
+    };
+
+    try {
+        // llamada al backend
+        const response = await fetch("https://toey-pat-respectably.ngrok-free.dev/api/payments/preference", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(preferenceBody)
+        });
+
+        if (!response.ok) {
+            throw new Error("Error al generar preferencia de pago");
+        }
+
+        const data = await response.json();
+
+        console.log("Preferencia creada:", data);
+
+        //redirigir al Checkout Pro
+        window.location.href = data.initPoint;
+
+    } catch (error) {
+        console.error(error);
+        alert("Ocurrió un error al generar el pago.");
+    }
+});
+
 });

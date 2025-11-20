@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Familiar</title>
+    <link rel="stylesheet" href="../Css/Family.css">
+</head>
+<body>
+
+    <div class="main-card">
+        <div class="card-header">
+            <h2>Editar Familiar</h2>
+            <p>Actualiza la información del familiar seleccionado.</p>
+        </div>
+
+        <form id="edit-family-form">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="name-edit">Nombre Completo *</label>
+                        <input type="text" class="form-control" id="name-edit" required>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="dni-edit">DNI / Identificación *</label>
+                        <input type="text" class="form-control" id="dni-edit" required readonly style="background-color: #f0f0f0;"> 
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="birthdate-edit">Fecha de Nacimiento *</label>
+                        <input type="date" class="form-control" id="birthdate-edit" required>
+                    </div>
+                </div>
+
+
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="relationship-edit">Parentesco *</label>
+                        <select class="form-control" id="relationship-edit" required>
+                            <option value="" disabled>Selecciona un parentesco</option>
+                            <option value="padre">Padre</option>
+                            <option value="madre">Madre</option>
+                            <option value="hijo">Hijo/a</option>
+                            <option value="abuelo">Abuelo/a</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="observations-edit">Observaciones Médicas (Opcional)</label>
+                        <textarea class="form-control" id="observations-edit" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button type="button" class="btn-cancel" id="cancel-edit-btn">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn-save">
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="../JS/Pages/FamilyEdit.js"></script>
+</body>
+</html>

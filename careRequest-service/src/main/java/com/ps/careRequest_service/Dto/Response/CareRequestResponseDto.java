@@ -1,5 +1,6 @@
 package com.ps.careRequest_service.Dto.Response;
 
+import com.ps.careRequest_service.Dto.CarerSpecialtiesDto;
 import com.ps.careRequest_service.Model.Enum.StatusRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ public class CareRequestResponseDto {
     private LocalTime startTime;
     private LocalTime endTime;
 
-    private CareTypeResponseDto careType;
+    private CarerSpecialtiesDto carerSpecialties;
     private String genderPreference;
     private String emergencyPhone;
 

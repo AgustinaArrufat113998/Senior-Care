@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Familiar</title>
+    <link rel="stylesheet" href="../Css/Family.css">
+</head>
+<body>
+
+    <div class="main-card">
+        <div class="card-header">
+            <h2>Agregar Nuevo Familiar</h2>
+            <p>Introduce la información necesaria para registrar a un nuevo miembro. (* campos obligatorios)</p>
+        </div>
+
+        <form id="add-family-form">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="name">Nombre Completo *</label>
+                        <input type="text" class="form-control" id="name" placeholder="Ej: Roberto Gómez" required>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="dni">DNI / Identificación *</label>
+                        <input type="text" class="form-control" id="dni" placeholder="Ej: 98.765.432" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="birthdate">Fecha de Nacimiento *</label>
+                        <input type="date" class="form-control" id="birthdate" required>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="relationship">Parentesco *</label>
+                        <select class="form-control" id="relationship" required>
+                            <option value="" disabled selected>Selecciona un parentesco</option>
+                            <option value="padre">Padre</option>
+                            <option value="madre">Madre</option>
+                            <option value="hijo">Hijo/a</option>
+                            <option value="abuelo">Abuelo/a</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="observations">Observaciones Médicas (Opcional)</label>
+                        <textarea class="form-control" id="observations" rows="3" placeholder="Alergias, condiciones especiales, medicación, etc."></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button type="button" class="btn-cancel" id="cancel-btn">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn-save">
+                    Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="../JS/Pages/FamilyAdd.js"></script>
+</body>
+</html>

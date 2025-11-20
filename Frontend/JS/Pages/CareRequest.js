@@ -246,14 +246,6 @@ function getSelectedSpecialtyIds() {
     .filter(id => !Number.isNaN(id));
 }
 
-function getSelectedValuesFromList(listId) {
-  const list = document.getElementById(listId);
-  if (!list) return [];
-  return Array.from(list.querySelectorAll("input[type='checkbox']:checked"))
-    .map(input => Number(input.value))
-    .filter(value => !Number.isNaN(value));
-}
-
 async function handleSubmit(event) {
   event.preventDefault();
   showMessage("");
@@ -289,16 +281,14 @@ async function handleSubmit(event) {
 
 function buildRequestPayload(userId) {
   const carerType = document.querySelector('input[name="tipoAtencion"]:checked')?.value || null;
-  const specialtyIds = CARER_TYPES_WITH_SPECIALTIES.has(carerType) ? getSelectedSpecialtyIds() : [];
-
-  const patientInfo = buildPatientInfoPayload();
+  const specialtyIds = getSelectedSpecialtyIds();
 
   return {
     startDate: document.getElementById("fechaInicio")?.value || null,
     endDate: document.getElementById("fechaFin")?.value || null,
     startTime: document.getElementById("horaInicio")?.value || null,
     endTime: document.getElementById("horaFin")?.value || null,
-    carerSpecialties: specialtyIds.length ? { specialtyIds } : null,
+    specialtyIds,
     carerType,
     genderPreference: document.getElementById("preferenciaGenero")?.value || "",
     emergencyPhone: document.getElementById("telefonoEmergencia")?.value || "",
@@ -306,29 +296,7 @@ function buildRequestPayload(userId) {
     userId,
     carerId: null,
     patientInfoId: null,
-    patientInfo,
     paymentInfoId: null,
-  };
-}
-
-function buildPatientInfoPayload() {
-  const diseases = getSelectedValuesFromList("enfermedadesList");
-  const medications = getSelectedValuesFromList("medicacionesList");
-  const allergies = getSelectedValuesFromList("alergiasList");
-  const conditions = getSelectedValuesFromList("condicionesList");
-  const additionalInfo = document.getElementById("careSuggestions")?.value?.trim() || "";
-
-  const hasValues = diseases.length || medications.length || allergies.length || conditions.length || additionalInfo;
-  if (!hasValues) {
-    return null;
-  }
-
-  return {
-    diseases,
-    medications,
-    allergies,
-    patientConditions: conditions,
-    additionalInfo,
   };
 }
 

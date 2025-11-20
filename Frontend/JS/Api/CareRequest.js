@@ -35,10 +35,6 @@ export function getConditions() {
   return requestJson(`${CARE_REQUEST_SERVICE_URL}/conditions`);
 }
 
-export function getSpecialties() {
-  return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests/specialties`);
-}
-
 export function createCareRequest(payload) {
   return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests/add`, {
     method: "POST",

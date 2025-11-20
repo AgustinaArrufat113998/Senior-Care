@@ -5,7 +5,7 @@ COPY mvnw mvnw.cmd pom.xml ./
 COPY .mvn .mvn
 COPY auth-service auth-service
 
-RUN chmod +x mvnw && ./mvnw -f auth-service/pom.xml -DskipTests package
+RUN chmod +x mvnw && ./mvnw -f auth-service/pom.xml clean package -DskipTests
 
 FROM eclipse-temurin:23-jdk
 WORKDIR /app

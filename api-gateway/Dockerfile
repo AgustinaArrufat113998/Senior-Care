@@ -5,7 +5,7 @@ COPY mvnw mvnw.cmd pom.xml ./
 COPY .mvn .mvn
 COPY api-gateway api-gateway
 
-RUN chmod +x mvnw && ./mvnw -f api-gateway/pom.xml -DskipTests package
+RUN chmod +x mvnw && ./mvnw -f api-gateway/pom.xml clean package -DskipTests
 
 FROM eclipse-temurin:23-jdk
 WORKDIR /app

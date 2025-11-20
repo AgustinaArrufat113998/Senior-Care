@@ -27,7 +27,7 @@ services:
       dockerfile: user-service/Dockerfile
     container_name: user-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/seniorcare_db?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/seniorcare_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: senior
       SPRING_DATASOURCE_PASSWORD: senior123
     ports:
@@ -57,7 +57,7 @@ services:
       dockerfile: careRequest-service/Dockerfile
     container_name: care-request-service
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/seniorcare_db?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/seniorcare_db?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: senior
       SPRING_DATASOURCE_PASSWORD: senior123
     ports:

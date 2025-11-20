@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Set;
 
 @Getter
@@ -17,8 +17,8 @@ public class CareRequestDto {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    private Time startTime;
-    private Time endTime;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
     private Set<Long> specialtyIds;
     

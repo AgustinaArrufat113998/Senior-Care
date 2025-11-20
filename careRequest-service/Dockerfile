@@ -5,7 +5,7 @@ COPY mvnw mvnw.cmd pom.xml ./
 COPY .mvn .mvn
 COPY careRequest-service careRequest-service
 
-RUN chmod +x mvnw && ./mvnw -f careRequest-service/pom.xml -DskipTests package
+RUN chmod +x mvnw && ./mvnw -f careRequest-service/pom.xml clean package -DskipTests
 
 FROM eclipse-temurin:23-jdk
 WORKDIR /app

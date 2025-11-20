@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.Builder.Default;
 
-import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -30,10 +30,10 @@ public class CareRequest {
     private LocalDate endDate;
 
     @Column(name = "start_time", nullable = false)
-    private Time startTime;
+    private LocalTime startTime;
 
     @Column(name = "end_time", nullable = false)
-    private Time endTime;
+    private LocalTime endTime;
     
     private String emergencyPhone;
     

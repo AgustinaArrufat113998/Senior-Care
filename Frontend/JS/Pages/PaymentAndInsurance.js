@@ -83,6 +83,7 @@ $(".btn-green").click(async function (e) {
         // llamada al backend
         const response = await fetch("https://toey-pat-respectably.ngrok-free.dev/api/payments/preference", {
             method: "POST",
+            
             headers: {
                 "Content-Type": "application/json"
             },

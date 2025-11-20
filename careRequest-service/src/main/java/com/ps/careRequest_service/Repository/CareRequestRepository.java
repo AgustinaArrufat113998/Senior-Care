@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CareRequestRepository extends JpaRepository<CareRequest, Long> {
 
-    List<CareRequest> findByRequesterId(Long requesterId);
+    List<CareRequest> findByUserId(Long userId);
 
     List<CareRequest> findByCarerId(Long carerId);
 

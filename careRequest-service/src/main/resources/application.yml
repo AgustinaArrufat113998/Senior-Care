@@ -32,6 +32,7 @@ external:
   user-service:
     url: http://localhost:8081/api/users
     get-by-id: /{id}
+    specialties-url: http://localhost:8081/api/specialty/all
   carer-service:
     url: http://localhost:8082/api/carer
     get-by-id: /{id}

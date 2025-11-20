@@ -3,10 +3,14 @@ package com.ps.careRequest_service.Model;
 import com.ps.careRequest_service.Model.Enum.StatusRequest;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.Builder.Default;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "care_requests")
@@ -39,20 +43,19 @@ public class CareRequest {
 
     // Preferencias
     private String genderPreference;
-
-    private String carerType;
     
     @ElementCollection
     @CollectionTable(
-            name = "specialties",
+            name = "care_request_specialties",
             joinColumns = @JoinColumn(name = "care_request_id"))
     @Column(name = "specialty_id")
-    private List<Long> specialtyIds;
-
+    @Default
+    private Set<Long> specialtyIds = new LinkedHashSet<>();
     
     // Relaciones
-    @Column(name = "requester_id")
-    private Long requesterId;
+    @Column(name = "user_id")
+    private Long userId;
+    @Column(name = "carer_id")
     private Long carerId;
     
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

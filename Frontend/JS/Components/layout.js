@@ -1,12 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
   const navType = document.body.dataset.nav || "default";
 
-  const brand = () => `
-    <a class="navbar-brand d-flex align-items-center text-white fw-bold" href="Home.html">
-      <img src="../Assets/Logo1_SinFondo.png" alt="Logo SeniorCare" class="Glogo me-2">
-      <span class="brand-name">SeniorCare</span>
-    </a>
-  `;
+  const brand = () => {
+    const currentPage = window.location.pathname;
+
+    const landingRoutes = ["LandingPage.html", "Register.html", "Login.html"];
+
+    // Landing, Register y Login redirigen a LandingPage; el resto a Home
+    const targetPage = landingRoutes.some(page => currentPage.includes(page))
+      ? "LandingPage.html"
+      : "Home.html";
+
+    return `
+      <a class="navbar-brand d-flex align-items-center text-white fw-bold" href="${targetPage}">
+        <img src="../Assets/Logo1_SinFondo.png" alt="Logo SeniorCare" class="Glogo me-2">
+        <span class="brand-name">SeniorCare</span>
+      </a>
+    `;
+  };
+
 
   const navIcons = `
     <button class="btn btn-link p-0 text-white" type="button" aria-label="Ajustes">
@@ -55,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <li class="nav-item"><a class="nav-link text-white fw-semibold" href="Home.html">Inicio</a></li>
             <li class="nav-item"><a class="nav-link text-white" href="CareRequest.html">Solicitudes</a></li>
             <li class="nav-item"><a class="nav-link text-white" href="CareRequestResults.html">Cuidadores</a></li>
-            <li class="nav-item"><a class="nav-link text-white" href="LandingPage.html">Nosotros</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="AboutUs.html">Nosotros</a></li>
             <li class="nav-item"><a class="nav-link text-white" href="Faq.html">Preguntas frecuentes</a></li>
           </ul>
           <div class="nav-icons d-none d-lg-flex align-items-center gap-3 ms-lg-3">

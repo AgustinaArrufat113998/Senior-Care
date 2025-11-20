@@ -23,6 +23,9 @@ export async function login(email, password) {
     localStorage.setItem("jwtToken", data.token);
     localStorage.setItem("userEmail", data.email);
     localStorage.setItem("userRole", data.role);
+    if (data.id) {
+      localStorage.setItem("userId", data.id);
+    }
 
     msg.style.color = "green";
     msg.textContent = "✅ Inicio de sesión exitoso";

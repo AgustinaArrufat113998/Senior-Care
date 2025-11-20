@@ -1,6 +1,5 @@
 package com.ps.careRequest_service.Dto.Request;
 
-import com.ps.careRequest_service.Dto.CarerSpecialtiesDto;
 import com.ps.careRequest_service.Model.Enum.StatusRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +7,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,14 +20,16 @@ public class CareRequestDto {
     private LocalTime startTime;
     private LocalTime endTime;
 
-    private CarerSpecialtiesDto carerSpecialties;
+    private Set<Long> specialtyIds;
+    
     private String genderPreference;
     private String emergencyPhone;
 
     private StatusRequest status;
-    private Long requesterId;
+
+    private Long userId;
     private Long carerId;
 
-    private PatientInfoRequestDto patientInfo;
-    private PaymentInfoRequestDto paymentInfo;
+    private Long patientInfoId;
+    private Long paymentInfoId;
 }

@@ -8,6 +8,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class DiseasesRequestDto {
-    private Long id;
     private String disease;
 }

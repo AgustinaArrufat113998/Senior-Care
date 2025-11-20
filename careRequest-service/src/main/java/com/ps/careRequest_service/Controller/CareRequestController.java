@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ps.careRequest_service.Dto.Request.CareRequestDto;
-import com.ps.careRequest_service.Dto.Response.CareRequestResponseDto;
+import com.ps.careRequest_service.Dto.Response.CareResponseDto;
 import com.ps.careRequest_service.Service.Interface.ICareRequestService;
 
 @RestController
@@ -28,22 +28,22 @@ public class CareRequestController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CareRequestResponseDto> createCareRequest(@RequestBody CareRequestDto requestDto) {
+    public ResponseEntity<CareResponseDto> createCareRequest(@RequestBody CareRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(careRequestService.createCareRequest(requestDto));
     }
 
     @GetMapping("/all")
-    public List<CareRequestResponseDto> getAllCareRequests() {
+    public List<CareResponseDto> getAllCareRequests() {
         return careRequestService.getAllCareRequests();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CareRequestResponseDto> getCareRequestById(@PathVariable Long id) {
+    public ResponseEntity<CareResponseDto> getCareRequestById(@PathVariable Long id) {
         return ResponseEntity.ok(careRequestService.getCareRequestById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CareRequestResponseDto> updateCareRequest(@PathVariable Long id,
+    public ResponseEntity<CareResponseDto> updateCareRequest(@PathVariable Long id,
             @RequestBody CareRequestDto requestDto) {
         return ResponseEntity.ok(careRequestService.updateCareRequest(id, requestDto));
     }

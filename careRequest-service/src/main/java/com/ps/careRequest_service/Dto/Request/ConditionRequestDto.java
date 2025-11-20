@@ -8,6 +8,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ConditionRequestDto {
-    private Long id;
     private String condition;
 }

@@ -5,10 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class SpecialtySummaryDto {
+@NoArgsConstructor
+public class SpecialtyDto {
     private Long id;
     private String name;
 }
-

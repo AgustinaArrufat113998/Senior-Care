@@ -1,31 +1,47 @@
-// 🌐 URLs de las APIs
-const API_CARERQUEST_URL = "http://localhost:8083/api";
-const API_GATEWAY_URL = "http://localhost:8080/api";
+const CARE_REQUEST_SERVICE_URL = "http://localhost:8083";
 
-// ======================================================
-// 🧱 SOLICITUDES DE CUIDADO
-// ======================================================
+async function requestJson(url, options = {}) {
+  const response = await fetch(url, {
+    headers: { "Content-Type": "application/json" },
+    ...options,
+  });
 
-// 🟩 Crear nueva solicitud de cuidado
-export async function createCareRequest(careRequestData) {
-  try {
-    const response = await fetch(`${API_CARERQUEST_URL}/care-requests`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(careRequestData),
-    });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      alert("Error al crear la solicitud de cuidado: " + (errorData.message || response.statusText));
-      throw new Error(errorData.message || "Error al crear la solicitud de cuidado");
-    }
-    const data = await response.json();
-    alert("Solicitud de cuidado creada con éxito");
-    console.log("✅ Solicitud de cuidado creada:", data);
-    return data;
-  } catch (error) {
-    alert("Error en la creación de la solicitud de cuidado.");
-    console.error("❌ Error en creación de solicitud de cuidado:", error);
-    throw error;
-  } 
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    const message = errorData?.message || `Error ${response.status}`;
+    throw new Error(message);
+  }
+
+  if (response.status === 204) {
+    return null;
+  }
+
+  return response.json();
+}
+
+export function getDiseases() {
+  return requestJson(`${CARE_REQUEST_SERVICE_URL}/diseases`);
+}
+
+export function getMedications() {
+  return requestJson(`${CARE_REQUEST_SERVICE_URL}/medications`);
+}
+
+export function getAllergies() {
+  return requestJson(`${CARE_REQUEST_SERVICE_URL}/allergies`);
+}
+
+export function getConditions() {
+  return requestJson(`${CARE_REQUEST_SERVICE_URL}/conditions`);
+}
+
+export function getSpecialties() {
+  return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests/specialties`);
+}
+
+export function createCareRequest(payload) {
+  return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests/add`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }

@@ -57,18 +57,7 @@
                 <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="carreraDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                 Seleccionar carreras
                 </button>
-                <ul class="dropdown-menu w-100 p-2" aria-labelledby="carreraDropdown">
-                <li><input class="form-check-input carrera-option" type="checkbox" value="Enfermeria" id="enfermeriaCarrera">
-                    <label class="form-check-label ms-2" for="enfermeriaCarrera">Enfermeria</label></li>
-                <li><input class="form-check-input carrera-option" type="checkbox" value="Psicologia" id="psicologiaCarrera">
-                    <label class="form-check-label ms-2" for="psicologiaCarrera">Psicologia</label></li>
-                <li><input class="form-check-input carrera-option" type="checkbox" value="Trabajo Social" id="trabajoSocialCarrera">
-                    <label class="form-check-label ms-2" for="trabajoSocialCarrera">Trabajo Social</label></li>
-                <li><input class="form-check-input carrera-option" type="checkbox" value="Acompanante Terapeutico" id="acompananteCarrera">
-                    <label class="form-check-label ms-2" for="acompananteCarrera">Acompanante Terapeutico</label></li>
-                <li><input class="form-check-input carrera-option" type="checkbox" value="Otros" id="otrosCarrera">
-                    <label class="form-check-label ms-2" for="otrosCarrera">Otros</label></li>
-                </ul>
+                <ul id="specialtyDropdownList" class="dropdown-menu w-100 p-2" aria-labelledby="carreraDropdown"></ul>
             </div>
             </div>
 
@@ -91,18 +80,46 @@
             <label for="telefonoEmergencia" class="form-label">Telefono de emergencia <span class="text-danger">*</span></label>
             <input type="tel" id="telefonoEmergencia" class="form-control" placeholder="Ej: 3512345678" required>
           </div>
-          <div>
-            <label for="enfermedades" class="form-label">Enfermedades</label>
-            <select id="enfermedades" class="form-select" multiple></select>
+          <div class="col-12">
+            <div class="mb-3">
+              <label class="form-label">Enfermedades</label>
+              <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="enfermedadesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  Seleccionar enfermedades
+                </button>
+                <ul id="enfermedadesList" class="dropdown-menu w-100 p-2"></ul>
+              </div>
+            </div>
 
-            <label for="medicaciones" class="form-label mt-3">Medicaciones</label>
-            <select id="medicaciones" class="form-select" multiple></select>
+            <div class="mb-3">
+              <label class="form-label">Medicaciones</label>
+              <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="medicacionesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  Seleccionar medicaciones
+                </button>
+                <ul id="medicacionesList" class="dropdown-menu w-100 p-2"></ul>
+              </div>
+            </div>
 
-            <label for="alergias" class="form-label mt-3">Alergias</label>
-            <select id="alergias" class="form-select" multiple></select>
+            <div class="mb-3">
+              <label class="form-label">Alergias</label>
+              <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="alergiasDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  Seleccionar alergias
+                </button>
+                <ul id="alergiasList" class="dropdown-menu w-100 p-2"></ul>
+              </div>
+            </div>
 
-            <label for="condiciones" class="form-label mt-3">Condiciones</label>
-            <select id="condiciones" class="form-select" multiple></select>
+            <div class="mb-3">
+              <label class="form-label">Condiciones</label>
+              <div class="dropdown">
+                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" id="condicionesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  Seleccionar condiciones
+                </button>
+                <ul id="condicionesList" class="dropdown-menu w-100 p-2"></ul>
+              </div>
+            </div>
           </div>
 
           <div class="col-12">
@@ -112,7 +129,7 @@
 
           <div class="col-12 d-flex justify-content-center gap-2 mt-4">
             <button type="button" class="btn-cancel" onclick="window.location.href='Home.html'">Cancelar</button>
-            <button type="submit" class="btn-save" onclick="window.location.href='CareRequestResults.html'">Enviar solicitud</button>
+            <button type="submit" class="btn-save">Enviar solicitud</button>
           </div>
         </form>
 
@@ -124,7 +141,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
   <script src="../JS/Validation/validation.js"></script>
-  <script src="../JS/Pages/CareRequest.js"></script>
+  <script type="module" src="../JS/Pages/CareRequest.js" defer></script>
 </body>
 </html>
 

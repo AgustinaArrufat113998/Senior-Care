@@ -1,114 +1,339 @@
+import {
+  getAllergies,
+  getConditions,
+  getDiseases,
+  getMedications,
+  createCareRequest,
+} from "../Api/CareRequest.js";
+
+import { getSpecialties } from "../Api/Carer.js";
+
+const CARER_TYPES_WITH_SPECIALTIES = new Set(["Cuidador con estudios", "Estudiante"]);
+
+const catalogsConfig = [
+  {
+    buttonId: "enfermedadesDropdown",
+    listId: "enfermedadesList",
+    loader: getDiseases,
+    labelKey: "disease",
+    emptyLabel: "enfermedades",
+    defaultLabel: "Sin enfermedades",
+  },
+  {
+    buttonId: "medicacionesDropdown",
+    listId: "medicacionesList",
+    loader: getMedications,
+    labelKey: "medication",
+    emptyLabel: "medicaciones",
+    defaultLabel: "Sin medicaciones",
+  },
+  {
+    buttonId: "alergiasDropdown",
+    listId: "alergiasList",
+    loader: getAllergies,
+    labelKey: "allergy",
+    emptyLabel: "alergias",
+    defaultLabel: "Sin alergias",
+  },
+  {
+    buttonId: "condicionesDropdown",
+    listId: "condicionesList",
+    loader: getConditions,
+    labelKey: "condition",
+    emptyLabel: "condiciones",
+    defaultLabel: "Sin condiciones",
+  },
+];
+
 const form = document.getElementById("careRequestForm");
-const msg = document.getElementById("msg");
-const carrerasContainer = document.getElementById("carrerasContainer");
+const messageBox = document.getElementById("msg");
+const specialtyContainer = document.getElementById("carrerasContainer");
+const specialtyDropdownButton = document.getElementById("carreraDropdown");
+const specialtyList = document.getElementById("specialtyDropdownList");
 const cuidadosSimplesContainer = document.getElementById("cuidadosSimplesContainer");
 
-document.querySelectorAll('input[name="tipoAtencion"]').forEach(chk => {
-  chk.addEventListener("change", () => {
-    const conEstudios = document.getElementById("cuidadorEstudios").checked;
-    const estudiante = document.getElementById("estudiante").checked;
-    const sinEstudios = document.getElementById("sinEstudios").checked;
+let cachedSpecialties = [];
 
-    carrerasContainer.classList.toggle("hidden", !(conEstudios || estudiante));
-    cuidadosSimplesContainer.classList.toggle("hidden", !sinEstudios);
-  });
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadCatalogs();
+  setupCarerTypeListeners();
+  if (form) {
+    form.addEventListener("submit", handleSubmit);
+  }
 });
 
-document.querySelectorAll(".carrera-option").forEach(opt => {
-  opt.addEventListener("change", () => {
-    const seleccionadas = Array.from(document.querySelectorAll(".carrera-option:checked")).map(el => el.value);
-    if (seleccionadas.length === 0) {
-      carreraDropdown.innerText = "Seleccionar carreras";
-    } else if (seleccionadas.length === 1) {
-      carreraDropdown.innerText = seleccionadas[0];
-    } else {
-      carreraDropdown.innerText = `${seleccionadas.length} carreras seleccionadas`;
+async function loadCatalogs() {
+  try {
+    await Promise.all(
+      catalogsConfig.map(async (config) => {
+        const { buttonId, listId, loader, emptyLabel } = config;
+        const button = document.getElementById(buttonId);
+        const list = document.getElementById(listId);
+        if (!button || !list) return;
+        list.innerHTML = `<li class="text-center text-muted py-1">Cargando...</li>`;
+        try {
+          const data = await loader();
+          renderCatalogList(list, data, config);
+          attachCatalogListBehavior(list, button, config);
+        } catch (error) {
+          console.error(`Error al cargar ${emptyLabel}:`, error);
+          list.innerHTML = `<li class="text-danger px-2">Sin datos</li>`;
+          showMessage(`No pudimos obtener ${emptyLabel}.`, "error");
+        }
+      })
+    );
+  } catch (catError) {
+    console.error("Error al cargar catálogos:", catError);
+    showMessage("Ocurrió un problema al cargar los catálogos. Intenta nuevamente.", "error");
+  }
+}
+
+function renderCatalogList(listElement, items = [], config) {
+  const { labelKey, defaultLabel } = config;
+  listElement.innerHTML = "";
+  items.forEach(item => {
+    if (!item?.id) return;
+    const labelText = item[labelKey] || item.name || `Opción ${item.id}`;
+    const isDefault = defaultLabel
+      ? labelText.trim().toLowerCase() === defaultLabel.toLowerCase()
+      : false;
+
+    const li = document.createElement("li");
+    li.classList.add("mb-1");
+
+    const label = document.createElement("label");
+    label.className = "form-check-label d-flex align-items-center gap-2";
+
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.className = "form-check-input catalog-option";
+    input.value = item.id;
+    if (isDefault) {
+      input.dataset.defaultOption = "true";
+      input.checked = true;
     }
+
+    const span = document.createElement("span");
+    span.textContent = labelText;
+
+    label.appendChild(input);
+    label.appendChild(span);
+    li.appendChild(label);
+    listElement.appendChild(li);
   });
-});
+}
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  msg.innerText = "";
+function attachCatalogListBehavior(list, button, config) {
+  const updateState = () => {
+    const defaultInput = list.querySelector("input[data-default-option='true']");
+    const defaultChecked = defaultInput ? defaultInput.checked : false;
 
-  const fechaInicio = document.getElementById("fechaInicio").value;
-  const fechaFin = document.getElementById("fechaFin").value;
-  const horaInicio = document.getElementById("horaInicio").value;
-  const horaFin = document.getElementById("horaFin").value;
-  const diseases = document.getElementById("diseases").value.trim();
-  const medications = document.getElementById("medications").value.trim(); const telefonoEmergencia = document.getElementById("telefonoEmergencia").value.trim(); 
-  const tiposSeleccionados = Array.from(document.querySelectorAll('input[name="tipoAtencion"]:checked')).map(chk => chk.value);
-  const carrerasSeleccionadas = Array.from(document.querySelectorAll(".carrera-option:checked")).map(opt => opt.value); 
+    list.querySelectorAll("input[type='checkbox']").forEach(input => {
+      if (!defaultInput || input === defaultInput) {
+        return;
+      }
+      if (defaultChecked) {
+        input.checked = false;
+        input.disabled = true;
+      } else {
+        input.disabled = false;
+      }
+    });
 
-  if (!fechaInicio || !fechaFin || !horaInicio || !horaFin || !diseases || !medications) {
-    msg.innerText = "Por favor, complete todos los campos obligatorios.";
+    const selectedCount = defaultChecked
+      ? 1
+      : list.querySelectorAll("input[type='checkbox']:checked").length;
+    updateCatalogButtonLabel(
+      button,
+      selectedCount,
+      config.emptyLabel,
+      defaultChecked ? config.defaultLabel : null
+    );
+  };
+
+  list.addEventListener("change", updateState);
+  updateState();
+}
+
+function updateCatalogButtonLabel(button, selectedCount, emptyLabel, defaultText = null) {
+  if (defaultText) {
+    button.textContent = `${defaultText}`;
+    return;
+  }
+  button.textContent = selectedCount
+    ? `${capitalize(emptyLabel)} seleccionadas (${selectedCount})`
+    : `Seleccionar ${emptyLabel}`;
+}
+
+function capitalize(text = "") {
+  if (!text.length) return text;
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function setupCarerTypeListeners() {
+  const radios = document.querySelectorAll('input[name="tipoAtencion"]');
+  radios.forEach(radio => {
+    radio.addEventListener("change", async (event) => {
+      const selected = event.target.value;
+      toggleCuidadosHint(selected);
+      if (CARER_TYPES_WITH_SPECIALTIES.has(selected)) {
+        specialtyContainer?.classList.remove("hidden");
+        if (!cachedSpecialties.length) {
+          try {
+            cachedSpecialties = await getSpecialties();
+          } catch (error) {
+            console.error("Error al obtener especialidades:", error);
+            showMessage("No se pudieron cargar las especialidades.", "error");
+          }
+        }
+        renderSpecialtyCheckboxes(cachedSpecialties);
+      } else {
+        specialtyContainer?.classList.add("hidden");
+        clearSpecialtySelection();
+      }
+    });
+  });
+
+  specialtyList?.addEventListener("change", updateSpecialtyButtonLabel);
+}
+
+function toggleCuidadosHint(carerType) {
+  if (!cuidadosSimplesContainer) return;
+  if (!carerType || CARER_TYPES_WITH_SPECIALTIES.has(carerType)) {
+    cuidadosSimplesContainer.classList.add("hidden");
+  } else {
+    cuidadosSimplesContainer.classList.remove("hidden");
+  }
+}
+
+function renderSpecialtyCheckboxes(specialties = []) {
+  if (!specialtyList) return;
+  specialtyList.innerHTML = "";
+  specialties.forEach(spec => {
+    if (!spec?.id) return;
+    const li = document.createElement("li");
+    li.classList.add("mb-1");
+    li.innerHTML = `
+      <label class="form-check-label d-flex align-items-center gap-2">
+        <input class="form-check-input specialty-option" type="checkbox" value="${spec.id}">
+        <span>${spec.name || "Especialidad"}</span>
+      </label>
+    `;
+    specialtyList.appendChild(li);
+  });
+  updateSpecialtyButtonLabel();
+}
+
+function clearSpecialtySelection() {
+  specialtyList?.querySelectorAll("input[type='checkbox']").forEach(input => {
+    input.checked = false;
+  });
+  updateSpecialtyButtonLabel();
+}
+
+function updateSpecialtyButtonLabel() {
+  if (!specialtyDropdownButton) return;
+  const selected = getSelectedSpecialtyIds();
+  specialtyDropdownButton.textContent = selected.length
+    ? `Especialidades seleccionadas (${selected.length})`
+    : "Seleccionar especialidades";
+}
+
+function getSelectedSpecialtyIds() {
+  if (!specialtyList) return [];
+  return Array.from(specialtyList.querySelectorAll("input[type='checkbox']:checked"))
+    .map(input => Number(input.value))
+    .filter(id => !Number.isNaN(id));
+}
+
+function getSelectedValuesFromList(listId) {
+  const list = document.getElementById(listId);
+  if (!list) return [];
+  return Array.from(list.querySelectorAll("input[type='checkbox']:checked"))
+    .map(input => Number(input.value))
+    .filter(value => !Number.isNaN(value));
+}
+
+async function handleSubmit(event) {
+  event.preventDefault();
+  showMessage("");
+
+  const storedUserId = localStorage.getItem("userId");
+  const userId = storedUserId ? Number(storedUserId) : null;
+  if (!userId) {
+    showMessage("Debes iniciar sesión para crear una solicitud.", "error");
     return;
   }
 
-  if (new Date(fechaFin) < new Date(fechaInicio)) {
-    msg.innerText = "La fecha de finalización no puede ser anterior a la fecha de inicio.";
+  const selectedCarerType = document.querySelector('input[name="tipoAtencion"]:checked')?.value || null;
+  if (CARER_TYPES_WITH_SPECIALTIES.has(selectedCarerType) && !getSelectedSpecialtyIds().length) {
+    showMessage("Seleccioná al menos una especialidad.", "error");
     return;
   }
 
-  if (tiposSeleccionados.length === 0) {
-    msg.innerText = "Seleccione al menos un tipo de atención preferida.";
-    return;
+  try {
+    const payload = buildRequestPayload(userId);
+    await createCareRequest(payload);
+    showMessage("Solicitud enviada con éxito.", "success");
+    form.reset();
+    clearSpecialtySelection();
+    specialtyContainer?.classList.add("hidden");
+    setTimeout(() => {
+      window.location.href = "CareRequestResults.html";
+    }, 1200);
+  } catch (error) {
+    console.error("Error al crear la solicitud:", error);
+    showMessage(error.message || "No se pudo crear la solicitud de cuidado.", "error");
+  }
+}
+
+function buildRequestPayload(userId) {
+  const carerType = document.querySelector('input[name="tipoAtencion"]:checked')?.value || null;
+  const specialtyIds = CARER_TYPES_WITH_SPECIALTIES.has(carerType) ? getSelectedSpecialtyIds() : [];
+
+  const patientInfo = buildPatientInfoPayload();
+
+  return {
+    startDate: document.getElementById("fechaInicio")?.value || null,
+    endDate: document.getElementById("fechaFin")?.value || null,
+    startTime: document.getElementById("horaInicio")?.value || null,
+    endTime: document.getElementById("horaFin")?.value || null,
+    carerSpecialties: specialtyIds.length ? { specialtyIds } : null,
+    carerType,
+    genderPreference: document.getElementById("preferenciaGenero")?.value || "",
+    emergencyPhone: document.getElementById("telefonoEmergencia")?.value || "",
+    status: "PENDING",
+    userId,
+    carerId: null,
+    patientInfoId: null,
+    patientInfo,
+    paymentInfoId: null,
+  };
+}
+
+function buildPatientInfoPayload() {
+  const diseases = getSelectedValuesFromList("enfermedadesList");
+  const medications = getSelectedValuesFromList("medicacionesList");
+  const allergies = getSelectedValuesFromList("alergiasList");
+  const conditions = getSelectedValuesFromList("condicionesList");
+  const additionalInfo = document.getElementById("careSuggestions")?.value?.trim() || "";
+
+  const hasValues = diseases.length || medications.length || allergies.length || conditions.length || additionalInfo;
+  if (!hasValues) {
+    return null;
   }
 
-    if (!fechaInicio || !fechaFin || !diseases || !medications || !telefonoEmergencia) {
-    msg.innerText = "⚠️ Complete todos los campos obligatorios.";
-    return;
-  }
+  return {
+    diseases,
+    medications,
+    allergies,
+    patientConditions: conditions,
+    additionalInfo,
+  };
+}
 
-  if (fechaInicio < hoy) { 
-    msg.innerText = "⚠️ La fecha de inicio no puede ser anterior a la fecha actual.";
-    return;
-  }
-
-  if (fechaFin < fechaInicio) {
-    msg.innerText = "⚠️ La fecha de finalización no puede ser anterior a la fecha de inicio.";
-    return;
-  }
-
-  if (tiposSeleccionados.length === 0) {
-    msg.innerText = "⚠️ Seleccione al menos un tipo de atención preferida.";
-    return;
-  }
-
-  if ((document.getElementById("cuidadorEstudios").checked || document.getElementById("estudiante").checked) && carrerasSeleccionadas.length === 0) { // 🆕
-    msg.innerText = "⚠️ Seleccione al menos una carrera o especialidad.";
-    return;
-  }
-
-  if (!/^\d{10,15}$/.test(telefonoEmergencia)) { // 🆕
-    msg.innerText = "⚠️ Ingrese un teléfono de emergencia válido (solo números, sin espacios ni guiones).";
-    return;
-  }
-
-  alert("Solicitud enviada con éxito.\nTipos seleccionados: " + tiposSeleccionados.join(", "));
-  form.reset();
-  carrerasContainer.classList.add("hidden");
-  cuidadosSimplesContainer.classList.add("hidden");
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  cargarOpciones("enfermedades", "/api/enfermedades");
-  cargarOpciones("medicaciones", "/api/medicaciones");
-  cargarOpciones("alergias", "/api/alergias");
-  cargarOpciones("condiciones", "/api/condiciones");
-});
-
-function cargarOpciones(idSelect, endpoint) {
-  fetch(endpoint)
-    .then((res) => res.json())
-    .then((data) => {
-      const select = document.getElementById(idSelect);
-      data.forEach((item) => {
-        const option = document.createElement("option");
-        option.value = item.id;
-        option.textContent = item.nombre;
-        select.appendChild(option);
-      });
-    })
-    .catch((err) => console.error(`Error cargando ${idSelect}:`, err));
+function showMessage(text, type = "info") {
+  if (!messageBox) return;
+  messageBox.textContent = text;
+  messageBox.className = type === "error" ? "error" : type === "success" ? "success" : "";
 }

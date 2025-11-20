@@ -1,32 +1,41 @@
 package com.ps.careRequest_service.Client;
 
+import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.ps.careRequest_service.Dto.SpecialtySummaryDto;
+import com.ps.careRequest_service.Dto.SpecialtyDto;
 
 @Component
 public class SpecialtyClient {
 
-    private final WebClient webClient;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpecialtyClient.class);
 
-    public SpecialtyClient(@Value("${external.specialty-service.url}") String baseUrl,
-            WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder
-                .baseUrl(baseUrl)
-                .build();
+    private final WebClient webClient;
+    private final String specialtiesUrl;
+
+    public SpecialtyClient(WebClient.Builder webClientBuilder,
+            @Value("${external.user-service.specialties-url}") String specialtiesUrl) {
+        this.webClient = webClientBuilder.build();
+        this.specialtiesUrl = specialtiesUrl;
     }
 
-    public List<SpecialtySummaryDto> getAllSpecialties() {
-        return webClient.get()
-                .uri("/all")
-                .retrieve()
-                .bodyToFlux(SpecialtySummaryDto.class)
-                .collectList()
-                .block();
+    public List<SpecialtyDto> getAllSpecialties() {
+        try {
+            return webClient.get()
+                    .uri(specialtiesUrl)
+                    .retrieve()
+                    .bodyToFlux(SpecialtyDto.class)
+                    .collectList()
+                    .block();
+        } catch (Exception ex) {
+            LOGGER.error("Failed to retrieve specialties from user-service", ex);
+            return Collections.emptyList();
+        }
     }
 }
-

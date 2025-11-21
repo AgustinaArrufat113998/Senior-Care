@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Confirmar Cuidado | SeniorCare</title>
+    <meta name="description" content="Detalles y confirmación de la solicitud de cuidado del paciente." />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-blue: #1554f0;
+            --secondary-blue: #1796F0;
+            --text-dark: #34495e;
+            --text-muted: #7f8c8d;
+            --success: #2ecc71;
+            --error: #e74c3c;
+            --bg-light: #f4f6f9;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif; 
+            /* Fondo degradado azul (tomado de capturas) */
+            background: linear-gradient(135deg, #1796F0, #414CF0, #1B5BF0, #5B90F0);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Estilos de Tarjeta (main-card) */
+        .main-card {
+            background-color: #fff;
+            border-radius: 20px;
+            max-width: 700px; 
+            width: 100%;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .card-header h2 {
+            color: var(--primary-blue); 
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-size: 1.8rem;
+        }
+        
+        /* --- ESTILOS DE RESUMEN DE DATOS (FIELD LAYOUT) --- */
+        .row-form {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+
+        .col-6-form {
+            flex: 0 0 50%;
+            max-width: 50%;
+            padding: 0 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        
+        .col-4-form {
+            flex: 0 0 33.333%;
+            max-width: 33.333%;
+            padding: 0 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        
+        .col-12-form {
+            flex: 0 0 100%;
+            max-width: 100%;
+            padding: 0 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        
+        .form-group {
+            background-color: var(--bg-light);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            min-height: 60px; /* Para mantener la altura en campos de una línea */
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+            display: block;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .form-group .value-display {
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 1rem;
+            margin-top: 2px;
+            display: block;
+            word-break: break-word; /* Para textos largos */
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            border-bottom: 2px solid var(--secondary-blue);
+            padding-bottom: 5px;
+            margin-top: 25px;
+            margin-bottom: 20px;
+        }
+        
+        /* Estilos específicos para campos de selección de tipo (Checkbox/Radio) */
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            padding-top: 5px;
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        
+        /* Resaltar valores booleanos */
+        .value-boolean {
+            font-weight: 600;
+            color: var(--success);
+        }
+        .value-boolean.false {
+            color: var(--error);
+        }
+        
+        /* --- ACCIONES (BOTONES) --- */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end; /* Alinear a la derecha como en la captura */
+            gap: 15px;
+            padding: 0 10px;
+            margin-top: 30px;
+        }
+        
+        .btn-action {
+            border: none;
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        /* Estilo para botón Aceptar (Guardar/Verde) */
+        .btn-accept { 
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-accept:hover {
+            background-color: #27ae60;
+        }
+        
+        /* Estilo para botón Rechazar (Cancelar/Rojo) */
+        .btn-reject {
+            background-color: var(--error);
+            color: white;
+        }
+        
+        .btn-reject:hover {
+            background-color: #c0392b;
+        }
+
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 600px) {
+            body { padding: 10px; align-items: flex-start; }
+            .main-card {
+                padding: 25px 15px;
+                margin: 0;
+            }
+            .col-6-form, .col-4-form {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            .form-actions { 
+                justify-content: space-between; 
+                flex-direction: column; 
+                align-items: stretch;
+            }
+            .btn-action { width: 100%; margin-bottom: 10px; }
+            .checkbox-group { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-card">
+        <div class="card-header">
+            <h2>Detalles y Aceptación de Cuidado</h2>
+        </div>
+        
+        <form id="care-acceptance-form" onsubmit="return handleAcceptance(event)" novalidate>
+            
+            <div class="section-title">Información de la Solicitud</div>
+
+            <div class="row-form">
+                <div class="col-6-form">
+                    <div class="form-group">
+                        <label>Fecha de inicio</label>
+                        <span class="value-display">2025-11-21</span> <!-- VALOR ACTUALIZADO -->
+                    </div>
+                </div>
+                <div class="col-6-form">
+                    <div class="form-group">
+                        <label>Fecha de finalización</label>
+                        <span class="value-display">2025-11-22</span> <!-- VALOR ACTUALIZADO -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row-form">
+                <div class="col-6-form">
+                    <div class="form-group">
+                        <label>Hora de inicio</label>
+                        <span class="value-display">12:00 hs</span> <!-- VALOR ACTUALIZADO -->
+                    </div>
+                </div>
+                <div class="col-6-form">
+                    <div class="form-group">
+                        <label>Hora de finalización</label>
+                        <span class="value-display">12:00 hs</span> <!-- VALOR ACTUALIZADO -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row-form">
+                <div class="col-6-form">
+                    <div class="form-group">
+                        <label>Tipo de atención requerida</label>
+                        <div class="checkbox-group">
+                             <span class="value-display">Cuidador con estudios</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6-form">
+                    <div class="form-group">
+                        <label>Teléfono de emergencia</label>
+                        <span class="value-display">351-456-7890</span> 
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-form">
+                <div class="col-6-form">
+                    <div class="form-group">
+                        <label>Preferencia de género</label>
+                        <span class="value-display">Femenino</span>
+                    </div>
+                </div>
+                <div class="col-6-form">
+                    <div class="form-group">
+                        <label>Tarifa por Hora Solicitada</label>
+                        <span class="value-display">$4500</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">Antecedentes Médicos y Cuidados</div>
+
+            <div class="row-form">
+                <div class="col-12-form">
+                    <div class="form-group">
+                        <label>Enfermedades</label>
+                        <span class="value-display">ACV, Alzheimer.</span> <!-- VALOR ACTUALIZADO -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row-form">
+                <div class="col-12-form">
+                    <div class="form-group">
+                        <label>Alergias</label>
+                        <span class="value-display">Sin alergias conocidas.</span> <!-- VALOR ACTUALIZADO -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">Condiciones Especiales</div>
+
+            <div class="row-form">
+                <div class="col-4-form">
+                    <div class="form-group">
+                        <label>Usa Pañales</label>
+                        <span class="value-display value-boolean false">No</span> <!-- VALOR MANTENIDO -->
+                    </div>
+                </div>
+                <div class="col-4-form">
+                    <div class="form-group">
+                        <label>Movilidad Reducida</label>
+                        <span class="value-display value-boolean false">No</span> <!-- VALOR ACTUALIZADO -->
+                    </div>
+                </div>
+                <div class="col-4-form">
+                    <div class="form-group">
+                        <label>Dieta Especial</label>
+                        <span class="value-display value-boolean false">No</span> <!-- VALOR ACTUALIZADO -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-form">
+                <div class="col-12-form">
+                    <div class="form-group" style="min-height: 100px;">
+                        <label>Cuidados o sugerencias especiales</label>
+                        <span class="value-display">El paciente disfruta de la lectura por las tardes. Evitar discusiones fuertes. Se recomienda un paseo corto de 15 minutos después del almuerzo.</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <a class="btn-action btn-reject" href="#" onclick="handleRejection(event)">
+                    Rechazar
+                </a>
+                <!-- Este es el botón de acción principal para ACEPTAR el cuidado -->
+                <button type="submit" class="btn-action btn-accept">
+                    Aceptar Cuidado
+                </button>
+            </div>
+        </form>
+        
+    </div>
+
+    <script>
+        // Definición de colores fuera de la función para usar en el modal
+        const successColor = '#2ecc71';
+        const errorColor = '#e74c3c';
+        const textDark = '#34495e';
+
+        // Función de prueba para simular la aceptación
+        window.handleAcceptance = function(e) {
+            e.preventDefault();
+            alertMessage('Cuidado Aceptado', 'Has aceptado la solicitud. En breve recibirás los datos de contacto y las instrucciones finales. (Simulación)', 'success');
+            return false;
+        }
+        
+        // Función de prueba para simular el rechazo
+        window.handleRejection = function(e) {
+            e.preventDefault();
+            alertMessage('Cuidado Rechazado', 'Has rechazado la solicitud. Esta desaparecerá de tus ofertas disponibles. (Simulación)', 'error');
+            return false;
+        }
+
+        // Función para mostrar un mensaje modal (sustituto de alert() y confirm())
+        function alertMessage(title, message, type) {
+            // Intenta encontrar un contenedor de mensaje existente o crearlo
+            let container = document.getElementById('message-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'message-container';
+                container.style.cssText = `
+                    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                    background: rgba(0,0,0,0.5); z-index: 1000;
+                    display: flex; justify-content: center; align-items: center;
+                `;
+                document.body.appendChild(container);
+            }
+            
+            const color = type === 'success' ? successColor : errorColor;
+
+            container.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+                    <h3 style="color: ${color}; margin-top: 0;">${title}</h3>
+                    <p style="color: ${textDark};">${message}</p>
+                    <button onclick="document.getElementById('message-container').remove()" 
+                            style="background-color: ${color}; color: white; border: none; padding: 10px 20px; border-radius: 8px; margin-top: 15px; cursor: pointer;">
+                        Cerrar
+                    </button>
+                </div>
+            `;
+            container.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>

@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p>Parentesco: ${member.relationship} | DNI: ${member.dni}</p>
                 </div>
                 <div class="family-actions">
-                    <button class="btn-outline-custom edit-btn" data-id="${member.id}" title="Editar">
+                    <button class="btn-outline-custom edit-btn" data-id="${member.id}" title="Editar" onclick="window.location.href='FamilyEdit.html'">
                         <i class="fas fa-pencil-alt"></i>
                     </button>
                     <button class="btn-cancel delete-btn" data-id="${member.id}" title="Eliminar">

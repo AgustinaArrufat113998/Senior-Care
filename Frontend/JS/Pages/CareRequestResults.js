@@ -77,7 +77,7 @@ $(document).ready(function() {
 
     // Eventos dinámicos (delegados)
     $(".seleccionar-btn").click(function() {
-      window.location.href = "WaitingRoom.html";
+      window.location.href = "PaymentAndInsurance.html";
     });
 
     $(".ver-detalle-btn").click(function() {

@@ -21,8 +21,9 @@ body {
 /* Botón flotante */
 .action-buttons {
   position: fixed;
-  bottom: 30px;
+  bottom: 90px;
   right: 30px;
+  z-index: 1000;
 }
 
 .btn-green {

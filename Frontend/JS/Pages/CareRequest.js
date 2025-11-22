@@ -267,11 +267,11 @@ async function handleSubmit(event) {
     const payload = buildRequestPayload(userId);
     await createCareRequest(payload);
     showMessage("Solicitud enviada con éxito.", "success");
-    form.reset();
-    clearSpecialtySelection();
-    specialtyContainer?.classList.add("hidden");
+    // form.reset();
+    // clearSpecialtySelection();
+    // specialtyContainer?.classList.add("hidden");
+    window.location.href = "CareRequestResults.html";
     setTimeout(() => {
-      window.location.href = "CareRequestResults.html";
     }, 1200);
   } catch (error) {
     console.error("Error al crear la solicitud:", error);

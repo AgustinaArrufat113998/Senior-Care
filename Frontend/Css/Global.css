@@ -9,6 +9,15 @@ main,
 :root {
   --navbar-height: 70px;
   --footer-height: 70px;
+  /* Tema del chatbot n8n alineado al branding */
+  --chat--color--primary: #2b6fff;
+  --chat--color--primary-shade-50: #255fde;
+  --chat--color--primary--shade-100: #1f50c3;
+  --chat--color--secondary: #2ecc71;
+  --chat--toggle--background: var(--chat--color--primary);
+  --chat--toggle--hover--background: var(--chat--color--primary-shade-50);
+  --chat--toggle--active--background: var(--chat--color--primary--shade-100);
+  --chat--window--z-index: 1102;
 }
 
 /* Evita solapamientos */
@@ -112,6 +121,36 @@ body {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  position: relative;
+  padding-right: 10rem; /* reserva espacio para el chat */
+}
+
+.footer .footer-chat-slot {
+  position: fixed; /* mantenemos el anclaje visual al footer sin que salga de la pantalla */
+  right: 1.25rem;
+  bottom: calc(var(--footer-height) + 12px);
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  z-index: 1102;
+}
+
+.footer .footer-chat-slot .chat-window-wrapper {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.footer .footer-chat-slot .chat-window-toggle {
+  background: linear-gradient(135deg, #2b6fff, #558bff);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(17, 56, 143, 0.25);
+  border: none;
+}
+
+.footer .footer-chat-slot .chat-window-toggle:hover,
+.footer .footer-chat-slot .chat-window-toggle:focus {
+  background: var(--chat--color--primary-shade-50);
 }
 
 /* Enlaces */

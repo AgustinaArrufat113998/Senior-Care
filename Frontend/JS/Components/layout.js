@@ -119,6 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <a href="#" data-terms-trigger="true" class="text-white small" data-bs-toggle="modal" data-bs-target="#modalTerminos">Terminos y privacidad</a>
         </div>
       </div>
+      <div class="footer-chat-slot" aria-label="Chat de asistencia"></div>
     </footer>
 
     <div class="modal fade" id="modalTerminos" tabindex="-1" aria-labelledby="modalTerminosLabel" aria-hidden="true">

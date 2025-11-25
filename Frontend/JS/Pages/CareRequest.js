@@ -47,6 +47,10 @@ const catalogsConfig = [
 
 const form = document.getElementById("careRequestForm");
 const messageBox = document.getElementById("msg");
+const startDateInput = document.getElementById("fechaInicio");
+const endDateInput = document.getElementById("fechaFin");
+const startTimeInput = document.getElementById("horaInicio");
+const endTimeInput = document.getElementById("horaFin");
 const specialtyContainer = document.getElementById("carrerasContainer");
 const specialtyDropdownButton = document.getElementById("carreraDropdown");
 const specialtyList = document.getElementById("specialtyDropdownList");
@@ -55,12 +59,37 @@ const cuidadosSimplesContainer = document.getElementById("cuidadosSimplesContain
 let cachedSpecialties = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
+  setupDateTimeConstraints();
   await loadCatalogs();
   setupCarerTypeListeners();
   if (form) {
     form.addEventListener("submit", handleSubmit);
   }
 });
+
+function setupDateTimeConstraints() {
+  const today = getTodayString();
+  if (startDateInput) {
+    startDateInput.min = today;
+    startDateInput.addEventListener("change", () => {
+      if (endDateInput) {
+        endDateInput.min = startDateInput.value || today;
+      }
+    });
+  }
+  if (endDateInput && startDateInput) {
+    endDateInput.min = startDateInput.value || today;
+  }
+  if (startTimeInput && endTimeInput) {
+    startTimeInput.addEventListener("change", () => {
+      endTimeInput.min = startTimeInput.value || "";
+    });
+  }
+}
+
+function getTodayString() {
+  return new Date().toISOString().split("T")[0];
+}
 
 async function loadCatalogs() {
   try {
@@ -250,33 +279,59 @@ async function handleSubmit(event) {
   event.preventDefault();
   showMessage("");
 
+  if (!validateDateTime()) {
+    return;
+  }
+
   const storedUserId = localStorage.getItem("userId");
   const userId = storedUserId ? Number(storedUserId) : null;
   if (!userId) {
-    showMessage("Debes iniciar sesión para crear una solicitud.", "error");
+    showMessage("Debes iniciar sesion para crear una solicitud.", "error");
     return;
   }
 
   const selectedCarerType = document.querySelector('input[name="tipoAtencion"]:checked')?.value || null;
   if (CARER_TYPES_WITH_SPECIALTIES.has(selectedCarerType) && !getSelectedSpecialtyIds().length) {
-    showMessage("Seleccioná al menos una especialidad.", "error");
+    showMessage("Selecciona al menos una especialidad.", "error");
     return;
   }
 
   try {
     const payload = buildRequestPayload(userId);
     await createCareRequest(payload);
-    showMessage("Solicitud enviada con éxito.", "success");
-    // form.reset();
-    // clearSpecialtySelection();
-    // specialtyContainer?.classList.add("hidden");
+    sessionStorage.setItem("lastCareRequest", JSON.stringify(payload));
+    showMessage("Solicitud enviada con exito.", "success");
     window.location.href = "CareRequestResults.html";
-    setTimeout(() => {
-    }, 1200);
   } catch (error) {
     console.error("Error al crear la solicitud:", error);
     showMessage(error.message || "No se pudo crear la solicitud de cuidado.", "error");
   }
+}
+const storedUserId = localStorage.getItem("userId");
+const userId = storedUserId ? Number(storedUserId) : null;
+if (!userId) {
+  showMessage("Debes iniciar sesión para crear una solicitud.", "error");
+  return;
+}
+
+const selectedCarerType = document.querySelector('input[name="tipoAtencion"]:checked')?.value || null;
+if (CARER_TYPES_WITH_SPECIALTIES.has(selectedCarerType) && !getSelectedSpecialtyIds().length) {
+  showMessage("Seleccioná al menos una especialidad.", "error");
+  return;
+}
+
+try {
+  const payload = buildRequestPayload(userId);
+  await createCareRequest(payload);
+  showMessage("Solicitud enviada con éxito.", "success");
+  window.location.href = "CareRequestResults.html";
+  // form.reset();
+  // clearSpecialtySelection();
+  // specialtyContainer?.classList.add("hidden");
+
+} catch (error) {
+  console.error("Error al crear la solicitud:", error);
+  showMessage(error.message || "No se pudo crear la solicitud de cuidado.", "error");
 }
 
 function buildRequestPayload(userId) {
@@ -304,4 +359,29 @@ function showMessage(text, type = "info") {
   if (!messageBox) return;
   messageBox.textContent = text;
   messageBox.className = type === "error" ? "error" : type === "success" ? "success" : "";
+}
+
+function validateDateTime() {
+  const startDate = startDateInput?.value || "";
+  const endDate = endDateInput?.value || "";
+  const startTime = startTimeInput?.value || "";
+  const endTime = endTimeInput?.value || "";
+  const today = getTodayString();
+
+  if (startDate && startDate < today) {
+    showMessage("La fecha de inicio no puede ser anterior a hoy.", "error");
+    return false;
+  }
+
+  if (startDate && endDate && endDate < startDate) {
+    showMessage("La fecha de finalizacion no puede ser anterior a la de inicio.", "error");
+    return false;
+  }
+
+  if (startTime && endTime && startTime > endTime) {
+    showMessage("La hora de finalizacion debe ser posterior a la de inicio.", "error");
+    return false;
+  }
+
+  return true;
 }

@@ -110,11 +110,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
       return;
     }
 
-    const response = await registerUser(userData);
-    if (!response) {
-      throw new Error("No se recibió respuesta del servidor al registrar el usuario");
-    }
-
+    
     // 🚀 Éxito: esperar antes de redirigir
     await Swal.fire({
       icon: "success",
@@ -128,8 +124,13 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
         Swal.showLoading();
       }
     });
-
-    window.location.href = "../../Html/Login.html";
+    
+    const response = await registerUser(userData);
+    if (!response) {
+      throw new Error("No se recibió respuesta del servidor al registrar el usuario");
+    }
+    
+    window.location.href = "Login.html";
 
   } catch (error) {
     console.error("Error durante el registro:", error);

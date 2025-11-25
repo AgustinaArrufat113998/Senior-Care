@@ -3,7 +3,22 @@
 const API_USER_URL = "http://localhost:8081/api";
 
 /**
- * 🔹 Obtiene todas las especialidades desde la base de datos
+ * Obtiene todos los cuidadores
+ */
+export async function getCarers() {
+  try {
+    const response = await fetch(`${API_USER_URL}/carer`);
+    if (response.status === 204) return [];
+    if (!response.ok) throw new Error("Error al obtener cuidadores");
+    return await response.json();
+  } catch (error) {
+    console.error("Error en getCarers:", error);
+    return [];
+  }
+}
+
+/**
+ * Obtiene todas las especialidades desde la base de datos
  */
 export async function getSpecialties() {
   try {
@@ -17,7 +32,7 @@ export async function getSpecialties() {
 }
 
 /**
- * 🔹 Obtiene todas las habilidades desde la base de datos
+ * Obtiene todas las habilidades desde la base de datos
  */
 export async function getSkills() {
   try {
@@ -31,7 +46,7 @@ export async function getSkills() {
 }
 
 /**
- * 🔹 Crea un nuevo cuidador en la base de datos
+ * Crea un nuevo cuidador en la base de datos
  */
 export async function createCarer(carerData) {
   try {

@@ -1,87 +1,126 @@
-$(document).ready(function() {
-  const $resultados = $("#resultadosContainer");
+import { getCarers } from "../Api/Carer.js";
 
-  // Simulación de resultados (hasta conectar al backend)
-  const resultadosMock = [
-    {
-      nombre: "María López",
-      fechaInicio: "2025-10-20",
-      tipoAtencion: "Cuidador con estudios",
-      genero: "Femenino",
-      experiencia: "5 años en geriatría",
-      tarifa: 4500
-    },
-    {
-      nombre: "Carlos Gómez",
-      fechaInicio: "2025-10-21",
-      tipoAtencion: "Cuidador sin estudios",
-      genero: "Masculino",
-      experiencia: "3 años en acompañamiento hospitalario",
-      tarifa: 3800
-    },
-    {
-      nombre: "Lucía Pérez",
-      fechaInicio: "2025-10-22",
-      tipoAtencion: "Estudiante",
-      genero: "Femenino",
-      experiencia: "Último año de enfermería",
-      tarifa: 4000
+const resultadosContainer = document.getElementById("resultadosContainer");
+const tipoFiltro = document.getElementById("tipoAtencionFiltro");
+const generoFiltro = document.getElementById("generoFiltro");
+const fechaFiltro = document.getElementById("fechaInicioFiltro");
+const btnFiltrar = document.getElementById("btnFiltrar");
+
+let carers = [];
+let storedRequest = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+  storedRequest = loadStoredRequest();
+  loadCarers();
+  btnFiltrar?.addEventListener("click", (e) => {
+    e.preventDefault();
+    renderResultados(applyFilters());
+  });
+});
+
+function loadStoredRequest() {
+  const raw = sessionStorage.getItem("lastCareRequest");
+  if (!raw) return null;
+  try {
+    const data = JSON.parse(raw);
+    if (fechaFiltro && data.startDate) fechaFiltro.value = data.startDate;
+    if (tipoFiltro && data.carerType) tipoFiltro.value = data.carerType;
+    if (generoFiltro && data.genderPreference) generoFiltro.value = data.genderPreference;
+    return data;
+  } catch (err) {
+    console.warn("No se pudo leer la solicitud previa:", err);
+    return null;
+  }
+}
+
+async function loadCarers() {
+  showMessage("Cargando cuidadores...");
+  carers = await getCarers();
+  renderResultados(applyFilters());
+}
+
+function applyFilters() {
+  const filters = {
+    carerType: (tipoFiltro?.value || storedRequest?.carerType || "").trim(),
+    gender: (generoFiltro?.value || storedRequest?.genderPreference || "").trim(),
+    startDate: (fechaFiltro?.value || storedRequest?.startDate || "").trim(),
+    specialtyIds: storedRequest?.specialtyIds || [],
+  };
+  return filterCarers(carers, filters);
+}
+
+function filterCarers(list = [], filters = {}) {
+  const specialtySet = new Set(
+    (filters.specialtyIds || [])
+      .map(Number)
+      .filter((id) => !Number.isNaN(id))
+  );
+
+  return list.filter((carer) => {
+    if (specialtySet.size && (!carer.specialty || !specialtySet.has(Number(carer.specialty.id)))) {
+      return false;
     }
-  ];
 
-  // Render inicial
-  renderResultados(resultadosMock);
+    if (filters.carerType === "Cuidador con estudios" && !carer.specialty) {
+      return false;
+    }
 
-  // Botón de filtro
-  $("#btnFiltrar").click(() => {
-    const tipo = $("#tipoAtencionFiltro").val();
-    const genero = $("#generoFiltro").val();
-    const fecha = $("#fechaInicioFiltro").val();
+    if (filters.carerType === "Estudiante") {
+      const exp = (carer.experience || "").toLowerCase();
+      if (!exp.includes("estudiante")) return false;
+    }
 
-    const filtrados = resultadosMock.filter(r => {
-      return (!tipo || r.tipoAtencion === tipo) &&
-             (!genero || r.genero === genero) &&
-             (!fecha || r.fechaInicio === fecha);
-    });
+    // No filtramos por genero ni fecha porque el backend no provee esos datos
+    return true;
+  });
+}
 
-    renderResultados(filtrados);
+function renderResultados(lista = []) {
+  resultadosContainer.innerHTML = "";
+
+  if (!lista.length) {
+    resultadosContainer.innerHTML = '<p class="text-center text-light">No se encontraron cuidadores que coincidan con la solicitud.</p>';
+    return;
+  }
+
+  lista.forEach((carer) => {
+    const fullName = `${carer.firstName || ""} ${carer.lastName || ""}`.trim() || "Cuidador";
+    const specialty = carer.specialty?.name || "Sin especialidad";
+    const experience = carer.experience || "Experiencia no informada";
+    const availability = carer.availability || "Disponibilidad no indicada";
+    const rate = carer.hourlyRate ? `$${carer.hourlyRate}` : "Tarifa no informada";
+
+    const card = `
+      <div class="result-card shadow-sm p-3 mb-3 bg-light rounded">
+        <h5 class="fw-bold text-primary">${fullName}</h5>
+        <p class="mb-1"><strong>Especialidad:</strong> ${specialty}</p>
+        <p class="mb-1"><strong>Experiencia:</strong> ${experience}</p>
+        <p class="mb-1"><strong>Disponibilidad:</strong> ${availability}</p>
+        <p class="mb-3"><strong>Tarifa por hora:</strong> ${rate}</p>
+
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-outline-primary btn-sm" data-action="ver-detalle">Ver detalle</button>
+          <button class="btn btn-success btn-sm" data-action="seleccionar">Seleccionar</button>
+        </div>
+      </div>
+    `;
+
+    resultadosContainer.insertAdjacentHTML("beforeend", card);
   });
 
-  // 🔹 Función para renderizar resultados
-  function renderResultados(lista) {
-    $resultados.empty();
-
-    if (lista.length === 0) {
-      $resultados.append('<p class="text-center text-light">No se encontraron resultados.</p>');
-      return;
-    }
-
-    lista.forEach(r => {
-      const card = `
-        <div class="result-card shadow-sm p-3 mb-3 bg-light rounded">
-          <h5 class="fw-bold text-primary">${r.nombre}</h5>
-          <p class="mb-1"><strong>Tipo:</strong> ${r.tipoAtencion}</p>
-          <p class="mb-1"><strong>Experiencia:</strong> ${r.experiencia}</p>
-          <p class="mb-1"><strong>Fecha inicio:</strong> ${r.fechaInicio}</p>
-          <p class="mb-1"><strong>Género:</strong> ${r.genero}</p>
-          <p class="mb-3"><strong>Tarifa:</strong> $${r.tarifa}</p>
-
-          <div class="d-flex justify-content-between">
-            <button class="btn btn-outline-primary btn-sm ver-detalle-btn">Ver detalle</button>
-            <button class="btn btn-success btn-sm seleccionar-btn">Seleccionar</button>
-          </div>
-        </div>
-      `;
-      $resultados.append(card);
-    });
-
-    // Eventos dinámicos (delegados)
-    $(".seleccionar-btn").click(function() {
+  resultadosContainer.querySelectorAll("[data-action='seleccionar']").forEach((btn) => {
+    btn.addEventListener("click", () => {
       window.location.href = "PaymentAndInsurance.html";
     });
+  });
 
-    $(".ver-detalle-btn").click(function() {
-      alert("📋 En desarrollo: ver detalle del cuidador.");
+  resultadosContainer.querySelectorAll("[data-action='ver-detalle']").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      alert("Detalle del cuidador en desarrollo.");
     });
-  }
-});
+  });
+}
+
+function showMessage(text) {
+  resultadosContainer.innerHTML = `<p class="text-center text-light">${text}</p>`;
+}

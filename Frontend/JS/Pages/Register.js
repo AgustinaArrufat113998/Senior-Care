@@ -110,27 +110,28 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
       return;
     }
 
-    
-    // 🚀 Éxito: esperar antes de redirigir
-    await Swal.fire({
-      icon: "success",
-      title: "Usuario registrado con éxito 🎉",
-      text: "Serás redirigido al inicio de sesión...",
-      timer: 2000,
-      showConfirmButton: false,
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-      didOpen: () => {
-        Swal.showLoading();
-      }
-    });
-    
     const response = await registerUser(userData);
     if (!response) {
       throw new Error("No se recibió respuesta del servidor al registrar el usuario");
     }
+    else{
+      // 🚀 Éxito: esperar antes de redirigir
+      await Swal.fire({
+        icon: "success",
+        title: "Usuario registrado con éxito 🎉",
+        text: "Serás redirigido al inicio de sesión...",
+        timer: 2000,
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+      
+      window.location.href = "Login.html";
+    }
     
-    window.location.href = "Login.html";
 
   } catch (error) {
     console.error("Error durante el registro:", error);

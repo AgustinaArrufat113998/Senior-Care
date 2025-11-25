@@ -45,10 +45,23 @@ export function createCareRequest(payload) {
 export function getCareRequest(id) {
   return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests/${id}`, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-    credentials: "include", 
-    mode: "cors"
-    
-  })
+  });
+}
+
+export function getCareRequestsByStatus(status) {
+  const query = status ? `?status=${encodeURIComponent(status)}` : "";
+  return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests${query}`, {
+    method: "GET",
+  });
+}
+
+export function updateCareRequestStatus(id, status, caretakerId) {
+  return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests/${id}/status`, {
+    method: "PUT",
+    body: JSON.stringify({
+      status,
+      caretakerId,
+      responseDate: new Date().toISOString(),
+    }),
+  });
 }

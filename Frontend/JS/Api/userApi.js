@@ -1,12 +1,12 @@
-// 🌐 URLs de las APIs
+// URLs de las APIs
 const API_USER_URL = "http://localhost:8081/api";
-const API_GATEWAY_URL = "http://localhost:8080/api"; // 🔥 se usará más adelante
+const API_GATEWAY_URL = "http://localhost:8080/api"; // se usara mas adelante
 
 // ======================================================
-// 🧱 USUARIOS
+// USUARIOS
 // ======================================================
 
-// 🟩 Crear nuevo usuario (registro)
+// Crear nuevo usuario (registro)
 export async function registerUser(userData) {
   try {
     const response = await fetch(`${API_USER_URL}/users`, {
@@ -15,28 +15,36 @@ export async function registerUser(userData) {
       body: JSON.stringify(userData),
     });
 
+    const data = await response.json().catch(() => null);
+
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      alert("Error al registrar usuario: " + (errorData.message || response.statusText));
-      throw new Error(errorData.message || "Error al registrar usuario");
+      throw new Error(data?.message || "Error al registrar usuario");
     }
 
-    const data = await response.json();
-    alert("Usuario registrado con éxito");
-    console.log("✅ Usuario registrado:", data);
     return data;
   } catch (error) {
-    alert("Error en el registro del usuario.");
-    console.error("❌ Error en registro:", error);
-    throw error;
+    console.error("Error en registro:", error);
+    throw error; // deja que el form.js lo maneje
+  }
+}
+
+// Obtener usuario por ID
+export async function getUserById(userId) {
+  try {
+    const response = await fetch(`${API_USER_URL}/users/${userId}`);
+    if (!response.ok) throw new Error("Error al obtener usuario");
+    return await response.json();
+  } catch (error) {
+    console.error("Error en getUserById:", error);
+    return null;
   }
 }
 
 // ======================================================
-// 🧱 DIRECCIONES
+// DIRECCIONES
 // ======================================================
 
-// 🏠 Crear nueva calle
+// Crear nueva calle
 export async function createStreet(name, cityId) {
   try {
     const response = await fetch(`${API_USER_URL}/addresses/streets`, {
@@ -48,12 +56,12 @@ export async function createStreet(name, cityId) {
     if (!response.ok) throw new Error("Error al crear la calle");
     return await response.json();
   } catch (error) {
-    console.error("❌ Error al crear la calle:", error);
+    console.error("Error al crear la calle:", error);
     throw error;
   }
 }
 
-// 🏢 Crear dirección
+// Crear direccion
 export async function createAddress(number, floor, apartment, streetId) {
   try {
     const response = await fetch(`${API_USER_URL}/addresses`, {
@@ -67,31 +75,31 @@ export async function createAddress(number, floor, apartment, streetId) {
       }),
     });
 
-    if (!response.ok) throw new Error("Error al crear la dirección");
+    if (!response.ok) throw new Error("Error al crear la direccion");
     return await response.json();
   } catch (error) {
-    console.error("❌ Error al crear la dirección:", error);
+    console.error("Error al crear la direccion:", error);
     throw error;
   }
 }
 
 // ======================================================
-// 🧱 GETTERS PARA DROPDOWNS
+// GETTERS PARA DROPDOWNS
 // ======================================================
 
-// 🌍 Obtener países
+// Obtener paises
 export async function getCountries() {
   try {
     const response = await fetch(`${API_USER_URL}/addresses/countries`);
-    if (!response.ok) throw new Error("Error al obtener países");
+    if (!response.ok) throw new Error("Error al obtener paises");
     return await response.json();
   } catch (error) {
-    console.error("❌ Error al obtener países:", error);
+    console.error("Error al obtener paises:", error);
     return [];
   }
 }
 
-// 🗺️ Obtener provincias por país
+// Obtener provincias por pais
 export async function getProvincesByCountry(countryId) {
   try {
     const response = await fetch(
@@ -100,19 +108,19 @@ export async function getProvincesByCountry(countryId) {
     if (!response.ok) throw new Error("Error al obtener provincias");
     return await response.json();
   } catch (error) {
-    console.error("❌ Error al obtener provincias:", error);
+    console.error("Error al obtener provincias:", error);
     return [];
   }
 }
 
-// 🚻 Obtener géneros
+// Obtener generos
 export async function getGender() {
   try {
     const response = await fetch(`${API_USER_URL}/genders`);
-    if (!response.ok) throw new Error("Error al obtener géneros");
+    if (!response.ok) throw new Error("Error al obtener generos");
     return await response.json();
   } catch (error) {
-    console.error("❌ Error al obtener géneros:", error);
+    console.error("Error al obtener generos:", error);
     return [];
   }
 }

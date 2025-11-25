@@ -21,9 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   const navIcons = `
-    <button class="btn btn-link p-0 text-white" type="button" aria-label="Ajustes">
+    <a class="btn btn-link p-0 text-white" href="Settings.html" aria-label="Ajustes">
       <img src="../Assets/ajuste.png" class="nav-icon" alt="Ajustes">
-    </button>
+    </a>
 
     <div class="dropdown">
       <button class="btn btn-link p-0 text-white dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -45,9 +45,9 @@ document.addEventListener("DOMContentLoaded", () => {
       <ul class="dropdown-menu dropdown-menu-end p-2" style="min-width: 200px;">
         <li><strong>👤 Perfil</strong></li>
         <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="/perfil">Ver perfil</a></li>
-        <li><a class="dropdown-item" href="/configuracion">Configuración</a></li>
-        <li><a class="dropdown-item text-danger" href="/cerrar-sesion">Cerrar sesión</a></li>
+        <li><a class="dropdown-item" onclick="window.location.href='MyProfile.html'">Ver perfil</a></li>
+        <li><a class="dropdown-item" href="Settings.html">Settings</a></li>
+        <li><a class="dropdown-item text-danger" href="Login.html" data-logout>Cerrar sesión</a></li>
       </ul>
     </div>
   `;
@@ -201,4 +201,24 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   setupTermsModal();
+
+  const setupLogout = () => {
+    const logoutLinks = document.querySelectorAll("[data-logout]");
+    if (!logoutLinks.length) return;
+
+    const handleLogout = (event) => {
+      event.preventDefault();
+      try {
+        localStorage.clear();
+        if (typeof sessionStorage !== "undefined") sessionStorage.clear();
+      } catch (_) {
+        // Ignoramos errores de storage
+      }
+      window.location.href = "Login.html";
+    };
+
+    logoutLinks.forEach((link) => link.addEventListener("click", handleLogout));
+  };
+
+  setupLogout();
 });

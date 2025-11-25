@@ -357,6 +357,7 @@ if ($("#registerForm").length) {
     submitHandler: function(form) {
       alert("✅ Registro completado correctamente!");
       form.submit();
+      window.location.href("Login.html");
     }
   });
 }

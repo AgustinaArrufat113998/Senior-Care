@@ -11,7 +11,7 @@
 </head>
 <body>
   <div class="container py-5">
-    <h2 class="text-center text-white mb-4">Resultados de Solicitudes de Cuidado 🩵</h2>
+    <h2 class="text-center text-white mb-4">Resultados de Cauidadores Disponibles</h2>
 
     <!-- Filtros -->
     <div class="card p-3 mb-4 shadow-sm">
@@ -30,7 +30,7 @@
           </select>
         </div>
         <div class="col-md-3">
-          <label class="form-label fw-bold">Género preferido</label>
+          <label class="form-label fw-bold">GǸnero preferido</label>
           <select id="generoFiltro" class="form-select">
             <option value="">Cualquiera</option>
             <option value="Femenino">Femenino</option>
@@ -45,13 +45,57 @@
 
     <!-- Lista de resultados -->
     <div id="resultadosContainer" class="scroll-container">
-      <!-- Las cards se insertan dinámicamente desde JS -->
+      <!-- Las cards se insertan dinǭmicamente desde JS -->
+    </div>
+
+    <!-- Modal Detalle Cuidador -->
+    <div class="modal fade" id="carerDetailModal" tabindex="-1" aria-labelledby="carerDetailLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div>
+              <p class="text-uppercase text-muted small mb-1">Detalle de cuidador</p>
+              <h5 class="modal-title" id="carerDetailLabel">Nombre y apellido</h5>
+              <span class="badge bg-primary" id="carerSpecialtyBadge"></span>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <p class="mb-1 text-muted small">Experiencia</p>
+                <p class="fw-semibold" id="carerExperience">-</p>
+              </div>
+              <div class="col-md-6">
+                <p class="mb-1 text-muted small">Disponibilidad</p>
+                <p class="fw-semibold" id="carerAvailability">-</p>
+              </div>
+              <div class="col-md-6">
+                <p class="mb-1 text-muted small">Tarifa por hora</p>
+                <p class="fw-semibold" id="carerRate">-</p>
+              </div>
+              <div class="col-md-6">
+                <p class="mb-1 text-muted small">Contacto</p>
+                <p class="fw-semibold" id="carerContact">-</p>
+              </div>
+              <div class="col-12">
+                <p class="mb-1 text-muted small">Notas / Descripción</p>
+                <p class="fw-semibold" id="carerNotes">-</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-success" id="carerSelectBtn">Seleccionar</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Botón flotante -->
+  <!-- Boton flotante -->
   <div class="action-buttons">
-    <button class="btn btn-green" onclick="window.location.href='CareRequest.html'">➕ Ver mi solicitud</button>
+    <button class="btn btn-green" onclick="window.location.href='CareRequest.html'">Ver mi solicitud</button>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -59,5 +103,3 @@
   <script type="module" src="../JS/Pages/CareRequestResults.js" defer></script>
 </body>
 </html>
-
-

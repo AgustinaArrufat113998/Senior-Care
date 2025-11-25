@@ -1,0 +1,46 @@
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #1796f0, #414cf0, #1b5bf0, #5b90f0);
+  color: #0f2e6e;
+}
+
+.settings-wrapper {
+  padding: 4rem 1rem 6rem;
+}
+
+.settings-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+}
+
+.settings-section + .settings-section {
+  border-top: 1px solid rgba(15, 46, 110, 0.1);
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+}
+
+.setting-row .meta {
+  color: #4b5f85;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.badge-soft {
+  background: rgba(23, 150, 240, 0.12);
+  color: #0f2e6e;
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-weight: 600;
+}

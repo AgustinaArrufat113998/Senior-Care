@@ -15,12 +15,13 @@ export async function registerUser(userData) {
       body: JSON.stringify(userData),
     });
 
+    
     const data = await response.json().catch(() => null);
-
+    
     if (!response.ok) {
       throw new Error(data?.message || "Error al registrar usuario");
     }
-
+    
     return data;
   } catch (error) {
     console.error("Error en registro:", error);

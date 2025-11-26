@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="collapse navbar-collapse mt-3 mt-lg-0" id="mainNavbar">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-3">
             <li class="nav-item"><a class="nav-link text-white fw-semibold" href="Home.html">Inicio</a></li>
-            <li class="nav-item"><a class="nav-link text-white" href="CareRequest.html">Solicitudes</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="MyRequests.html">Solicitudes</a></li>
             <li class="nav-item"><a class="nav-link text-white" href="CareRequestResults.html">Cuidadores</a></li>
             <li class="nav-item"><a class="nav-link text-white" href="AboutUs.html">Nosotros</a></li>
             <li class="nav-item"><a class="nav-link text-white" href="Faq.html">Preguntas frecuentes</a></li>

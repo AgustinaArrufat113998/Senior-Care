@@ -354,10 +354,8 @@ if ($("#registerForm").length) {
     },
     errorElement: "label",
     errorClass: "error text-danger mt-1",
-    submitHandler: function(form) {
+    submitHandler: function() {
       alert("✅ Registro completado correctamente!");
-      form.submit();
-      window.location.href("Login.html");
     }
   });
 }

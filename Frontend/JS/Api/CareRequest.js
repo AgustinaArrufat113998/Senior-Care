@@ -42,6 +42,12 @@ export function createCareRequest(payload) {
   });
 }
 
+export function getAllCareRequests() {
+  return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests/all`, {
+    method: "GET",
+  });
+}
+
 export function getCareRequest(id) {
   return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests/${id}`, {
     method: "GET",

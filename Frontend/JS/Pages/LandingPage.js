@@ -3,7 +3,7 @@ function goToLogin() {
 }
 
 function goToRegister() {
-  window.location.href = "register.html";
+  window.location.href = "Register.html";
 }
 
 function startApp() {

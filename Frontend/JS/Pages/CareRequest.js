@@ -137,6 +137,7 @@ function renderCatalogList(listElement, items = [], config) {
     input.type = "checkbox";
     input.className = "form-check-input catalog-option";
     input.value = item.id;
+    input.dataset.listId = listElement.id;
     if (isDefault) {
       input.dataset.defaultOption = "true";
       input.checked = true;
@@ -286,7 +287,7 @@ async function handleSubmit(event) {
   const storedUserId = localStorage.getItem("userId");
   const userId = storedUserId ? Number(storedUserId) : null;
   if (!userId) {
-    showMessage("Debes iniciar sesion para crear una solicitud.", "error");
+    showMessage("Debes iniciar sesión para crear una solicitud.", "error");
     return;
   }
 
@@ -300,43 +301,21 @@ async function handleSubmit(event) {
     const payload = buildRequestPayload(userId);
     await createCareRequest(payload);
     sessionStorage.setItem("lastCareRequest", JSON.stringify(payload));
-    showMessage("Solicitud enviada con exito.", "success");
+    showMessage("Solicitud enviada con éxito.", "success");
     window.location.href = "CareRequestResults.html";
   } catch (error) {
     console.error("Error al crear la solicitud:", error);
     showMessage(error.message || "No se pudo crear la solicitud de cuidado.", "error");
   }
 }
-const storedUserId = localStorage.getItem("userId");
-const userId = storedUserId ? Number(storedUserId) : null;
-if (!userId) {
-  showMessage("Debes iniciar sesión para crear una solicitud.", "error");
-  return;
-}
-
-const selectedCarerType = document.querySelector('input[name="tipoAtencion"]:checked')?.value || null;
-if (CARER_TYPES_WITH_SPECIALTIES.has(selectedCarerType) && !getSelectedSpecialtyIds().length) {
-  showMessage("Seleccioná al menos una especialidad.", "error");
-  return;
-}
-
-try {
-  const payload = buildRequestPayload(userId);
-  await createCareRequest(payload);
-  showMessage("Solicitud enviada con éxito.", "success");
-  window.location.href = "CareRequestResults.html";
-  // form.reset();
-  // clearSpecialtySelection();
-  // specialtyContainer?.classList.add("hidden");
-
-} catch (error) {
-  console.error("Error al crear la solicitud:", error);
-  showMessage(error.message || "No se pudo crear la solicitud de cuidado.", "error");
-}
 
 function buildRequestPayload(userId) {
   const carerType = document.querySelector('input[name="tipoAtencion"]:checked')?.value || null;
   const specialtyIds = getSelectedSpecialtyIds();
+  const diseases = collectCatalogSelection("enfermedadesList");
+  const medications = collectCatalogSelection("medicacionesList");
+  const allergies = collectCatalogSelection("alergiasList");
+  const conditions = collectCatalogSelection("condicionesList");
 
   return {
     startDate: document.getElementById("fechaInicio")?.value || null,
@@ -347,12 +326,26 @@ function buildRequestPayload(userId) {
     carerType,
     genderPreference: document.getElementById("preferenciaGenero")?.value || "",
     emergencyPhone: document.getElementById("telefonoEmergencia")?.value || "",
+    diseases,
+    medications,
+    allergies,
+    conditions,
     status: "PENDING",
     userId,
     carerId: null,
     patientInfoId: null,
     paymentInfoId: null,
   };
+}
+
+function collectCatalogSelection(listId) {
+  const list = document.getElementById(listId);
+  if (!list) return [];
+  const defaultChecked = list.querySelector("input[data-default-option='true']:checked");
+  if (defaultChecked) return [];
+  return Array.from(list.querySelectorAll("input[type='checkbox']:checked"))
+    .map((input) => Number(input.value))
+    .filter((val) => !Number.isNaN(val));
 }
 
 function showMessage(text, type = "info") {
@@ -374,12 +367,12 @@ function validateDateTime() {
   }
 
   if (startDate && endDate && endDate < startDate) {
-    showMessage("La fecha de finalizacion no puede ser anterior a la de inicio.", "error");
+    showMessage("La fecha de finalización no puede ser anterior a la de inicio.", "error");
     return false;
   }
 
   if (startTime && endTime && startTime > endTime) {
-    showMessage("La hora de finalizacion debe ser posterior a la de inicio.", "error");
+    showMessage("La hora de finalización debe ser posterior a la de inicio.", "error");
     return false;
   }
 

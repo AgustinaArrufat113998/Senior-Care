@@ -1,3 +1,6 @@
+// =============================
+// 📌 IMPORTS DE APIS
+// =============================
 import {
   getAllergies,
   getConditions,
@@ -8,9 +11,23 @@ import {
 
 import { getSpecialties } from "../Api/Carer.js";
 
-const CARER_TYPES_WITH_SPECIALTIES = new Set(["Cuidador con estudios", "Estudiante"]);
 
+// =============================
+// 📌 TIPOS DE CUIDADOR QUE REQUIEREN ESPECIALIDADES
+// =============================
+const CARER_TYPES_WITH_SPECIALTIES = new Set([
+  "Cuidador con estudios",
+  "Profesional",
+  "Estudiante",
+]);
+
+
+// =============================
+// 📌 CONFIGURACIÓN DE CATÁLOGOS MÉDICOS
+// (enfermedades, medicaciones, alergias, condiciones)
+// =============================
 const catalogsConfig = [
+  // --- Enfermedades ---
   {
     buttonId: "enfermedadesDropdown",
     listId: "enfermedadesList",
@@ -19,6 +36,7 @@ const catalogsConfig = [
     emptyLabel: "enfermedades",
     defaultLabel: "Sin enfermedades",
   },
+  // --- Medicaciones ---
   {
     buttonId: "medicacionesDropdown",
     listId: "medicacionesList",
@@ -27,6 +45,7 @@ const catalogsConfig = [
     emptyLabel: "medicaciones",
     defaultLabel: "Sin medicaciones",
   },
+  // --- Alergias ---
   {
     buttonId: "alergiasDropdown",
     listId: "alergiasList",
@@ -35,6 +54,7 @@ const catalogsConfig = [
     emptyLabel: "alergias",
     defaultLabel: "Sin alergias",
   },
+  // --- Condiciones médicas ---
   {
     buttonId: "condicionesDropdown",
     listId: "condicionesList",
@@ -45,41 +65,100 @@ const catalogsConfig = [
   },
 ];
 
+
+// =============================
+// 📌 REFERENCIAS A ELEMENTOS DEL FORMULARIO
+// =============================
 const form = document.getElementById("careRequestForm");
 const messageBox = document.getElementById("msg");
+
+// 📌 Fecha y hora
 const startDateInput = document.getElementById("fechaInicio");
 const endDateInput = document.getElementById("fechaFin");
 const startTimeInput = document.getElementById("horaInicio");
 const endTimeInput = document.getElementById("horaFin");
+
+// 📌 Especialidades
 const specialtyContainer = document.getElementById("carrerasContainer");
 const specialtyDropdownButton = document.getElementById("carreraDropdown");
 const specialtyList = document.getElementById("specialtyDropdownList");
+
+// 📌 Cuidados simples (solo para cuidadores sin estudios)
 const cuidadosSimplesContainer = document.getElementById("cuidadosSimplesContainer");
 
 let cachedSpecialties = [];
 
+
+// =============================
+// 📌 Determina si un tipo de cuidador requiere especialidades
+// =============================
+function carerTypeRequiresSpecialties(radio) {
+  if (!radio) return false;
+
+  // ✔ Soporta sistema nuevo con data-attributes
+  if (radio.dataset?.requiresSpecialties === "true") return true;
+
+  // ✔ Soporta sistema previo basado en el texto del value
+  return CARER_TYPES_WITH_SPECIALTIES.has(radio.value);
+}
+
+
+// =============================
+// 📌 EVENTO PRINCIPAL – Al cargar la página
+// =============================
 document.addEventListener("DOMContentLoaded", async () => {
+
+  // --- FECHAS Y HORAS ---
   setupDateTimeConstraints();
+
+  // --- CARGA DE CATÁLOGOS MÉDICOS ---
   await loadCatalogs();
+
+  // --- TIPO DE CUIDADOR ---
   setupCarerTypeListeners();
+
+  // --- SUBMIT ---
   if (form) {
     form.addEventListener("submit", handleSubmit);
   }
 });
 
+
+// =============================
+// 📌 CONFIGURACIONES DE FECHA Y HORA
+// =============================
 function setupDateTimeConstraints() {
   const today = getTodayString();
+
+  // Se fuerza intervalo de 5 min
+  if (startTimeInput) startTimeInput.step = "300";
+  if (endTimeInput) endTimeInput.step = "300";
+
+  // Fecha mínima = hoy
   if (startDateInput) {
     startDateInput.min = today;
+
+    // Al seleccionar fecha de inicio → ajusta fecha de fin
     startDateInput.addEventListener("change", () => {
       if (endDateInput) {
         endDateInput.min = startDateInput.value || today;
       }
+
+      // Si selecciona HOY → hora mínima es la actual
+      if (startDateInput.value === today) {
+        const nowRounded = getRoundedCurrentTime();
+        startTimeInput.min = nowRounded;
+      } else {
+        startTimeInput.min = "";
+      }
     });
   }
+
   if (endDateInput && startDateInput) {
     endDateInput.min = startDateInput.value || today;
   }
+
+  // Hora fin no puede ser anterior a hora inicio
   if (startTimeInput && endTimeInput) {
     startTimeInput.addEventListener("change", () => {
       endTimeInput.min = startTimeInput.value || "";
@@ -87,23 +166,52 @@ function setupDateTimeConstraints() {
   }
 }
 
+function getRoundedCurrentTime() {
+  const now = new Date();
+  let minutes = now.getMinutes();
+
+  // Redondeo a múltiplos de 5
+  minutes = Math.ceil(minutes / 5) * 5;
+
+  // Si pasa de 60 → sumo una hora
+  if (minutes === 60) {
+    now.setHours(now.getHours() + 1);
+    minutes = 0;
+  }
+
+  return `${String(now.getHours()).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
+
+// =============================
+// 📌 Obtener fecha actual (YYYY-MM-DD)
+// =============================
 function getTodayString() {
   return new Date().toISOString().split("T")[0];
 }
 
+
+// =============================
+// 📌 CARGA DE CATÁLOGOS MÉDICOS
+// (enfermedades, medicaciones, alergias, condiciones)
+// =============================
 async function loadCatalogs() {
   try {
     await Promise.all(
       catalogsConfig.map(async (config) => {
         const { buttonId, listId, loader, emptyLabel } = config;
+
         const button = document.getElementById(buttonId);
         const list = document.getElementById(listId);
         if (!button || !list) return;
+
         list.innerHTML = `<li class="text-center text-muted py-1">Cargando...</li>`;
+
         try {
           const data = await loader();
           renderCatalogList(list, data, config);
           attachCatalogListBehavior(list, button, config);
+
         } catch (error) {
           console.error(`Error al cargar ${emptyLabel}:`, error);
           list.innerHTML = `<li class="text-danger px-2">Sin datos</li>`;
@@ -113,20 +221,30 @@ async function loadCatalogs() {
     );
   } catch (catError) {
     console.error("Error al cargar catálogos:", catError);
-    showMessage("Ocurrió un problema al cargar los catálogos. Intenta nuevamente.", "error");
+    showMessage("Ocurrió un problema al cargar los catálogos.", "error");
   }
 }
 
+
+// =============================
+// 📌 Renderiza cada lista de catálogo
+// =============================
 function renderCatalogList(listElement, items = [], config) {
   const { labelKey, defaultLabel } = config;
+
   listElement.innerHTML = "";
+
   items.forEach(item => {
     if (!item?.id) return;
-    const labelText = item[labelKey] || item.name || `Opción ${item.id}`;
-    const isDefault = defaultLabel
-      ? labelText.trim().toLowerCase() === defaultLabel.toLowerCase()
-      : false;
 
+    const labelText =
+      item[labelKey] || item.name || `Opción ${item.id}`;
+
+    const isDefault =
+      defaultLabel &&
+      labelText.trim().toLowerCase() === defaultLabel.toLowerCase();
+
+    // Crear fila
     const li = document.createElement("li");
     li.classList.add("mb-1");
 
@@ -138,6 +256,8 @@ function renderCatalogList(listElement, items = [], config) {
     input.className = "form-check-input catalog-option";
     input.value = item.id;
     input.dataset.listId = listElement.id;
+
+    // Marca opciones predeterminadas como "Sin X"
     if (isDefault) {
       input.dataset.defaultOption = "true";
       input.checked = true;
@@ -149,30 +269,33 @@ function renderCatalogList(listElement, items = [], config) {
     label.appendChild(input);
     label.appendChild(span);
     li.appendChild(label);
+
     listElement.appendChild(li);
   });
 }
 
+
+// =============================
+// 📌 Comportamiento de cada lista de catálogo
+// =============================
 function attachCatalogListBehavior(list, button, config) {
+
   const updateState = () => {
     const defaultInput = list.querySelector("input[data-default-option='true']");
-    const defaultChecked = defaultInput ? defaultInput.checked : false;
+    const defaultChecked = defaultInput?.checked;
 
+    // Si está marcada "Sin ___", se deshabilitan las demás
     list.querySelectorAll("input[type='checkbox']").forEach(input => {
-      if (!defaultInput || input === defaultInput) {
-        return;
-      }
-      if (defaultChecked) {
-        input.checked = false;
-        input.disabled = true;
-      } else {
-        input.disabled = false;
-      }
+      if (!defaultInput || input === defaultInput) return;
+      input.disabled = defaultChecked;
+      if (defaultChecked) input.checked = false;
     });
 
+    // Cambia el texto del botón
     const selectedCount = defaultChecked
       ? 1
       : list.querySelectorAll("input[type='checkbox']:checked").length;
+
     updateCatalogButtonLabel(
       button,
       selectedCount,
@@ -185,29 +308,51 @@ function attachCatalogListBehavior(list, button, config) {
   updateState();
 }
 
+
+// =============================
+// 📌 Cambia texto del botón de catálogo
+// =============================
 function updateCatalogButtonLabel(button, selectedCount, emptyLabel, defaultText = null) {
   if (defaultText) {
     button.textContent = `${defaultText}`;
     return;
   }
+
   button.textContent = selectedCount
     ? `${capitalize(emptyLabel)} seleccionadas (${selectedCount})`
     : `Seleccionar ${emptyLabel}`;
 }
 
+
+// =============================
+// 📌 Utilidad para capitalizar texto
+// =============================
 function capitalize(text = "") {
-  if (!text.length) return text;
-  return text.charAt(0).toUpperCase() + text.slice(1);
+  return text.length ? text.charAt(0).toUpperCase() + text.slice(1) : text;
 }
 
+
+// =============================
+// 📌 LOGICA DE TIPOS DE CUIDADOR
+// (qué radios mostrar y cuándo pedir especialidades)
+// =============================
 function setupCarerTypeListeners() {
   const radios = document.querySelectorAll('input[name="tipoAtencion"]');
+
   radios.forEach(radio => {
     radio.addEventListener("change", async (event) => {
-      const selected = event.target.value;
-      toggleCuidadosHint(selected);
-      if (CARER_TYPES_WITH_SPECIALTIES.has(selected)) {
+      const selectedRadio = event.target;
+
+      const needsSpecialties = carerTypeRequiresSpecialties(selectedRadio);
+
+      // Mostrar/ocultar "Cuidados simples"
+      toggleCuidadosHint(needsSpecialties);
+
+      // Si requiere especialidades:
+      if (needsSpecialties) {
         specialtyContainer?.classList.remove("hidden");
+
+        // Cargar especialidades solo una vez
         if (!cachedSpecialties.length) {
           try {
             cachedSpecialties = await getSpecialties();
@@ -216,6 +361,7 @@ function setupCarerTypeListeners() {
             showMessage("No se pudieron cargar las especialidades.", "error");
           }
         }
+
         renderSpecialtyCheckboxes(cachedSpecialties);
       } else {
         specialtyContainer?.classList.add("hidden");
@@ -224,66 +370,103 @@ function setupCarerTypeListeners() {
     });
   });
 
+  // Cambiar texto del dropdown de especialidades
   specialtyList?.addEventListener("change", updateSpecialtyButtonLabel);
+
+  // Si ya hay algo seleccionado al cargar la página
+  const preselected = document.querySelector('input[name="tipoAtencion"]:checked');
+  if (preselected) preselected.dispatchEvent(new Event("change"));
 }
 
-function toggleCuidadosHint(carerType) {
+
+// =============================
+// 📌 Mostrar u ocultar "Cuidados simples"
+// =============================
+function toggleCuidadosHint(requiresSpecialties) {
   if (!cuidadosSimplesContainer) return;
-  if (!carerType || CARER_TYPES_WITH_SPECIALTIES.has(carerType)) {
-    cuidadosSimplesContainer.classList.add("hidden");
-  } else {
-    cuidadosSimplesContainer.classList.remove("hidden");
-  }
+  if (requiresSpecialties) cuidadosSimplesContainer.classList.add("hidden");
+  else cuidadosSimplesContainer.classList.remove("hidden");
 }
 
+
+// =============================
+// 📌 Renderiza especialidades
+// =============================
 function renderSpecialtyCheckboxes(specialties = []) {
   if (!specialtyList) return;
   specialtyList.innerHTML = "";
+
   specialties.forEach(spec => {
     if (!spec?.id) return;
+
     const li = document.createElement("li");
     li.classList.add("mb-1");
+
     li.innerHTML = `
       <label class="form-check-label d-flex align-items-center gap-2">
         <input class="form-check-input specialty-option" type="checkbox" value="${spec.id}">
         <span>${spec.name || "Especialidad"}</span>
       </label>
     `;
+
     specialtyList.appendChild(li);
   });
+
   updateSpecialtyButtonLabel();
 }
 
+
+// =============================
+// 📌 Limpia especialidades
+// =============================
 function clearSpecialtySelection() {
-  specialtyList?.querySelectorAll("input[type='checkbox']").forEach(input => {
-    input.checked = false;
+  specialtyList?.querySelectorAll("input[type='checkbox']").forEach(i => {
+    i.checked = false;
   });
   updateSpecialtyButtonLabel();
 }
 
+
+// =============================
+// 📌 Cambia botón de especialidades
+// =============================
 function updateSpecialtyButtonLabel() {
   if (!specialtyDropdownButton) return;
+
   const selected = getSelectedSpecialtyIds();
-  specialtyDropdownButton.textContent = selected.length
-    ? `Especialidades seleccionadas (${selected.length})`
-    : "Seleccionar especialidades";
+
+  specialtyDropdownButton.textContent =
+    selected.length
+      ? `Especialidades seleccionadas (${selected.length})`
+      : "Seleccionar especialidades";
 }
 
+
+// =============================
+// 📌 Obtiene IDs de especialidades seleccionadas
+// =============================
 function getSelectedSpecialtyIds() {
   if (!specialtyList) return [];
-  return Array.from(specialtyList.querySelectorAll("input[type='checkbox']:checked"))
+
+  return Array.from(
+    specialtyList.querySelectorAll("input[type='checkbox']:checked")
+  )
     .map(input => Number(input.value))
     .filter(id => !Number.isNaN(id));
 }
 
+
+// =============================
+// 📌 SUBMIT DEL FORMULARIO
+// =============================
 async function handleSubmit(event) {
   event.preventDefault();
   showMessage("");
 
-  if (!validateDateTime()) {
-    return;
-  }
+  // ✔ Validación de fecha y hora
+  if (!validateDateTime()) return;
 
+  // ✔ Usuario logueado
   const storedUserId = localStorage.getItem("userId");
   const userId = storedUserId ? Number(storedUserId) : null;
   if (!userId) {
@@ -291,45 +474,62 @@ async function handleSubmit(event) {
     return;
   }
 
-  const selectedCarerType = document.querySelector('input[name="tipoAtencion"]:checked')?.value || null;
-  if (CARER_TYPES_WITH_SPECIALTIES.has(selectedCarerType) && !getSelectedSpecialtyIds().length) {
+  // ✔ Validación del tipo de cuidador
+  const selectedCarerRadio = document.querySelector('input[name="tipoAtencion"]:checked');
+  if (carerTypeRequiresSpecialties(selectedCarerRadio) && !getSelectedSpecialtyIds().length) {
     showMessage("Selecciona al menos una especialidad.", "error");
     return;
   }
 
+  // ✔ Construcción del payload
   try {
     const payload = buildRequestPayload(userId);
     await createCareRequest(payload);
+
     sessionStorage.setItem("lastCareRequest", JSON.stringify(payload));
+
     showMessage("Solicitud enviada con éxito.", "success");
     window.location.href = "CareRequestResults.html";
+
   } catch (error) {
     console.error("Error al crear la solicitud:", error);
     showMessage(error.message || "No se pudo crear la solicitud de cuidado.", "error");
   }
 }
 
+
+// =============================
+// 📌 Construcción del payload final
+// =============================
 function buildRequestPayload(userId) {
   const carerType = document.querySelector('input[name="tipoAtencion"]:checked')?.value || null;
-  const specialtyIds = getSelectedSpecialtyIds();
-  const diseases = collectCatalogSelection("enfermedadesList");
-  const medications = collectCatalogSelection("medicacionesList");
-  const allergies = collectCatalogSelection("alergiasList");
-  const conditions = collectCatalogSelection("condicionesList");
 
   return {
+    // --- FECHA Y HORA ---
     startDate: document.getElementById("fechaInicio")?.value || null,
     endDate: document.getElementById("fechaFin")?.value || null,
     startTime: document.getElementById("horaInicio")?.value || null,
     endTime: document.getElementById("horaFin")?.value || null,
-    specialtyIds,
+
+    // --- ESPECIALIDADES ---
+    specialtyIds: getSelectedSpecialtyIds(),
+
+    // --- TIPO DE CUIDADOR ---
     carerType,
+
+    // --- SEXO PREFERIDO (cuidador hombre/mujer/indistinto) ---
     genderPreference: document.getElementById("preferenciaGenero")?.value || "",
+
+    // --- TELÉFONO DE EMERGENCIA ---
     emergencyPhone: document.getElementById("telefonoEmergencia")?.value || "",
-    diseases,
-    medications,
-    allergies,
-    conditions,
+
+    // --- CATÁLOGOS MÉDICOS ---
+    diseases: collectCatalogSelection("enfermedadesList"),
+    medications: collectCatalogSelection("medicacionesList"),
+    allergies: collectCatalogSelection("alergiasList"),
+    conditions: collectCatalogSelection("condicionesList"),
+
+    // --- DATOS SISTEMA ---
     status: "PENDING",
     userId,
     carerId: null,
@@ -338,22 +538,41 @@ function buildRequestPayload(userId) {
   };
 }
 
+
+// =============================
+// 📌 Obtiene IDs seleccionados de cualquier catálogo
+// =============================
 function collectCatalogSelection(listId) {
   const list = document.getElementById(listId);
   if (!list) return [];
+
   const defaultChecked = list.querySelector("input[data-default-option='true']:checked");
   if (defaultChecked) return [];
+
   return Array.from(list.querySelectorAll("input[type='checkbox']:checked"))
-    .map((input) => Number(input.value))
-    .filter((val) => !Number.isNaN(val));
+    .map(input => Number(input.value))
+    .filter(val => !Number.isNaN(val));
 }
 
+
+// =============================
+// 📌 Mostrar mensajes de error/info
+// =============================
 function showMessage(text, type = "info") {
   if (!messageBox) return;
   messageBox.textContent = text;
-  messageBox.className = type === "error" ? "error" : type === "success" ? "success" : "";
+  messageBox.className =
+    type === "error"
+      ? "error"
+      : type === "success"
+      ? "success"
+      : "";
 }
 
+
+// =============================
+// 📌 Validaciones de fecha/hora
+// =============================
 function validateDateTime() {
   const startDate = startDateInput?.value || "";
   const endDate = endDateInput?.value || "";

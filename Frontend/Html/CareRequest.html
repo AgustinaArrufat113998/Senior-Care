@@ -26,22 +26,22 @@
           </div>
           <div class="col-md-6">
             <label for="horaInicio" class="form-label">Hora de inicio <span class="text-danger">*</span></label>
-            <input type="time" id="horaInicio" class="form-control" required>
+            <input type="time" id="horaInicio" class="form-control" step="300" required>
           </div>
           <div class="col-md-6">
             <label for="horaFin" class="form-label">Hora de finalizacion <span class="text-danger">*</span></label>
-            <input type="time" id="horaFin" class="form-control" required>
+            <input type="time" id="horaFin" class="form-control" step="300" required>
           </div>
 
           <div class="col-12">
             <label class="form-label">Tipo de atencion preferida <span class="text-danger">*</span></label>
             <div class="row ps-3">
               <div class="col-md-4 form-check">
-                <input class="form-check-input" type="radio" id="cuidadorEstudios" name="tipoAtencion" value="Cuidador con estudios">
+                <input class="form-check-input" type="radio" id="cuidadorEstudios" name="tipoAtencion" value="Cuidador con estudios" data-requires-specialties="true">
                 <label class="form-check-label" for="cuidadorEstudios">Profesional</label>
               </div>
               <div class="col-md-4 form-check">
-                <input class="form-check-input" type="radio" id="estudiante" name="tipoAtencion" value="Estudiante">
+                <input class="form-check-input" type="radio" id="estudiante" name="tipoAtencion" value="Estudiante" data-requires-specialties="true">
                 <label class="form-check-label" for="estudiante">Estudiante</label>
               </div>
               <div class="col-md-4 form-check">

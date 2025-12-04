@@ -54,20 +54,38 @@ export function getCareRequest(id) {
   });
 }
 
+export function updateCareRequest(id, payload) {
+  return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+}
+
 export function getCareRequestsByStatus(status) {
-  const query = status ? `?status=${encodeURIComponent(status)}` : "";
-  return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests${query}`, {
+  return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests/all`, {
+    method: "GET",
+  }).then((list = []) => {
+    if (!status) return list;
+    return list.filter((item) => (item?.status || "").toUpperCase() === status.toUpperCase());
+  });
+}
+
+export function getCareRequestStatus(id) {
+  return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests/status/${id}`, {
     method: "GET",
   });
 }
 
-export function updateCareRequestStatus(id, status, caretakerId) {
-  return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests/${id}/status`, {
+export function updateCareRequestStatus(id, status) {
+  return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests/status/${id}`, {
     method: "PUT",
-    body: JSON.stringify({
-      status,
-      caretakerId,
-      responseDate: new Date().toISOString(),
-    }),
+    body: JSON.stringify({ status }),
+  });
+}
+
+export function assignCarerToRequest(requestId, carerId) {
+  return requestJson(`${CARE_REQUEST_SERVICE_URL}/care-requests/assign/${requestId}`, {
+    method: "PUT",
+    body: JSON.stringify({ carerId }),
   });
 }

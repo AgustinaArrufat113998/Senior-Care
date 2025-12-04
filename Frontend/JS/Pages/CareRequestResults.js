@@ -1,12 +1,19 @@
+/******************************************************
+ *  IMPORTS
+ ******************************************************/
 import { getCarers } from "../Api/Carer.js";
-import { getUserById } from "../Api/userApi.js";
+import { getAllCareRequests, updateCareRequest } from "../Api/CareRequest.js";
 
+/******************************************************
+ *  ELEMENTOS DEL DOM
+ ******************************************************/
 const resultadosContainer = document.getElementById("resultadosContainer");
 const tipoFiltro = document.getElementById("tipoAtencionFiltro");
 const generoFiltro = document.getElementById("generoFiltro");
 const fechaFiltro = document.getElementById("fechaInicioFiltro");
 const btnFiltrar = document.getElementById("btnFiltrar");
 
+// Modal (detalle del cuidador)
 const modalEl = document.getElementById("carerDetailModal");
 const modalTitle = document.getElementById("carerDetailLabel");
 const modalSpecialty = document.getElementById("carerSpecialtyBadge");
@@ -17,27 +24,40 @@ const modalContact = document.getElementById("carerContact");
 const modalNotes = document.getElementById("carerNotes");
 const modalSelectBtn = document.getElementById("carerSelectBtn");
 
+/******************************************************
+ *  VARIABLES GLOBALES
+ ******************************************************/
 let carers = [];
 let storedRequest = null;
-const userCache = new Map();
 
+/******************************************************
+ *  EVENTO PRINCIPAL - DOM cargado
+ ******************************************************/
 document.addEventListener("DOMContentLoaded", () => {
   storedRequest = loadStoredRequest();
   loadCarers();
+
   btnFiltrar?.addEventListener("click", (e) => {
     e.preventDefault();
     renderResultados(applyFilters());
   });
 });
 
+/******************************************************
+ *  Recupera la solicitud almacenada en sessionStorage
+ *  para autocompletar filtros.
+ ******************************************************/
 function loadStoredRequest() {
   const raw = sessionStorage.getItem("lastCareRequest");
   if (!raw) return null;
+
   try {
     const data = JSON.parse(raw);
+
     if (fechaFiltro && data.startDate) fechaFiltro.value = data.startDate;
     if (tipoFiltro && data.carerType) tipoFiltro.value = data.carerType;
     if (generoFiltro && data.genderPreference) generoFiltro.value = data.genderPreference;
+
     return data;
   } catch (err) {
     console.warn("No se pudo leer la solicitud previa:", err);
@@ -45,13 +65,19 @@ function loadStoredRequest() {
   }
 }
 
+/******************************************************
+ *  CARGA inicial de cuidadores desde la API
+ ******************************************************/
 async function loadCarers() {
   showMessage("Cargando cuidadores...");
   carers = await getCarers();
-  await hydrateUsers(carers);
   renderResultados(applyFilters());
 }
 
+/******************************************************
+ *  Construye objeto de filtros combinando solicitud previa
+ *  y filtros actuales del usuario.
+ ******************************************************/
 function applyFilters() {
   const filters = {
     carerType: (tipoFiltro?.value || storedRequest?.carerType || "").trim(),
@@ -59,9 +85,13 @@ function applyFilters() {
     startDate: (fechaFiltro?.value || storedRequest?.startDate || "").trim(),
     specialtyIds: storedRequest?.specialtyIds || [],
   };
+
   return filterCarers(carers, filters);
 }
 
+/******************************************************
+ *  FILTRADO de cuidadores según criterios de búsqueda
+ ******************************************************/
 function filterCarers(list = [], filters = {}) {
   const specialtySet = new Set(
     (filters.specialtyIds || [])
@@ -83,36 +113,27 @@ function filterCarers(list = [], filters = {}) {
       if (!exp.includes("estudiante")) return false;
     }
 
-    // No filtramos por genero ni fecha porque el backend no provee esos datos
     return true;
   });
 }
 
-async function hydrateUsers(list = []) {
-  const ids = [...new Set(list.map((c) => c.userId).filter(Boolean))];
-  await Promise.all(
-    ids.map(async (id) => {
-      if (userCache.has(id)) return;
-      const user = await getUserById(id);
-      if (user) userCache.set(id, user);
-    })
-  );
-}
-
+/******************************************************
+ *  Renderiza las tarjetas de cuidadores filtrados
+ ******************************************************/
 function renderResultados(lista = []) {
   resultadosContainer.innerHTML = "";
 
   if (!lista.length) {
-    resultadosContainer.innerHTML = '<p class="text-center text-light">No se encontraron cuidadores que coincidan con la solicitud.</p>';
+    resultadosContainer.innerHTML =
+      '<p class="text-center text-light">No se encontraron cuidadores que coincidan con la solicitud.</p>';
     return;
   }
 
   lista.forEach((carer, idx) => {
-    const user = carer.userId ? userCache.get(carer.userId) : null;
     const fullName =
-      (user ? `${user.name || ""} ${user.lastName || ""}`.trim() : "") ||
       `${carer.firstName || ""} ${carer.lastName || ""}`.trim() ||
       "Nombre no disponible";
+
     const specialty = carer.specialty?.name || "Sin especialidad";
     const experience = carer.experience || "Experiencia no informada";
     const availability = carer.availability || "Disponibilidad no indicada";
@@ -137,57 +158,137 @@ function renderResultados(lista = []) {
     resultadosContainer.insertAdjacentHTML("beforeend", card);
   });
 
-  resultadosContainer.querySelectorAll("[data-action='seleccionar']").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      window.location.href = "PaymentAndInsurance.html";
+  resultadosContainer.querySelectorAll("[data-action='seleccionar']")
+    .forEach((btn) => {
+      btn.addEventListener("click", async (event) => {
+        const carer = findCarerById(event.currentTarget.dataset.carerId);
+        if (carer) {
+          await assignCareRequestToCarer(carer, event.currentTarget);
+        }
+      });
     });
-  });
 
-  resultadosContainer.querySelectorAll("[data-action='ver-detalle']").forEach((btn) => {
-    btn.addEventListener("click", (event) => {
-      const carer = findCarerById(event.currentTarget.dataset.carerId);
-      if (carer) openDetailModal(carer);
+  resultadosContainer.querySelectorAll("[data-action='ver-detalle']")
+    .forEach((btn) => {
+      btn.addEventListener("click", (event) => {
+        const carer = findCarerById(event.currentTarget.dataset.carerId);
+        if (carer) openDetailModal(carer);
+      });
     });
-  });
 }
 
+/******************************************************
+ *  Muestra un mensaje temporal dentro del contenedor
+ ******************************************************/
 function showMessage(text) {
   resultadosContainer.innerHTML = `<p class="text-center text-light">${text}</p>`;
 }
 
+/******************************************************
+ *  Busca un cuidador por ID (o índice fallback)
+ ******************************************************/
 function findCarerById(id) {
-  return carers.find((c) => String(c.id ?? "") === String(id) || `idx-${carers.indexOf(c)}` === String(id));
+  return carers.find(
+    (c) =>
+      String(c.id ?? "") === String(id) ||
+      `idx-${carers.indexOf(c)}` === String(id)
+  );
 }
 
-async function openDetailModal(carer) {
+/******************************************************
+ *  Asigna la solicitud más reciente del usuario al cuidador elegido
+ ******************************************************/
+async function assignCareRequestToCarer(carer, triggerButton) {
+  const userId = getCurrentUserId();
+  if (!userId) {
+    showMessage("No pudimos identificar al usuario. Inicia sesión nuevamente.");
+    return;
+  }
+
+  if (triggerButton) {
+    triggerButton.disabled = true;
+    triggerButton.textContent = "Asignando...";
+  }
+
+  try {
+    const request = await findLatestUserRequestWithoutCarer(userId);
+    if (!request) {
+      showMessage("No encontramos una solicitud pendiente para asignar.");
+      return;
+    }
+
+    const payload = {
+      startDate: request.startDate,
+      endDate: request.endDate,
+      startTime: request.startTime,
+      endTime: request.endTime,
+      specialtyIds: request.specialtyIds || [],
+      carerType: request.carerType,
+      genderPreference: request.genderPreference,
+      emergencyPhone: request.emergencyPhone,
+      diseases: request.diseases || [],
+      medications: request.medications || [],
+      allergies: request.allergies || [],
+      conditions: request.conditions || [],
+      status: request.status || "PENDING",
+      userId: request.requesterId || request.userId,
+      carerId: carer.id,
+      patientInfoId: request.patientInfo?.id ?? request.patientInfoId ?? null,
+      paymentInfoId: request.paymentInfo?.id ?? request.paymentInfoId ?? null,
+    };
+
+    await updateCareRequest(request.id, payload);
+    sessionStorage.setItem("selectedCarerId", String(carer.id));
+    window.location.href = "PaymentAndInsurance.html";
+  } catch (error) {
+    console.error("No se pudo asignar el cuidador:", error);
+    showMessage("No se pudo asignar el cuidador. Intenta nuevamente.");
+  } finally {
+    if (triggerButton) {
+      triggerButton.disabled = false;
+      triggerButton.textContent = "Seleccionar";
+    }
+  }
+}
+
+async function findLatestUserRequestWithoutCarer(userId) {
+  const requests = await getAllCareRequests();
+  return (requests || [])
+    .filter((req) => {
+      const requesterId = Number(req.requesterId) || Number(req.userId);
+      return requesterId === userId && !req.carerId;
+    })
+    .sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0))
+    .at(0);
+}
+
+function getCurrentUserId() {
+  const id = Number(localStorage.getItem("userId"));
+  return Number.isNaN(id) ? null : id;
+}
+
+/******************************************************
+ *  Abre modal con datos completos del cuidador
+ ******************************************************/
+function openDetailModal(carer) {
   if (!modalEl) return;
 
-  // fallback mientras se obtiene el usuario
   if (modalTitle) modalTitle.textContent = "Cargando datos...";
   if (modalContact) modalContact.textContent = "Buscando contacto...";
 
-  let user = carer.userId ? userCache.get(carer.userId) : null;
-  if (!user && carer.userId) {
-    user = await getUserById(carer.userId);
-    if (user) userCache.set(carer.userId, user);
-  }
-
   const fullName =
-    (user ? `${user.name || ""} ${user.lastName || ""}`.trim() : "") ||
     `${carer.firstName || ""} ${carer.lastName || ""}`.trim() ||
     "Nombre no disponible";
+
   const specialty = carer.specialty?.name || "Sin especialidad";
   const experience = carer.experience || "Experiencia no informada";
   const availability = carer.availability || "Disponibilidad no indicada";
   const rate = carer.hourlyRate ? `$${carer.hourlyRate}` : "Tarifa no informada";
   const contact =
-    user?.phoneNumber ||
-    user?.phone ||
-    user?.telefono ||
-    user?.email ||
     carer.phoneNumber ||
     carer.phone ||
     carer.contact ||
+    carer.email ||
     "No informado";
   const notes = carer.description || carer.notes || experience;
 
@@ -200,9 +301,7 @@ async function openDetailModal(carer) {
   if (modalNotes) modalNotes.textContent = notes;
 
   if (modalSelectBtn) {
-    modalSelectBtn.onclick = () => {
-      window.location.href = "PaymentAndInsurance.html";
-    };
+    modalSelectBtn.onclick = () => assignCareRequestToCarer(carer, modalSelectBtn);
   }
 
   const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);

@@ -40,6 +40,34 @@
     </div>
   </main>
 
+  <!-- Modal detalle de solicitud para caretakers -->
+  <div class="modal fade" id="carerRequestModal" tabindex="-1" aria-labelledby="carerRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-dark">
+        <div class="modal-header">
+          <h5 class="modal-title" id="carerRequestModalLabel">Detalle de solicitud</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="text-muted small">Solicitud #<span id="modalRequestId">-</span></span>
+            <span class="badge" id="modalRequestStatus">Estado</span>
+          </div>
+          <p class="mb-1"><strong>Fechas:</strong> <span id="modalRequestDates">-</span></p>
+          <p class="mb-1"><strong>Horario:</strong> <span id="modalRequestTime">-</span></p>
+          <p class="mb-1"><strong>Género preferido:</strong> <span id="modalRequestGender">-</span></p>
+          <p class="mb-1"><strong>Tel. emergencia:</strong> <span id="modalRequestPhone">-</span></p>
+          <p class="mb-1"><strong>Especialidades:</strong> <span id="modalRequestSpecs">-</span></p>
+          <p class="mb-0"><strong>Notas:</strong> <span id="modalRequestNotes">-</span></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" id="modalRejectBtn">Rechazar</button>
+          <button type="button" class="btn btn-success" id="modalAcceptBtn">Aceptar cuidado</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script type="module" src="../Js/Pages/MyRequests.js"></script>
 </body>

@@ -17,6 +17,18 @@ export async function getCarers() {
   }
 }
 
+export async function getCarerById(carerId) {
+  try {
+    const response = await fetch(`${API_USER_URL}/carer/${carerId}`);
+    if (!response.ok) throw new Error("Error al obtener cuidador");
+    return await response.json();
+  } catch (error) {
+    console.error("Error en getCarerById:", error);
+    return null;
+  }
+}
+
+
 /**
  * Obtiene todas las especialidades desde la base de datos
  */

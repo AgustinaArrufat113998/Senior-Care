@@ -464,7 +464,10 @@ async function handleSubmit(event) {
   showMessage("");
 
   // ✔ Validación de fecha y hora
-  if (!validateDateTime()) return;
+  if (!validateDateTime()) {
+    alert("Problema de validación de fecha/hora");
+    return;
+  }
 
   // ✔ Usuario logueado
   const storedUserId = localStorage.getItem("userId");
@@ -580,20 +583,32 @@ function validateDateTime() {
   const endTime = endTimeInput?.value || "";
   const today = getTodayString();
 
-  if (startDate && startDate < today) {
+  const nowRounded = getRoundedCurrentTime();
+
+  // 1️⃣ Fecha inicio no puede ser anterior a hoy
+  if (startDate < today) {
     showMessage("La fecha de inicio no puede ser anterior a hoy.", "error");
     return false;
   }
 
+  // 2️⃣ Si la fecha es hoy → hora inicio no puede ser anterior a la actual
+  if (startDate === today && startTime < nowRounded) {
+    showMessage(`La hora de inicio no puede ser anterior a la hora actual (${nowRounded}).`, "error");
+    return false;
+  }
+
+  // 3️⃣ Fecha fin no puede ser anterior a inicio
   if (startDate && endDate && endDate < startDate) {
     showMessage("La fecha de finalización no puede ser anterior a la de inicio.", "error");
     return false;
   }
 
-  if (startTime && endTime && startTime > endTime) {
-    showMessage("La hora de finalización debe ser posterior a la de inicio.", "error");
+  // 4️⃣ Si fecha inicio == fin → hora fin ≥ hora inicio
+  if (startDate === endDate && startTime && endTime && endTime < startTime) {
+    showMessage("La hora de finalización debe ser posterior o igual a la de inicio.", "error");
     return false;
   }
 
   return true;
 }
+

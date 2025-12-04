@@ -45,14 +45,14 @@ public class CarerServiceImpl implements ICarerService {
     @Override
     public List<CarerResponseDto> getAllCarers() {
         return carerRepository.findAll().stream()
-                .map(carer -> mapper.map(carer, CarerResponseDto.class))
+                .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
     public CarerResponseDto getCarerById(Long id) {
         return carerRepository.findById(id)
-                .map(carer -> mapper.map(carer, CarerResponseDto.class))
+                .map(this::mapToResponse)
                 .orElse(null);
     }
 
@@ -90,7 +90,7 @@ public class CarerServiceImpl implements ICarerService {
         }
 
         Carer saved = carerRepository.save(carer);
-        return mapper.map(saved, CarerResponseDto.class);
+        return mapToResponse(saved);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class CarerServiceImpl implements ICarerService {
                 .map(existing -> {
                     mapper.map(request, existing);
                     mapRelations(request, existing);
-                    return mapper.map(carerRepository.save(existing), CarerResponseDto.class);
+                    return mapToResponse(carerRepository.save(existing));
                 })
                 .orElse(null);
     }
@@ -116,5 +116,17 @@ public class CarerServiceImpl implements ICarerService {
     @Override
     public void deleteCarer(Long id) {
         carerRepository.deleteById(id);
+    }
+
+    private CarerResponseDto mapToResponse(Carer carer) {
+        CarerResponseDto dto = mapper.map(carer, CarerResponseDto.class);
+        if (carer.getUser() != null) {
+            dto.setUserId(carer.getUser().getId());
+            dto.setFirstName(carer.getUser().getName());
+            dto.setLastName(carer.getUser().getSurname());
+            dto.setEmail(carer.getUser().getEmail());
+            dto.setPhone(carer.getUser().getPhone());
+        }
+        return dto;
     }
 }

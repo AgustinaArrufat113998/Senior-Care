@@ -11,7 +11,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.ps.careRequest_service.Dto.Request.AssaignRequestDto;
 import com.ps.careRequest_service.Dto.Request.CareRequestDto;
+import com.ps.careRequest_service.Dto.Request.StatusRequestDto;
 import com.ps.careRequest_service.Dto.Response.CareResponseDto;
 import com.ps.careRequest_service.Dto.Response.PatientInfoResponseDto;
 import com.ps.careRequest_service.Dto.Response.PaymentInfoResponseDto;
@@ -78,6 +80,38 @@ public class CareRequestServiceImpl implements ICareRequestService {
         }
         careRequestRepository.deleteById(id);
     }
+
+    @Override
+    public StatusRequestDto updateCareRequestStatus(Long id, StatusRequestDto statusRequestDto) {
+        CareRequest existing = careRequestRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Care request not found with id " + id));
+        existing.setStatus(statusRequestDto.getStatus());
+
+        careRequestRepository.save(existing);
+
+        return statusRequestDto;
+    }
+
+    @Override
+    public StatusRequestDto getCareRequestStatus(Long id) {
+        CareRequest existing = careRequestRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Care request not found with id " + id));
+        StatusRequestDto statusRequestDto = new StatusRequestDto();
+        statusRequestDto.setStatus(existing.getStatus());
+        return statusRequestDto;
+    }
+
+    @Override
+    public AssaignRequestDto assignCarerToRequest(Long requestId, AssaignRequestDto assaignRequestDto) {
+        CareRequest existing = careRequestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Care request not found with id " + requestId));
+        existing.setCarerId(assaignRequestDto.getCarerId());
+
+        careRequestRepository.save(existing);
+
+        return assaignRequestDto;
+    }
+
 
     private void applyDtoToEntity(CareRequestDto dto, CareRequest entity) {
         entity.setStartDate(dto.getStartDate());
@@ -171,4 +205,5 @@ public class CareRequestServiceImpl implements ICareRequestService {
         dto.setReference(entity.getReference());
         return dto;
     }
+
 }

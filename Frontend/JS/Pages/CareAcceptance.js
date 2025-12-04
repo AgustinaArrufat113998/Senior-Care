@@ -118,7 +118,7 @@ async function handleAction(newStatus) {
   }
 
   try {
-    await updateCareRequestStatus(selectedId, newStatus, caretakerId);
+    await updateCareRequestStatus(selectedId, newStatus);
     showMessage(
       newStatus === "ACCEPTED"
         ? "Solicitud aceptada. El familiar será notificado."

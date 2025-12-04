@@ -90,4 +90,10 @@ public class AddressController {
         StreetResponseDto created = addressService.createStreet(streetDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
+
+    @GetMapping("/streets")
+    public ResponseEntity<List<StreetResponseDto>> getAllStreets() {
+        List<StreetResponseDto> streets = addressService.getAllStreets();
+        return ResponseEntity.ok(streets);
+    }
 }

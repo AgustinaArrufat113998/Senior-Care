@@ -168,6 +168,30 @@ public class AddressServiceImpl implements IAddressService {
                 .toList();
     }
 
+    @Override
+    public List<StreetResponseDto> getAllStreets() {
+        List<Street> streets = streetRepository.findAll();
+        return streets.stream().map(street -> {
+            City city = street.getCity();
+            Country country = city.getCountry();
+
+            CountryResponseDto countryDto = new CountryResponseDto();
+            countryDto.setId(country.getId());
+            countryDto.setName(country.getName());
+
+            CityResponseDto cityDto = new CityResponseDto();
+            cityDto.setId(city.getId());
+            cityDto.setName(city.getName());
+            cityDto.setCountry(countryDto);
+
+            StreetResponseDto dto = new StreetResponseDto();
+            dto.setId(street.getId());
+            dto.setName(street.getName());
+            dto.setCity(cityDto);
+            return dto;
+        }).toList();
+    }
+        
     // ================== MAPPER ==================
 
     public AddressResponseDto mapToResponse(Address address) {

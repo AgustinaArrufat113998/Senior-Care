@@ -41,6 +41,32 @@ export async function getUserById(userId) {
   }
 }
 
+// Obtener todos los usuarios
+export async function getAllUsers() {
+  try {
+    const response = await fetch(`${API_USER_URL}/users`);
+    if (response.status === 204) return [];
+    if (!response.ok) throw new Error("Error al obtener usuarios");
+    return await response.json();
+  } catch (error) {
+    console.error("Error en getAllUsers:", error);
+    return [];
+  }
+}
+
+// Obtener todas las calles (incluye ciudad y país)
+export async function getAllStreets() {
+  try {
+    const response = await fetch(`${API_USER_URL}/addresses/streets`);
+    if (response.status === 204) return [];
+    if (!response.ok) throw new Error("Error al obtener calles");
+    return await response.json();
+  } catch (error) {
+    console.error("Error en getAllStreets:", error);
+    return [];
+  }
+}
+
 // ======================================================
 // DIRECCIONES
 // ======================================================

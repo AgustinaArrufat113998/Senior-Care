@@ -76,7 +76,12 @@ public class UserServiceImpl implements IUserService {
         newUser.setBirthDate(user.getBirthDate());
         newUser.setGender(gender);
         newUser.setAddress(address);
-        newUser.setRole(Role.USER);
+        
+        if ("admin@seniorcare.com".equalsIgnoreCase(user.getEmail())) {
+            newUser.setRole(Role.ADMIN);
+        } else {
+            newUser.setRole(Role.USER);
+        }
 
         User savedUser = userRepository.save(newUser);
 

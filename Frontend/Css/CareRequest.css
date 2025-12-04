@@ -73,3 +73,8 @@ label.error {
 .hidden {
   display: none;
 }
+
+/* Flatpickr dropdown above all */
+.flatpickr-calendar {
+  z-index: 9999;
+}

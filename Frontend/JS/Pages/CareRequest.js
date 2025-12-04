@@ -130,50 +130,84 @@ document.addEventListener("DOMContentLoaded", async () => {
 function setupDateTimeConstraints() {
   const today = getTodayString();
 
-  // Se fuerza intervalo de 5 min
-  if (startTimeInput) startTimeInput.step = "300";
-  if (endTimeInput) endTimeInput.step = "300";
+  initTimePickers();
 
-  // Fecha mínima = hoy
+  // Fecha mínima = hoy (no se puede elegir pasado)
   if (startDateInput) {
     startDateInput.min = today;
+    endDateInput.min = today;
 
-    // Al seleccionar fecha de inicio → ajusta fecha de fin
+    // Cuando cambia fecha de inicio
     startDateInput.addEventListener("change", () => {
-      if (endDateInput) {
-        endDateInput.min = startDateInput.value || today;
-      }
+      const startDate = startDateInput.value;
 
-      // Si selecciona HOY → hora mínima es la actual
-      if (startDateInput.value === today) {
-        const nowRounded = getRoundedCurrentTime();
-        startTimeInput.min = nowRounded;
+      // Ajusto fecha mínima de fin
+      endDateInput.min = startDate || today;
+
+      // Si selecciona hoy → hora mínima es hora actual redondeada
+      if (startDate === today) {
+        startTimeInput.min = getRoundedCurrentTime();
       } else {
         startTimeInput.min = "";
       }
+
+      validarHoras();
     });
   }
 
-  if (endDateInput && startDateInput) {
-    endDateInput.min = startDateInput.value || today;
+  // Sincronizar horas al cambiar hora inicio
+  if (startTimeInput) {
+    startTimeInput.addEventListener("change", validarHoras);
   }
 
-  // Hora fin no puede ser anterior a hora inicio
-  if (startTimeInput && endTimeInput) {
-    startTimeInput.addEventListener("change", () => {
-      endTimeInput.min = startTimeInput.value || "";
-    });
+  // Sincronizar horas al cambiar hora fin
+  if (endTimeInput) {
+    endTimeInput.addEventListener("change", validarHoras);
+  }
+
+  // Sincronizar fecha fin
+  if (endDateInput) {
+    endDateInput.addEventListener("change", validarHoras);
   }
 }
 
+// =============================
+// ⏱️ VALIDADOR DE HORARIOS
+// =============================
+function validarHoras() {
+  const startDate = startDateInput.value;
+  const endDate = endDateInput.value;
+  const startTime = startTimeInput.value;
+  const endTime = endTimeInput.value;
+
+  // Solo validar si todo está presente
+  if (!startDate || !endDate || !startTime || !endTime) return;
+
+  // Caso: fecha inicio = fecha fin
+  if (startDate === endDate) {
+    if (startTime > endTime) {
+      Swal.fire({
+        icon: "warning",
+        title: "Horario inválido",
+        text: "La hora de inicio no puede ser mayor a la hora de fin cuando la fecha es el mismo día.",
+        confirmButtonColor: "#3085d6",
+      });
+
+      // Limpiamos el tiempo final
+      endTimeInput.value = "";
+    }
+  }
+}
+
+// =============================
+// 🕒 Redondear hora actual a múltiplos de 5
+// =============================
 function getRoundedCurrentTime() {
   const now = new Date();
   let minutes = now.getMinutes();
 
-  // Redondeo a múltiplos de 5
   minutes = Math.ceil(minutes / 5) * 5;
 
-  // Si pasa de 60 → sumo una hora
   if (minutes === 60) {
     now.setHours(now.getHours() + 1);
     minutes = 0;
@@ -181,6 +215,7 @@ function getRoundedCurrentTime() {
 
   return `${String(now.getHours()).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
+
 
 
 // =============================
@@ -610,5 +645,22 @@ function validateDateTime() {
   }
 
   return true;
+}
+
+function initTimePickers() {
+  if (!window.flatpickr) return;
+  const config = {
+    enableTime: true,
+    noCalendar: true,
+    dateFormat: "H:i",
+    time_24hr: true,
+    minuteIncrement: 5,
+    allowInput: true,
+    clickOpens: true,
+    disableMobile: false,
+  };
+  document.querySelectorAll(".time-picker").forEach((input) => {
+    flatpickr(input, config);
+  });
 }
 

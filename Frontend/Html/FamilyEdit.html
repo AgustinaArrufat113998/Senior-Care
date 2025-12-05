@@ -38,13 +38,26 @@
                         <input type="date" class="form-control" id="birthdate-edit" required>
                     </div>
                 </div>
-
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label for="familyPhone-edit">Teléfono *</label>
+                        <input type="tel" class="form-control" id="familyPhone-edit" required>
+                    </div>
+                </div>
 
                 <div class="col-6">
                     <div class="form-group">
-                        <label for="relationship-edit">Parentesco *</label>
+                        <label for="familyEmail-edit">Email (opcional)</label>
+                        <input type="email" class="form-control" id="familyEmail-edit">
+                    </div>
+                </div>
+            </div> 
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="relationship-edit">Parentesco *</label>
                         <select class="form-control" id="relationship-edit" required>
-                            <option value="" disabled>Selecciona un parentesco</option>
+                         <option value="" disabled>Selecciona un parentesco</option>
                             <option value="padre">Padre</option>
                             <option value="madre">Madre</option>
                             <option value="hijo">Hijo/a</option>

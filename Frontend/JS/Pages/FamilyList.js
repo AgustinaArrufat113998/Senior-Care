@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Simulacion
     let familyMembers = [
-        { id: '1', name: 'Juan Pérez', relationship: 'Abuelo', dni: '12.345.678' },
-        { id: '2', name: 'María López', relationship: 'Hija', dni: '45.678.901' },
-        { id: '3', name: 'Carlos Sanz', relationship: 'Hijo', dni: '48.901.234' }
+        { id: '1', name: 'Juan Pérez', relationship: 'Abuelo/a', dni: '12.345.678' },
+        { id: '2', name: 'María López', relationship: 'Hijo/a', dni: '45.678.901' },
+        { id: '3', name: 'Carlos Sanz', relationship: 'Hijo/a', dni: '48.901.234' },
+        { id: '4', name: 'Juan Martin', relationship: 'Abuelo/a', dni: '11.111.111' }
     ];
 
     const familyList = document.getElementById('family-list');

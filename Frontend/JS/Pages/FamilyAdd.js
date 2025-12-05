@@ -11,9 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
             birthdate: document.getElementById('birthdate').value,
             relationship: document.getElementById('relationship').value,
             observations: document.getElementById('observations').value,
+            phone: document.getElementById('familyPhone').value,
+            email: document.getElementById('familyEmail').value || null
         };
 
-        if (!formData.name || !formData.dni || !formData.birthdate || !formData.relationship) {
+        if (!formData.name || !formData.dni || !formData.birthdate || !formData.relationship || !formData.phone) {
             console.error("VALIDACIÓN FALLIDA: Por favor, completa todos los campos obligatorios.");
             return;
         }

@@ -6,11 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const mockFamilyData = {
         id: familyIdToEdit,
-        name: 'Juan Pérez',
-        dni: '12.345.678', 
-        birthdate: '1945-05-15', 
-        relationship: 'abuelo', 
-        observations: 'Alergia a la penicilina.'
+        name: 'Juan Martin',
+        dni: '11.111.111', 
+        birthdate: '2025-12-04', 
+        relationship: 'abuelo/a', 
+        observations: 'Alergia'
     };
 
 

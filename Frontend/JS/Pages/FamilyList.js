@@ -1,81 +1,85 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Simulacion
-    let familyMembers = [
-        { id: '1', name: 'Juan Pérez', relationship: 'Abuelo/a', dni: '12.345.678' },
-        { id: '2', name: 'María López', relationship: 'Hijo/a', dni: '45.678.901' },
-        { id: '3', name: 'Carlos Sanz', relationship: 'Hijo/a', dni: '48.901.234' },
-        { id: '4', name: 'Juan Martin', relationship: 'Abuelo/a', dni: '11.111.111' }
-    ];
+import { getFamilyByUser, deleteFamiliar } from "../Api/Family.js";
 
-    const familyList = document.getElementById('family-list');
-    const addButton = document.getElementById('add-family-btn');
+document.addEventListener("DOMContentLoaded", () => {
+  const familyList = document.getElementById("family-list");
+  const addButton = document.getElementById("add-family-btn");
 
-    const renderFamilyList = () => {
-        familyList.innerHTML = ''; 
+  const userId = Number(localStorage.getItem("userId"));
+  if (!userId) {
+    familyList.innerHTML = `<p class="text-danger">Debes iniciar sesion para ver tus familiares.</p>`;
+    return;
+  }
 
-        if (familyMembers.length === 0) {
-            familyList.innerHTML = `
-                <p style="text-align: center; color: #7f8c8d; padding: 20px; border: 1px dashed #bdc3c7; border-radius: 10px;">
-                    Aún no tienes familiares registrados.
-                </p>
-            `;
-            return;
-        }
+  if (addButton) {
+    addButton.addEventListener("click", () => (window.location.href = "FamilyAdd.html"));
+  }
 
-        familyMembers.forEach(member => {
-            const item = document.createElement('div');
-            item.className = 'family-item'; 
-            item.dataset.id = member.id;
-            
-            item.innerHTML = `
-                <div class="family-info">
-                    <h4>${member.name}</h4>
-                    <p>Parentesco: ${member.relationship} | DNI: ${member.dni}</p>
-                </div>
-                <div class="family-actions">
-                    <button class="btn-outline-custom edit-btn" data-id="${member.id}" title="Editar" onclick="window.location.href='FamilyEdit.html'">
-                        <i class="fas fa-pencil-alt"></i>
-                    </button>
-                    <button class="btn-cancel delete-btn" data-id="${member.id}" title="Eliminar">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </div>
-            `;
-            familyList.appendChild(item);
-        });
-        
-        attachActionListeners();
-    };
+  loadFamily(userId);
 
-    const attachActionListeners = () => {
-        document.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = e.currentTarget.dataset.id;
-                console.log(`[ACCIÓN] Navegando a: editar_family.html?id=${id}`);
-            });
-        });
+  async function loadFamily(id) {
+    familyList.innerHTML = `<p class="loading-message">Cargando lista de familiares...</p>`;
+    try {
+      const members = await getFamilyByUser(id);
+      renderFamilyList(members);
+    } catch (error) {
+      console.error(error);
+      familyList.innerHTML = `<p class="text-danger">No se pudo cargar la lista.</p>`;
+    }
+  }
 
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = e.currentTarget.dataset.id;
-                //debe ser un modal UI
-                if (confirm(`¿Confirmas la eliminación del familiar con ID ${id}?`)) {
-                    deleteFamilyMember(id);
-                }
-            });
-        });
-    };
-    
-    const deleteFamilyMember = (id) => {
-        console.log(`[API CALL] DELETE /api/family/${id} - Eliminando...`);
-        familyMembers = familyMembers.filter(member => member.id !== id);
-        console.log(`[SUCCESS] Familiar ID ${id} eliminado.`);
-        renderFamilyList(); 
-    };
-    
-    addButton.addEventListener('click', () => {
-        console.log("[ACCIÓN] Navegando a: add_family.html");
+  function renderFamilyList(members = []) {
+    familyList.innerHTML = "";
+    if (!members.length) {
+      familyList.innerHTML = `
+        <p style="text-align: center; color: #7f8c8d; padding: 20px; border: 1px dashed #bdc3c7; border-radius: 10px;">
+          Aun no tienes familiares registrados.
+        </p>
+      `;
+      return;
+    }
+
+    members.forEach((member) => {
+      const item = document.createElement("div");
+      item.className = "family-item";
+      item.dataset.id = member.id;
+      item.innerHTML = `
+        <div class="family-info">
+          <h4>${member.name}</h4>
+          <p>Parentesco: ${member.relationship} | DNI: ${member.dni}</p>
+          <p class="small text-muted">Telefono: ${member.phone || "-"} ${member.email ? " | Email: " + member.email : ""}</p>
+        </div>
+        <div class="family-actions">
+          <button class="btn-outline-custom edit-btn" data-id="${member.id}" title="Editar">
+            <i class="fas fa-pencil-alt"></i>
+          </button>
+          <button class="btn-cancel delete-btn" data-id="${member.id}" title="Eliminar">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+      `;
+      familyList.appendChild(item);
     });
 
-    renderFamilyList();
+    familyList.querySelectorAll(".edit-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const id = e.currentTarget.dataset.id;
+        window.location.href = `FamilyEdit.html?id=${id}`;
+      });
+    });
+
+    familyList.querySelectorAll(".delete-btn").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const id = e.currentTarget.dataset.id;
+        const confirmDelete = confirm(`Confirmas la eliminacion del familiar con ID ${id}?`);
+        if (!confirmDelete) return;
+        try {
+          await deleteFamiliar(id);
+          loadFamily(userId);
+        } catch (error) {
+          console.error(error);
+          alert("No se pudo eliminar el familiar.");
+        }
+      });
+    });
+  }
 });

@@ -1,34 +1,45 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('add-family-form');
-    const cancelButton = document.getElementById('cancel-btn');
+import { addFamiliar } from "../Api/Family.js";
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault(); 
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("add-family-form");
+  const cancelButton = document.getElementById("cancel-btn");
+  const userId = Number(localStorage.getItem("userId"));
 
-        const formData = {
-            name: document.getElementById('name').value,
-            dni: document.getElementById('dni').value,
-            birthdate: document.getElementById('birthdate').value,
-            relationship: document.getElementById('relationship').value,
-            observations: document.getElementById('observations').value,
-            phone: document.getElementById('familyPhone').value,
-            email: document.getElementById('familyEmail').value || null
-        };
+  if (!userId && form) {
+    form.innerHTML = "<p class='text-danger'>Debes iniciar sesion para agregar familiares.</p>";
+    return;
+  }
 
-        if (!formData.name || !formData.dni || !formData.birthdate || !formData.relationship || !formData.phone) {
-            console.error("VALIDACIÓN FALLIDA: Por favor, completa todos los campos obligatorios.");
-            return;
-        }
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-        console.log("POST /api/family -> Enviando datos del nuevo familiar:", formData);
- 
-        setTimeout(() => {
-            console.log("RESPUESTA: ¡Familiar agregado exitosamente!");
-            form.reset(); 
-        }, 800);
-    });
+    const payload = {
+      name: document.getElementById("name")?.value || "",
+      dni: document.getElementById("dni")?.value || "",
+      birthdate: document.getElementById("birthdate")?.value || null,
+      relationship: document.getElementById("relationship")?.value || "",
+      observations: document.getElementById("observations")?.value || "",
+      phone: document.getElementById("familyPhone")?.value || "",
+      email: document.getElementById("familyEmail")?.value || "",
+      userId,
+    };
 
-    cancelButton.addEventListener('click', () => {
-        console.log("[ACCIÓN] Cancelar. Volviendo a la lista de familia.");
-    });
+    if (!payload.name || !payload.dni || !payload.birthdate || !payload.relationship || !payload.phone) {
+      alert("Completa todos los campos obligatorios.");
+      return;
+    }
+
+    try {
+      await addFamiliar(payload);
+      alert("Familiar agregado exitosamente.");
+      window.location.href = "FamiliList.html";
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo agregar el familiar.");
+    }
+  });
+
+  cancelButton?.addEventListener("click", () => {
+    window.location.href = "FamiliList.html";
+  });
 });

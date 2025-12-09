@@ -34,6 +34,7 @@ const modalRejectBtn = document.getElementById("modalRejectBtn");
  * CONSTANTES / ESTADO
  ************************************************************/
 let carerRequestsCache = [];
+let carersById = new Map();
 
 /************************************************************
  * INIT
@@ -44,8 +45,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Resolver carerId desde backend si el usuario es caretaker
   let carerId = safeNumber(localStorage.getItem("carerId"));
-  if (!carerId) {
-    const carers = await getCarers();
+  const carers = await getCarers();
+  carersById = new Map((carers || []).map((c) => [String(c.id), c]));
+  if (!carerId && carers?.length) {
     carerId = carers.find((c) => Number(c.userId) === userId)?.id || null;
     if (carerId) localStorage.setItem("carerId", String(carerId));
   }
@@ -105,7 +107,7 @@ function renderUserRequests(requests, userId) {
     return requesterId === userId;
   });
   if (userCount) userCount.textContent = mine.length;
-  renderList(mine, userList, "Aún no creaste solicitudes.");
+  renderList(mine, userList, "Aun no creaste solicitudes.", { showActions: false, allowRating: true });
 }
 
 /************************************************************
@@ -122,13 +124,18 @@ function renderCarerRequests(requests, carerId, role) {
   const mine = (requests || []).filter((req) => safeNumber(req.carerId) === carerId);
   carerRequestsCache = mine;
   if (carerCount) carerCount.textContent = mine.length;
-  renderList(mine, carerList, carerId ? "No tienes cuidados asignados." : "No encontramos tu carerId.", true);
+  renderList(
+    mine,
+    carerList,
+    carerId ? "No tienes cuidados asignados." : "No encontramos tu carerId.",
+    { showActions: true, allowRating: false }
+  );
 }
 
 /************************************************************
- * Render genérico de tarjetas
+ * Render generico de tarjetas
  ************************************************************/
-function renderList(list, container, emptyMessage, includeActions = false) {
+function renderList(list, container, emptyMessage, options = { showActions: false, allowRating: false }) {
   container.innerHTML = "";
 
   if (!list.length) {
@@ -145,8 +152,10 @@ function renderList(list, container, emptyMessage, includeActions = false) {
     const timeRange = buildTimeRange(req.startTime, req.endTime);
     const gender = req.genderPreference || "Sin preferencia";
     const emergency = req.emergencyPhone || "No informado";
-    const carerId = req.carerId ?? "–";
+    const carerId = req.carerId ?? "";
     const isReadOnly = status === "REJECTED" || status === "CANCELLED" || status === "COMPLETED";
+    const carerLabel = getCarerLabel(carerId);
+    const canRate = options.allowRating && status === "COMPLETED" && carerId;
 
     const card = document.createElement("div");
     card.className = "request-card shadow-sm";
@@ -168,12 +177,12 @@ function renderList(list, container, emptyMessage, includeActions = false) {
           </h6>
         </div>
         <div class="text-end small text-muted">
-          <div>${startDate}${endDate ? ` – ${endDate}` : ""}</div>
+          <div>${startDate}${endDate ? ` - ${endDate}` : ""}</div>
           ${timeRange ? `<div>${timeRange}</div>` : ""}
         </div>
       </div>
       <div class="small text-muted mb-1">
-        Género preferido: <span class="text-dark">${gender}</span>
+        Genero preferido: <span class="text-dark">${gender}</span>
       </div>
       <div class="small text-muted mb-1">
         Tel. emergencia: <span class="text-dark">${emergency}</span>
@@ -182,12 +191,18 @@ function renderList(list, container, emptyMessage, includeActions = false) {
         Especialidades: <span class="text-dark">${formatSpecialties(req.specialtyIds)}</span>
       </div>
       <div class="small text-muted">
-        Cuidador asignado: <span class="text-dark">${carerId || "Sin asignar"}</span>
+        Cuidador asignado: <span class="text-dark">${carerLabel || "Sin asignar"}</span>
       </div>
       ${
-        includeActions && req.id
+        options.showActions && req.id
           ? `<div class="mt-3 text-end">
-               <button class="btn btn-outline-primary btn-sm view-request-btn" data-request-id="${req.id}" ${isReadOnly ? "":""}>Ver detalle</button>
+               <button class="btn btn-outline-primary btn-sm view-request-btn" data-request-id="${req.id}" ${isReadOnly ? "" : ""}>Ver detalle</button>
+             </div>`
+        : canRate
+          ? `<div class="mt-3 text-end">
+               <button class="btn btn-primary btn-sm rate-request-btn" data-carer-id="${carerId}" data-request-id="${req.id}">
+                 Calificar servicio
+               </button>
              </div>`
           : ""
       }
@@ -195,9 +210,18 @@ function renderList(list, container, emptyMessage, includeActions = false) {
     container.appendChild(card);
   });
 
-  if (includeActions) {
+  if (options.showActions) {
     container.querySelectorAll(".view-request-btn").forEach((btn) => {
       btn.addEventListener("click", () => openCarerModal(btn.dataset.requestId));
+    });
+  }
+  if (options.allowRating) {
+    container.querySelectorAll(".rate-request-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const carerId = btn.dataset.carerId;
+        const requestId = btn.dataset.requestId;
+        redirectToRating(carerId, requestId);
+      });
     });
   }
 }
@@ -379,4 +403,26 @@ function getBadgeStyle(status) {
     return "color:#495057;";
   }
   return "";
+}
+
+function getCarerLabel(carerId) {
+  if (!carerId) return "";
+  const carer = carersById.get(String(carerId));
+  if (!carer) return `ID ${carerId}`;
+  const first = carer.firstName || "";
+  const last = carer.lastName || "";
+  const name = `${first} ${last}`.trim();
+  return name || `ID ${carer.id}`;
+}
+
+function redirectToRating(carerId, requestId) {
+  if (!carerId) return;
+  const carer = carersById.get(String(carerId));
+  const carerName = carer ? encodeURIComponent(`${carer.firstName || ""} ${carer.lastName || ""}`.trim()) : "";
+  const qs = new URLSearchParams({
+    carerId,
+    requestId: requestId || "",
+    carerName,
+  });
+  window.location.href = `CareRating.html?${qs.toString()}`;
 }

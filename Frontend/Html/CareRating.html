@@ -3,48 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SeniorCare - Valoración del Cuidado</title>
+  <title>SeniorCare - Valoracion del cuidado</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../Css/CareRating.css">
+  <link rel="stylesheet" href="../Css/Global.css">
   <script src="../JS/Components/layout.js" defer></script>
 </head>
 <body>
   <div class="container py-5">
     <div class="card rating-card p-4 shadow-sm mx-auto">
-      <h2 class="text-center text-primary mb-3">Valoración del Cuidado 💙</h2>
+      <h2 class="text-center text-primary mb-3">Valoracion del cuidado</h2>
       <p class="text-center text-muted mb-4">
-        Contanos tu experiencia con el cuidador. Tu opinión nos ayuda a mejorar el servicio y brindar una mejor atención.
+        Contanos tu experiencia con el cuidador. Tu opinion nos ayuda a mejorar el servicio.
       </p>
 
       <form id="ratingForm" class="d-grid gap-3">
-        <!-- Datos del cuidador -->
         <div class="text-center mb-3">
           <img src="../Assets/caregiver-icon.png" alt="Cuidador" class="cuidador-avatar">
-          <h5 id="nombreCuidador" class="fw-bold mt-2">María López</h5>
-          <p class="text-muted">Cuidadora con 5 años de experiencia</p>
+          <h5 id="nombreCuidador" class="fw-bold mt-2">-</h5>
+          <p id="carerInfo" class="text-muted small mb-0">Buscando datos del cuidador...</p>
         </div>
 
-        <!-- Estrellas -->
         <div class="text-center mb-3">
-          <label class="form-label fw-bold d-block">Calificación general</label>
+          <label class="form-label fw-bold d-block">Calificacion general</label>
           <div id="starsContainer" class="stars">
-            <span class="star" data-value="1">★</span>
-            <span class="star" data-value="2">★</span>
-            <span class="star" data-value="3">★</span>
-            <span class="star" data-value="4">★</span>
-            <span class="star" data-value="5">★</span>
+            <span class="star" data-value="1">&#9733;</span>
+            <span class="star" data-value="2">&#9733;</span>
+            <span class="star" data-value="3">&#9733;</span>
+            <span class="star" data-value="4">&#9733;</span>
+            <span class="star" data-value="5">&#9733;</span>
           </div>
           <small id="ratingText" class="text-muted"></small>
         </div>
 
-        <!-- Comentario -->
         <div>
           <label for="comentario" class="form-label fw-bold">Comentario</label>
-          <textarea id="comentario" class="form-control" rows="3" placeholder="Escribí tu opinión sobre el servicio recibido..."></textarea>
+          <textarea id="comentario" class="form-control" rows="3" placeholder="Escribi tu opinion sobre el servicio recibido..."></textarea>
         </div>
 
-        <!-- Campos adicionales -->
         <div class="row">
           <div class="col-md-6">
             <label for="puntualidad" class="form-label fw-bold">Puntualidad</label>
@@ -68,22 +65,20 @@
           </div>
         </div>
 
-        <div class="text-center mt-4">
-          <button type="submit" class="btn btn-primary px-4 fw-semibold">Enviar valoración</button>
+        <div class="text-center mt-4 d-flex gap-2 justify-content-center flex-wrap">
+          <button type="button" class="btn btn-outline-secondary px-4 fw-semibold" id="backBtn">Volver</button>
+          <button type="submit" class="btn btn-primary px-4 fw-semibold" id="submitBtn">Enviar valoracion</button>
         </div>
+        <div id="alertBox" class="alert d-none" role="alert"></div>
       </form>
     </div>
   </div>
-
-  <!-- Botón flotante -->
+  
   <div class="action-buttons">
-    <button class="btn btn-green" onclick="window.location.href='Home.html'">🏠 Volver al inicio</button>
+    <button class="btn btn-green" onclick="window.location.href='Home.html'">Volver al inicio</button>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../Js/Pages/CareRating.js"></script>
+  <script src="../Js/Pages/CareRating.js" type="module"></script>
 </body>
 </html>
-
-

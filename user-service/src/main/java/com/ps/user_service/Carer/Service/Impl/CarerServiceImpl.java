@@ -6,6 +6,7 @@ import com.ps.user_service.Carer.Model.Carer;
 import com.ps.user_service.Carer.Model.Skill;
 import com.ps.user_service.Carer.Model.Specialty;
 import com.ps.user_service.Carer.Repository.CarerRepository;
+import com.ps.user_service.Carer.Repository.RatingRepository;
 import com.ps.user_service.Carer.Repository.SkillRepository;
 import com.ps.user_service.Carer.Repository.SpecialtyRepository;
 import com.ps.user_service.Carer.Service.Interface.ICarerService;
@@ -27,17 +28,20 @@ public class CarerServiceImpl implements ICarerService {
     private final CarerRepository carerRepository;
     private final SpecialtyRepository specialtyRepository;
     private final SkillRepository skillRepository;
+    private final RatingRepository ratingRepository;
     private final UserRepository userRepository;
     private final ModelMapper mapper;
 
     public CarerServiceImpl(CarerRepository carerRepository,
                             SpecialtyRepository specialtyRepository,
                             SkillRepository skillRepository,
+                            RatingRepository ratingRepository,
                             UserRepository userRepository,
                             ModelMapper mapper) {
         this.carerRepository = carerRepository;
         this.specialtyRepository = specialtyRepository;
         this.skillRepository = skillRepository;
+        this.ratingRepository = ratingRepository;
         this.userRepository = userRepository;
         this.mapper = mapper;
     }
@@ -126,6 +130,11 @@ public class CarerServiceImpl implements ICarerService {
             dto.setLastName(carer.getUser().getSurname());
             dto.setEmail(carer.getUser().getEmail());
             dto.setPhone(carer.getUser().getPhone());
+        }
+        if (carer.getId() != null) {
+            Double average = ratingRepository.findAverageScoreByCarerId(carer.getId());
+            dto.setAverageRating(average != null ? average : 0D);
+            dto.setRatingsCount(ratingRepository.countByCarer_Id(carer.getId()));
         }
         return dto;
     }

@@ -24,4 +24,7 @@ public class CarerResponseDto {
 
     private SpecialtyResponseDto specialty;
     private Set<SkillResponseDto> skills;
+
+    private Double averageRating;
+    private Long ratingsCount;
 }

@@ -12,6 +12,7 @@ import com.ps.user_service.User.Service.Interface.IUserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,7 +42,8 @@ public class UserServiceImpl implements IUserService {
                         user.getId(),
                         user.getEmail(),
                         user.getPassword(),
-                        user.getRole()
+                        user.getRole(),
+                        user.getCreatedAt()
                 ));
     }
 
@@ -108,7 +110,8 @@ public class UserServiceImpl implements IUserService {
                         user.getId(),
                         user.getEmail(),
                         user.getPassword(),
-                        user.getRole()
+                        user.getRole(),
+                        user.getCreatedAt()
                 ))
                 .collect(Collectors.toList());
     }

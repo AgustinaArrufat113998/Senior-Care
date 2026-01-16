@@ -1,8 +1,10 @@
 package com.ps.user_service.User.Models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.ps.user_service.User.Models.Enum.Role;
+import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -40,6 +42,15 @@ public class User {
 
     @Column(nullable = false)
     private String phone;
+
+    @CreationTimestamp
+    @Column(
+            name = "created_at",
+            nullable = false,
+            updatable = false,
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+    )
+    private LocalDateTime createdAt;
 
     // Rol del usuario (JWT)
     @Enumerated(EnumType.STRING)

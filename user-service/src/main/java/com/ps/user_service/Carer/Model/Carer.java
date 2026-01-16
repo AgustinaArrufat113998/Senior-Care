@@ -1,10 +1,12 @@
 package com.ps.user_service.Carer.Model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.ps.user_service.User.Models.User;
+import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,6 +42,15 @@ public class Carer{
 
     @Column(name = "new_skills", length = 1000)
     private String newSkills;
+
+    @CreationTimestamp
+    @Column(
+            name = "created_at",
+            nullable = false,
+            updatable = false,
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+    )
+    private LocalDateTime createdAt;
 
     // === Relationships ===
     @OneToOne

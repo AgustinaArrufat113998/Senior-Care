@@ -18,7 +18,21 @@
         <h2 class="fw-bold text-light mb-0">Dashboard</h2>
         <p class="text-white-50 mb-0 small">Resumen de usuarios, actividad y distribución geográfica.</p>
       </div>
-      <div class="mt-3 mt-md-0">
+      <div class="mt-3 mt-md-0 d-flex flex-column flex-md-row gap-2 align-items-md-center">
+        <div class="d-flex gap-2">
+          <div class="d-flex flex-column">
+            <label for="dateFrom" class="text-white-50 small mb-1">Desde</label>
+            <input type="date" id="dateFrom" class="form-control form-control-sm bg-dark text-light border-secondary" aria-label="Fecha desde">
+          </div>
+          <div class="d-flex flex-column">
+            <label for="dateTo" class="text-white-50 small mb-1">Hasta</label>
+            <input type="date" id="dateTo" class="form-control form-control-sm bg-dark text-light border-secondary" aria-label="Fecha hasta">
+          </div>
+        </div>
+        <div class="d-flex gap-2 justify-content-end">
+          <button class="btn btn-primary btn-sm" id="applyDateFilter">Filtrar</button>
+          <button class="btn btn-outline-light btn-sm" id="clearDateFilter">Limpiar</button>
+        </div>
         <button class="btn btn-outline-light btn-sm" id="refreshDashboard">Actualizar datos</button>
       </div>
     </div>

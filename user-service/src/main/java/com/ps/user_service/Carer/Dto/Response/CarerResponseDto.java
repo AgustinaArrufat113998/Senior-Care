@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -21,6 +22,8 @@ public class CarerResponseDto {
     private String experience;
     private String availability;
     private BigDecimal hourlyRate;
+
+    private LocalDateTime createdAt;
 
     private SpecialtyResponseDto specialty;
     private Set<SkillResponseDto> skills;

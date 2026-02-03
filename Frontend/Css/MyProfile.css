@@ -53,7 +53,7 @@ body[data-role="caretaker"] {
 
 .role-pill {
   background: var(--profile-accent);
-  color: #fff;
+  color: #000;
   padding: 6px 14px;
   border-radius: 999px;
   font-weight: 700;

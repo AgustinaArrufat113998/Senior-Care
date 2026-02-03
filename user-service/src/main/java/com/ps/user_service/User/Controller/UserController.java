@@ -1,6 +1,7 @@
 package com.ps.user_service.User.Controller;
 
 import com.ps.user_service.User.Dto.Request.UserRegisDto;
+import com.ps.user_service.User.Dto.Response.UserProfileResponseDto;
 import com.ps.user_service.User.Dto.Response.UserResponseDto;
 import com.ps.user_service.User.Service.Interface.IUserService;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,13 @@ public class UserController {
     @GetMapping("/by-email")
     public ResponseEntity<UserResponseDto> getByEmail(@RequestParam(name = "email") String email) {
         return userService.findByEmail(email)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<UserProfileResponseDto> getProfileById(@PathVariable Long id) {
+        return userService.findProfileById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

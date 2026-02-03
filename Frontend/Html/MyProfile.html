@@ -39,7 +39,7 @@
                 <p class="mb-0" id="contactPhone">—</p>
               </div>
               <div>
-                <small class="text-muted text-uppercase">Contacto alternativo</small>
+                <small class="text-muted text-uppercase">Documento</small>
                 <p class="mb-0" id="contactAlt">—</p>
               </div>
             </div>
@@ -145,6 +145,52 @@
           </div>
           <div class="card-body">
             <div class="stacked-list" id="documentList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="row justify-content-center mt-3" data-view="caretaker">
+      <div class="col-lg-10">
+        <div class="card glass-panel">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+              <p class="section-kicker mb-0">Ingresos</p>
+              <h5 class="mb-0">Resumen economico</h5>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="earnings-grid">
+              <div class="earnings-card">
+                <small class="text-muted text-uppercase">Hora</small>
+                <p class="mb-0 fw-semibold" id="hourlyRate">-</p>
+              </div>
+              <div class="earnings-card">
+                <small class="text-muted text-uppercase">Total recaudado</small>
+                <p class="mb-0 fw-semibold" id="totalEarnings">-</p>
+              </div>
+              <div class="earnings-card">
+                <small class="text-muted text-uppercase">Servicios</small>
+                <p class="mb-0 fw-semibold" id="servicesCount">-</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-10 mt-3">
+        <div class="card glass-panel">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+              <p class="section-kicker mb-0">Historial</p>
+              <h5 class="mb-0">Servicios realizados</h5>
+            </div>
+            <button class="btn btn-outline-primary btn-sm" type="button" id="viewAllServices">
+              Ver todos los servicios
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="stacked-list" id="transactionsList"></div>
           </div>
         </div>
       </div>

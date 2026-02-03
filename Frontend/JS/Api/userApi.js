@@ -41,6 +41,21 @@ export async function getUserById(userId) {
   }
 }
 
+// Obtener perfil completo por ID (sin password)
+export async function getUserProfileById(userId, token) {
+  try {
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const response = await fetch(`${API_USER_URL}/users/profile/${userId}`, {
+      headers,
+    });
+    if (!response.ok) throw new Error("Error al obtener perfil");
+    return await response.json();
+  } catch (error) {
+    console.error("Error en getUserProfileById:", error);
+    return null;
+  }
+}
+
 // Obtener todos los usuarios
 export async function getAllUsers() {
   try {

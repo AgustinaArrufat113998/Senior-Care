@@ -1,6 +1,11 @@
 package com.ps.user_service.User.Service.Implementation;
 
 import com.ps.user_service.User.Dto.Request.UserRegisDto;
+import com.ps.user_service.User.Dto.Response.AddressResponseDto;
+import com.ps.user_service.User.Dto.Response.CityResponseDto;
+import com.ps.user_service.User.Dto.Response.CountryResponseDto;
+import com.ps.user_service.User.Dto.Response.StreetResponseDto;
+import com.ps.user_service.User.Dto.Response.UserProfileResponseDto;
 import com.ps.user_service.User.Dto.Response.UserResponseDto;
 import com.ps.user_service.User.Models.*;
 import com.ps.user_service.User.Models.Enum.Role;
@@ -45,6 +50,11 @@ public class UserServiceImpl implements IUserService {
                         user.getRole(),
                         user.getCreatedAt()
                 ));
+    }
+
+    @Override
+    public Optional<UserProfileResponseDto> findProfileById(Long id) {
+        return userRepository.findById(id).map(this::mapToProfile);
     }
 
     @Override
@@ -114,5 +124,60 @@ public class UserServiceImpl implements IUserService {
                         user.getCreatedAt()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    private UserProfileResponseDto mapToProfile(User user) {
+        UserProfileResponseDto dto = new UserProfileResponseDto();
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setSurname(user.getSurname());
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setDni(user.getDni());
+        dto.setPhone(user.getPhone());
+        dto.setBirthDate(user.getBirthDate());
+        dto.setRole(user.getRole());
+        dto.setCreatedAt(user.getCreatedAt());
+        dto.setAddress(mapToAddress(user.getAddress()));
+        return dto;
+    }
+
+    private AddressResponseDto mapToAddress(Address address) {
+        if (address == null) return null;
+
+        Street street = address.getStreet();
+        City city = street != null ? street.getCity() : null;
+        Country country = city != null ? city.getCountry() : null;
+
+        CountryResponseDto countryDto = null;
+        if (country != null) {
+            countryDto = new CountryResponseDto();
+            countryDto.setId(country.getId());
+            countryDto.setName(country.getName());
+        }
+
+        CityResponseDto cityDto = null;
+        if (city != null) {
+            cityDto = new CityResponseDto();
+            cityDto.setId(city.getId());
+            cityDto.setName(city.getName());
+            cityDto.setCountry(countryDto);
+        }
+
+        StreetResponseDto streetDto = null;
+        if (street != null) {
+            streetDto = new StreetResponseDto();
+            streetDto.setId(street.getId());
+            streetDto.setName(street.getName());
+            streetDto.setCity(cityDto);
+        }
+
+        AddressResponseDto addressDto = new AddressResponseDto();
+        addressDto.setId(address.getId());
+        addressDto.setNumber(address.getNumber());
+        addressDto.setFloor(address.getFloor());
+        addressDto.setApartment(address.getApartment());
+        addressDto.setStreet(streetDto);
+        return addressDto;
     }
 }

@@ -171,6 +171,19 @@ body[data-role="caretaker"] {
   font-size: 0.95rem;
 }
 
+.earnings-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.earnings-card {
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: rgba(15, 46, 110, 0.05);
+  border: 1px solid rgba(15, 46, 110, 0.08);
+}
+
 @media (max-width: 768px) {
   .avatar-ring {
     width: 100px;

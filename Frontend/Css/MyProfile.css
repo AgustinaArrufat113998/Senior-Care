@@ -171,6 +171,10 @@ body[data-role="caretaker"] {
   font-size: 0.95rem;
 }
 
+.edit-profile-btn {
+  margin-right: 8px;
+}
+
 .earnings-grid {
   display: grid;
   gap: 14px;

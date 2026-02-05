@@ -18,22 +18,36 @@
         <h2 class="fw-bold text-light mb-0">Dashboard</h2>
         <p class="text-white-50 mb-0 small">Resumen de usuarios, actividad y distribución geográfica.</p>
       </div>
-      <div class="mt-3 mt-md-0 d-flex flex-column flex-md-row gap-2 align-items-md-center">
-        <div class="d-flex gap-2">
-          <div class="d-flex flex-column">
-            <label for="dateFrom" class="text-white-50 small mb-1">Desde</label>
-            <input type="date" id="dateFrom" class="form-control form-control-sm bg-dark text-light border-secondary" aria-label="Fecha desde">
+      <div class="mt-3 mt-md-0 d-flex flex-column gap-3">
+        <!-- BOTÓN EXCEL ARRIBA -->
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-outline-light btn-sm" id="downloadExcel">
+            📑EXCEL
+          </button>
+        </div>
+
+        <!-- FILTROS DE FECHA -->
+        <div class="d-flex flex-column flex-md-row gap-2 align-items-md-end">
+          <div class="d-flex gap-2">
+            <div class="d-flex flex-column">
+              <label for="dateFrom" class="text-white-50 small mb-1">Desde</label>
+              <input type="date" id="dateFrom"
+                class="form-control form-control-sm bg-dark text-light border-secondary">
+            </div>
+
+            <div class="d-flex flex-column">
+              <label for="dateTo" class="text-white-50 small mb-1">Hasta</label>
+              <input type="date" id="dateTo"
+                class="form-control form-control-sm bg-dark text-light border-secondary">
+            </div>
           </div>
-          <div class="d-flex flex-column">
-            <label for="dateTo" class="text-white-50 small mb-1">Hasta</label>
-            <input type="date" id="dateTo" class="form-control form-control-sm bg-dark text-light border-secondary" aria-label="Fecha hasta">
+
+          <!-- BOTONES FILTRO -->
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary btn-sm mt-4 mt-md-0" id="applyDateFilter"> Filtrar </button>
+            <button class="btn btn-outline-light btn-sm mt-4 mt-md-0" id="clearDateFilter"> Limpiar </button>
           </div>
         </div>
-        <div class="d-flex gap-2 justify-content-end">
-          <button class="btn btn-primary btn-sm" id="applyDateFilter">Filtrar</button>
-          <button class="btn btn-outline-light btn-sm" id="clearDateFilter">Limpiar</button>
-        </div>
-        <button class="btn btn-outline-light btn-sm" id="refreshDashboard">Actualizar datos</button>
       </div>
     </div>
 
@@ -116,6 +130,8 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <script type="module" src="../Js/Pages/Dashboard.js"></script>
 </body>
 </html>

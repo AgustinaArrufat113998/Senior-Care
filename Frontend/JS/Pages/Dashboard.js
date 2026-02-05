@@ -10,6 +10,7 @@ const dateFromInput = document.getElementById("dateFrom");
 const dateToInput = document.getElementById("dateTo");
 const applyFilterBtn = document.getElementById("applyDateFilter");
 const clearFilterBtn = document.getElementById("clearDateFilter");
+const downloadExcelBtn = document.getElementById("downloadExcel");
 
 let charts = {};
 let currentFilter = { from: null, to: null };
@@ -31,11 +32,138 @@ document.addEventListener("DOMContentLoaded", async () => {
     clearFilterInputs();
     loadDashboard();
   });
+  downloadExcelBtn?.addEventListener("click", handleExcelDownload);
 });
 
 async function loadDashboard() {
   const data = await fetchDashboardData(currentFilter);
   renderDashboard(data);
+}
+
+async function handleExcelDownload() {
+  if (!window.ExcelJS || !window.saveAs) {
+    alert("No se encontro la libreria para exportar.");
+    return;
+  }
+  const data = await fetchDashboardData(currentFilter);
+  renderDashboard(data);
+  const workbook = await buildWorkbook(data, currentFilter);
+  const filename = buildFilename(currentFilter);
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  window.saveAs(blob, filename);
+}
+
+function buildFilename(filter) {
+  const now = new Date();
+  const dateTag = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
+    now.getDate()
+  ).padStart(2, "0")}`;
+  const from = filter?.from ? `_${filter.from}` : "";
+  const to = filter?.to ? `_${filter.to}` : "";
+  return `dashboard_${dateTag}${from}${to}.xlsx`;
+}
+
+async function buildWorkbook(data, filter) {
+  const workbook = new window.ExcelJS.Workbook();
+  const summaryRows = [
+    { campo: "Generado", valor: new Date().toLocaleString("es-AR") },
+    { campo: "Filtro desde", valor: filter?.from || "Sin filtro" },
+    { campo: "Filtro hasta", valor: filter?.to || "Sin filtro" },
+    { campo: "Usuarios totales", valor: data.totals.total },
+    { campo: "Cuidadores", valor: data.totals.carers },
+    { campo: "Usuarios", valor: data.roles.USER },
+    { campo: "Activos", valor: data.activity.active },
+    { campo: "Inactivos", valor: data.activity.inactive },
+  ];
+  const summarySheet = workbook.addWorksheet("Resumen");
+  summarySheet.columns = [
+    { header: "Campo", key: "campo", width: 28 },
+    { header: "Valor", key: "valor", width: 32 },
+  ];
+  summarySheet.addRows(summaryRows);
+
+  const registrationsRows = data.registrationsByMonth.labels.map((label, idx) => ({
+    periodo: label,
+    registros: data.registrationsByMonth.values[idx],
+  }));
+  const registrationsSheet = workbook.addWorksheet("Registros");
+  registrationsSheet.columns = [
+    { header: "Periodo", key: "periodo", width: 18 },
+    { header: "Registros", key: "registros", width: 12 },
+  ];
+  registrationsSheet.addRows(registrationsRows);
+
+  const rolesSheet = workbook.addWorksheet("Roles");
+  rolesSheet.columns = [
+    { header: "Rol", key: "rol", width: 16 },
+    { header: "Cantidad", key: "cantidad", width: 12 },
+  ];
+  rolesSheet.addRows([
+    { rol: "Usuarios", cantidad: data.roles.USER },
+    { rol: "Cuidadores", cantidad: data.roles.CARER },
+  ]);
+
+  const geoRows = data.geo.labels.map((label, idx) => ({
+    ciudad: label,
+    cantidad: data.geo.values[idx],
+  }));
+  const geoSheet = workbook.addWorksheet("Geo");
+  geoSheet.columns = [
+    { header: "Ciudad", key: "ciudad", width: 20 },
+    { header: "Cantidad", key: "cantidad", width: 12 },
+  ];
+  geoSheet.addRows(geoRows);
+
+  const activitySheet = workbook.addWorksheet("Actividad");
+  activitySheet.columns = [
+    { header: "Estado", key: "estado", width: 16 },
+    { header: "Cantidad", key: "cantidad", width: 12 },
+  ];
+  activitySheet.addRows([
+    { estado: "Activos", cantidad: data.activity.active },
+    { estado: "Inactivos", cantidad: data.activity.inactive },
+  ]);
+
+  await addChartsSheet(workbook);
+  return workbook;
+}
+
+async function addChartsSheet(workbook) {
+  const chartsSheet = workbook.addWorksheet("Graficos");
+  const chartConfigs = [
+    { id: "registrationsChart", title: "Nuevos registros por mes", width: 640, height: 320 },
+    { id: "rolesChart", title: "Usuarios por rol", width: 480, height: 320 },
+    { id: "geoChart", title: "Distribucion geografica", width: 640, height: 320 },
+    { id: "activityChart", title: "Actividad", width: 480, height: 320 },
+  ];
+
+  let rowCursor = 1;
+  chartConfigs.forEach((config) => {
+    chartsSheet.getRow(rowCursor).values = [config.title];
+    const imageBase64 = getChartBase64(config.id);
+    if (imageBase64) {
+      const imageId = workbook.addImage({
+        base64: imageBase64,
+        extension: "png",
+      });
+      chartsSheet.addImage(imageId, {
+        tl: { col: 0, row: rowCursor },
+        ext: { width: config.width, height: config.height },
+      });
+    } else {
+      chartsSheet.getRow(rowCursor + 1).values = ["Grafico no disponible"];
+    }
+    rowCursor += 22;
+  });
+}
+
+function getChartBase64(canvasId) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas || typeof canvas.toDataURL !== "function") return null;
+  return canvas.toDataURL("image/png", 1.0);
 }
 
 function renderDashboard(data) {

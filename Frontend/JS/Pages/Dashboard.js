@@ -1,6 +1,8 @@
 import { getCarers } from "../Api/Carer.js";
 import { getAllUsers, getAllStreets } from "../Api/userApi.js";
+import { getAllCareRequests } from "../Api/CareRequest.js";
 
+// DOM references for live dashboard updates
 const totalUsersEl = document.getElementById("totalUsers");
 const usersCountEl = document.getElementById("usersCount");
 const carersCountEl = document.getElementById("carersCount");
@@ -12,16 +14,19 @@ const applyFilterBtn = document.getElementById("applyDateFilter");
 const clearFilterBtn = document.getElementById("clearDateFilter");
 const downloadExcelBtn = document.getElementById("downloadExcel");
 
+// Runtime state for charts and filters
 let charts = {};
 let currentFilter = { from: null, to: null };
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // Basic access gate for admin-only view
   const role = (localStorage.getItem("userRole") || "").toUpperCase();
   if (role !== "ADMIN") {
     window.location.href = "Home.html";
     return;
   }
 
+  // Initial load + UI handlers
   await loadDashboard();
   refreshBtn?.addEventListener("click", loadDashboard);
   applyFilterBtn?.addEventListener("click", () => {
@@ -36,11 +41,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function loadDashboard() {
+  // Fetch, compute, and render all dashboard data
   const data = await fetchDashboardData(currentFilter);
   renderDashboard(data);
 }
 
 async function handleExcelDownload() {
+  // Build XLSX with fresh data and embedded chart images
   if (!window.ExcelJS || !window.saveAs) {
     alert("No se encontro la libreria para exportar.");
     return;
@@ -57,6 +64,7 @@ async function handleExcelDownload() {
 }
 
 function buildFilename(filter) {
+  // Include date and filter range in the export filename
   const now = new Date();
   const dateTag = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
     now.getDate()
@@ -67,7 +75,9 @@ function buildFilename(filter) {
 }
 
 async function buildWorkbook(data, filter) {
+  // Excel workbook with summary, data tables, and chart images
   const workbook = new window.ExcelJS.Workbook();
+  const careRequestsTotal = (data.careRequests?.values || []).reduce((acc, value) => acc + value, 0);
   const summaryRows = [
     { campo: "Generado", valor: new Date().toLocaleString("es-AR") },
     { campo: "Filtro desde", valor: filter?.from || "Sin filtro" },
@@ -75,6 +85,7 @@ async function buildWorkbook(data, filter) {
     { campo: "Usuarios totales", valor: data.totals.total },
     { campo: "Cuidadores", valor: data.totals.carers },
     { campo: "Usuarios", valor: data.roles.USER },
+    { campo: "Solicitudes totales", valor: careRequestsTotal },
     { campo: "Activos", valor: data.activity.active },
     { campo: "Inactivos", valor: data.activity.inactive },
   ];
@@ -127,17 +138,31 @@ async function buildWorkbook(data, filter) {
     { estado: "Inactivos", cantidad: data.activity.inactive },
   ]);
 
+  const careRequestsSheet = workbook.addWorksheet("Solicitudes");
+  careRequestsSheet.columns = [
+    { header: "Estado", key: "estado", width: 16 },
+    { header: "Cantidad", key: "cantidad", width: 12 },
+  ];
+  careRequestsSheet.addRows(
+    data.careRequests.labels.map((label, idx) => ({
+      estado: label,
+      cantidad: data.careRequests.values[idx],
+    }))
+  );
+
   await addChartsSheet(workbook);
   return workbook;
 }
 
 async function addChartsSheet(workbook) {
+  // Captures current Chart.js canvases and embeds them into the file
   const chartsSheet = workbook.addWorksheet("Graficos");
   const chartConfigs = [
     { id: "registrationsChart", title: "Nuevos registros por mes", width: 640, height: 320 },
     { id: "rolesChart", title: "Usuarios por rol", width: 480, height: 320 },
     { id: "geoChart", title: "Distribucion geografica", width: 640, height: 320 },
     { id: "activityChart", title: "Actividad", width: 480, height: 320 },
+    { id: "careRequestsChart", title: "Solicitudes por estado", width: 640, height: 320 },
   ];
 
   let rowCursor = 1;
@@ -161,13 +186,15 @@ async function addChartsSheet(workbook) {
 }
 
 function getChartBase64(canvasId) {
+  // Convert a canvas to PNG for Excel embedding
   const canvas = document.getElementById(canvasId);
   if (!canvas || typeof canvas.toDataURL !== "function") return null;
   return canvas.toDataURL("image/png", 1.0);
 }
 
 function renderDashboard(data) {
-  const { totals, registrationsByMonth, roles, geo, activity } = data;
+  // Update KPI cards and re-render all charts
+  const { totals, registrationsByMonth, roles, geo, activity, careRequests } = data;
 
   totalUsersEl && (totalUsersEl.textContent = totals.total);
   usersCountEl && (usersCountEl.textContent = roles.USER);
@@ -178,9 +205,11 @@ function renderDashboard(data) {
   renderPieChart("rolesChart", ["Usuarios", "Cuidadores"], [roles.USER, roles.CARER]);
   renderBarChart("geoChart", geo.labels, geo.values, "Distribucion geografica");
   renderDoughnut("activityChart", ["Activos", "Inactivos"], [activity.active, activity.inactive]);
+  renderBarChart("careRequestsChart", careRequests.labels, careRequests.values, "Solicitudes");
 }
 
 function renderLineChart(id, labels, values, label) {
+  // Line chart for monthly registrations
   const ctx = document.getElementById(id);
   if (!ctx) return;
   destroyChart(id);
@@ -212,6 +241,7 @@ function renderLineChart(id, labels, values, label) {
 }
 
 function renderPieChart(id, labels, values) {
+  // Pie chart for role split
   const ctx = document.getElementById(id);
   if (!ctx) return;
   destroyChart(id);
@@ -234,6 +264,7 @@ function renderPieChart(id, labels, values) {
 }
 
 function renderBarChart(id, labels, values, label) {
+  // Bar chart for distributions
   const ctx = document.getElementById(id);
   if (!ctx) return;
   destroyChart(id);
@@ -260,6 +291,7 @@ function renderBarChart(id, labels, values, label) {
 }
 
 function renderDoughnut(id, labels, values) {
+  // Doughnut chart for activity
   const ctx = document.getElementById(id);
   if (!ctx) return;
   destroyChart(id);
@@ -283,6 +315,7 @@ function renderDoughnut(id, labels, values) {
 }
 
 function destroyChart(id) {
+  // Prevent duplicate Chart.js instances
   if (charts[id]) {
     charts[id].destroy();
     delete charts[id];
@@ -290,8 +323,13 @@ function destroyChart(id) {
 }
 
 async function fetchDashboardData(filter = {}) {
+  // Aggregate data from multiple services and compute derived metrics
   try {
-    const [users, streets] = await Promise.all([getAllUsersSafe(), getAllStreetsSafe()]);
+    const [users, streets, careRequests] = await Promise.all([
+      getAllUsersSafe(),
+      getAllStreetsSafe(),
+      getAllCareRequestsSafe(),
+    ]);
     const filteredUsers = applyDateFilter(users, filter);
 
     const rolesCount = countRoles(filteredUsers);
@@ -304,6 +342,7 @@ async function fetchDashboardData(filter = {}) {
     const activeCount = Math.round(totalAccounts * 0.7);
     const inactiveCount = Math.max(totalAccounts - activeCount, 0);
     const activity = { active: activeCount, inactive: inactiveCount };
+    const careRequestsStatus = buildCareRequestStatus(careRequests);
 
     return {
       totals: { total: totalAccounts, carers: caretakersCount },
@@ -311,6 +350,7 @@ async function fetchDashboardData(filter = {}) {
       registrationsByMonth: registrations,
       geo,
       activity,
+      careRequests: careRequestsStatus,
     };
   } catch (error) {
     console.error("Error cargando dashboard:", error);
@@ -319,6 +359,7 @@ async function fetchDashboardData(filter = {}) {
 }
 
 async function getAllUsersSafe() {
+  // Users API with safe fallback
   try {
     const res = await getAllUsers();
     return Array.isArray(res) ? res : [];
@@ -329,6 +370,7 @@ async function getAllUsersSafe() {
 }
 
 async function getCarersSafe() {
+  // Carers API with safe fallback
   try {
     const res = await getCarers();
     return Array.isArray(res) ? res : [];
@@ -339,6 +381,7 @@ async function getCarersSafe() {
 }
 
 async function getAllStreetsSafe() {
+  // Streets API with safe fallback
   try {
     const res = await getAllStreets();
     return Array.isArray(res) ? res : [];
@@ -348,7 +391,19 @@ async function getAllStreetsSafe() {
   }
 }
 
+async function getAllCareRequestsSafe() {
+  // Care requests API with safe fallback
+  try {
+    const res = await getAllCareRequests();
+    return Array.isArray(res) ? res : [];
+  } catch (e) {
+    console.error("getAllCareRequests fallback:", e);
+    return [];
+  }
+}
+
 function countRoles(users = []) {
+  // Role breakdown for KPI and charts
   const acc = { USER: 0, CARETAKER: 0, ADMIN: 0 };
   users.forEach((u) => {
     const role = normalizeRole(u?.role);
@@ -360,6 +415,7 @@ function countRoles(users = []) {
 }
 
 function normalizeRole(role) {
+  // Normalize role variants to a single enum
   const value = (role || "").toString().toUpperCase();
   if (value === "CARETAKER" || value === "CARER") return "CARETAKER";
   if (value === "ADMIN") return "ADMIN";
@@ -368,6 +424,7 @@ function normalizeRole(role) {
 }
 
 function getCreatedDate(item) {
+  // Support multiple possible created date field names
   const candidate =
     item?.createdAt ||
     item?.created_at ||
@@ -378,6 +435,7 @@ function getCreatedDate(item) {
 }
 
 function placeholderGeo() {
+  // Default geo labels when no data is available
   return {
     labels: ["Buenos Aires", "Cordoba", "Mendoza", "Rosario", "Tucuman"],
     values: [0, 0, 0, 0, 0],
@@ -385,6 +443,7 @@ function placeholderGeo() {
 }
 
 function buildGeoDistribution(streets = []) {
+  // Count streets per city for the geo chart
   if (!streets.length) return placeholderGeo();
   const cityCounts = new Map();
   streets.forEach((street) => {
@@ -397,16 +456,19 @@ function buildGeoDistribution(streets = []) {
 }
 
 function sampleFallback() {
+  // Safe empty dataset to keep UI stable
   return {
     totals: { total: 0, carers: 0 },
     roles: { USER: 0, CARER: 0 },
     registrationsByMonth: { labels: [], values: [] },
     geo: placeholderGeo(),
     activity: { active: 0, inactive: 0 },
+    careRequests: { labels: [], values: [] },
   };
 }
 
 function readFilter() {
+  // Read date range from inputs
   return {
     from: dateFromInput?.value || null,
     to: dateToInput?.value || null,
@@ -414,12 +476,14 @@ function readFilter() {
 }
 
 function clearFilterInputs() {
+  // Clear filter and reset state
   if (dateFromInput) dateFromInput.value = "";
   if (dateToInput) dateToInput.value = "";
   currentFilter = { from: null, to: null };
 }
 
 function applyDateFilter(items = [], filter = {}) {
+  // Filter list by created date, keeping items without date
   const from = normalizeStartDate(filter.from);
   const to = normalizeEndDate(filter.to);
   if (!from && !to) return items;
@@ -434,6 +498,7 @@ function applyDateFilter(items = [], filter = {}) {
 }
 
 function buildRegistrations(users = [], filter = {}) {
+  // Build monthly buckets for registrations
   const createdDates = users.map((u) => getCreatedDate(u)).filter(Boolean);
 
   const datasetMin = createdDates.length ? new Date(Math.min(...createdDates)) : null;
@@ -462,6 +527,7 @@ function buildRegistrations(users = [], filter = {}) {
   }
 
   users.forEach((u) => {
+    console.log("user: ", u);
     const created = getCreatedDate(u);
     if (!created) return;
     if (created < from || created > to) return;
@@ -478,7 +544,28 @@ function buildRegistrations(users = [], filter = {}) {
   };
 }
 
+function buildCareRequestStatus(careRequests = []) {
+  // Count requests per status for the chart
+  const order = ["PENDING", "ACCEPTED", "REJECTED", "CANCELLED", "COMPLETED", "SIN ESTADO"];
+  const counts = order.reduce((acc, key) => ({ ...acc, [key]: 0 }), {});
+
+  careRequests.forEach((request) => {
+    const rawStatus = (request?.status || "").toString().trim();
+    const status = rawStatus ? rawStatus.toUpperCase() : "SIN ESTADO";
+    if (counts[status] === undefined) {
+      counts["SIN ESTADO"] += 1;
+    } else {
+      counts[status] += 1;
+    }
+  });
+
+  const labels = order.filter((label) => counts[label] > 0 || label !== "SIN ESTADO");
+  const values = labels.map((label) => counts[label] || 0);
+  return { labels, values };
+}
+
 function parseDate(value) {
+  // Parse various date representations safely
   if (!value) return null;
   if (value instanceof Date && !Number.isNaN(value.getTime())) return value;
   if (typeof value === "number") {
@@ -490,6 +577,7 @@ function parseDate(value) {
 }
 
 function normalizeStartDate(value) {
+  // Normalize range start to 00:00:00
   if (!value) return null;
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return null;
@@ -497,6 +585,7 @@ function normalizeStartDate(value) {
 }
 
 function normalizeEndDate(value) {
+  // Normalize range end to 23:59:59
   if (!value) return null;
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return null;

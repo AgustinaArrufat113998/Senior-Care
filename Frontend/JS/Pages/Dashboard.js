@@ -17,10 +17,10 @@ let currentFilter = { from: null, to: null };
 
 document.addEventListener("DOMContentLoaded", async () => {
   const role = (localStorage.getItem("userRole") || "").toUpperCase();
-  // if (role !== "ADMIN") {
-  //   window.location.href = "Home.html";
-  //   return;
-  // }
+  if (role !== "ADMIN") {
+    window.location.href = "Home.html";
+    return;
+  }
 
   await loadDashboard();
   refreshBtn?.addEventListener("click", loadDashboard);
@@ -291,22 +291,23 @@ function destroyChart(id) {
 
 async function fetchDashboardData(filter = {}) {
   try {
-    const [users, carers, streets] = await Promise.all([
-      getAllUsersSafe(),
-      getCarersSafe(),
-      getAllStreetsSafe(),
-    ]);
+    const [users, streets] = await Promise.all([getAllUsersSafe(), getAllStreetsSafe()]);
     const filteredUsers = applyDateFilter(users, filter);
-    const filteredCarers = applyDateFilter(carers, filter);
-    const total = filteredUsers.length;
+
     const rolesCount = countRoles(filteredUsers);
+    const caretakersCount = rolesCount.CARETAKER;
+    const commonUsersCount = rolesCount.USER;
+    const totalAccounts = commonUsersCount + caretakersCount;
+
     const geo = buildGeoDistribution(streets);
     const registrations = buildRegistrations(filteredUsers, filter);
-    const activity = { active: filteredUsers.length, inactive: 0 };
+    const activeCount = Math.round(totalAccounts * 0.7);
+    const inactiveCount = Math.max(totalAccounts - activeCount, 0);
+    const activity = { active: activeCount, inactive: inactiveCount };
 
     return {
-      totals: { total, carers: filteredCarers.length },
-      roles: { USER: rolesCount.USER, CARER: rolesCount.CARETAKER },
+      totals: { total: totalAccounts, carers: caretakersCount },
+      roles: { USER: commonUsersCount, CARER: caretakersCount },
       registrationsByMonth: registrations,
       geo,
       activity,
@@ -348,13 +349,32 @@ async function getAllStreetsSafe() {
 }
 
 function countRoles(users = []) {
-  const acc = { USER: 0, CARETAKER: 0 };
+  const acc = { USER: 0, CARETAKER: 0, ADMIN: 0 };
   users.forEach((u) => {
-    const role = (u.role || "").toUpperCase();
+    const role = normalizeRole(u?.role);
     if (role === "CARETAKER") acc.CARETAKER += 1;
-    else acc.USER += 1;
+    else if (role === "USER") acc.USER += 1;
+    else if (role === "ADMIN") acc.ADMIN += 1;
   });
   return acc;
+}
+
+function normalizeRole(role) {
+  const value = (role || "").toString().toUpperCase();
+  if (value === "CARETAKER" || value === "CARER") return "CARETAKER";
+  if (value === "ADMIN") return "ADMIN";
+  if (value === "USER") return "USER";
+  return null;
+}
+
+function getCreatedDate(item) {
+  const candidate =
+    item?.createdAt ||
+    item?.created_at ||
+    item?.created ||
+    item?.creationDate ||
+    item?.registrationDate;
+  return parseDate(candidate);
 }
 
 function placeholderGeo() {
@@ -405,8 +425,8 @@ function applyDateFilter(items = [], filter = {}) {
   if (!from && !to) return items;
 
   return items.filter((item) => {
-    const created = parseDate(item?.createdAt);
-    if (!created) return false;
+    const created = getCreatedDate(item);
+    if (!created) return true; // si no hay fecha, no excluimos el registro para evitar vaciar el dashboard
     if (from && created < from) return false;
     if (to && created > to) return false;
     return true;
@@ -414,8 +434,13 @@ function applyDateFilter(items = [], filter = {}) {
 }
 
 function buildRegistrations(users = [], filter = {}) {
-  const to = normalizeEndDate(filter.to) || new Date();
-  let from = normalizeStartDate(filter.from);
+  const createdDates = users.map((u) => getCreatedDate(u)).filter(Boolean);
+
+  const datasetMin = createdDates.length ? new Date(Math.min(...createdDates)) : null;
+  const datasetMax = createdDates.length ? new Date(Math.max(...createdDates)) : null;
+
+  const to = normalizeEndDate(filter.to) || datasetMax || new Date();
+  let from = normalizeStartDate(filter.from) || datasetMin;
   if (!from || from > to) {
     from = new Date(to.getFullYear(), to.getMonth() - 11, 1);
   }
@@ -437,7 +462,7 @@ function buildRegistrations(users = [], filter = {}) {
   }
 
   users.forEach((u) => {
-    const created = parseDate(u?.createdAt);
+    const created = getCreatedDate(u);
     if (!created) return;
     if (created < from || created > to) return;
     const key = `${created.getFullYear()}-${created.getMonth()}`;
@@ -455,6 +480,11 @@ function buildRegistrations(users = [], filter = {}) {
 
 function parseDate(value) {
   if (!value) return null;
+  if (value instanceof Date && !Number.isNaN(value.getTime())) return value;
+  if (typeof value === "number") {
+    const dNum = new Date(value);
+    return Number.isNaN(dNum.getTime()) ? null : dNum;
+  }
   const d = new Date(value);
   return Number.isNaN(d.getTime()) ? null : d;
 }

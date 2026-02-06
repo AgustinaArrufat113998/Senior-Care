@@ -141,11 +141,25 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("nav.navbar").forEach((nav) => nav.remove());
   document.body.insertAdjacentHTML("afterbegin", navbarTemplate.trim());
 
+  const injectAdminDashboardLink = () => {
+    const role = (localStorage.getItem("userRole") || "").toUpperCase();
+    if (role !== "ADMIN") return;
+    const navList = document.querySelector("#mainNavbar .navbar-nav");
+    if (!navList) return;
+    const alreadyPresent = navList.querySelector('a[href="Dashboard.html"]');
+    if (alreadyPresent) return;
+    const li = document.createElement("li");
+    li.className = "nav-item";
+    li.innerHTML = '<a class="nav-link text-white fw-semibold" href="Dashboard.html">Dashboard</a>';
+    navList.prepend(li);
+  };
+
   document.querySelectorAll("footer").forEach((footer) => footer.remove());
   const modalExistente = document.getElementById("modalTerminos");
   if (modalExistente) modalExistente.remove();
 
   document.body.insertAdjacentHTML("beforeend", footerTemplate.trim());
+  injectAdminDashboardLink();
 
   const setupTermsModal = () => {
     const terminosContent = document.getElementById("terminosContent");
